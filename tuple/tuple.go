@@ -1,3 +1,4 @@
+// package tuple
 package tuple
 
 import (
@@ -52,6 +53,10 @@ func Equals(tpl1, tpl2 *tuple) bool {
 
 // Add creates and returns a new tuple by adding the corresponding components of each of the passed Tuples.
 func Add(tpl1, tpl2 *tuple) (*tuple, error) {
+	if tpl1.w+tpl2.w == (point + point) {
+		return nil, errors.New("error: cannot add two point tuples")
+	}
+
 	return newTuple(tpl1.x+tpl2.x, tpl1.y+tpl2.y, tpl1.z+tpl2.z, tpl1.w+tpl2.w)
 }
 
@@ -60,7 +65,7 @@ func Add(tpl1, tpl2 *tuple) (*tuple, error) {
 // a tuple explicitly a point or a vector.
 func newTuple(x, y, z, w float64) (*tuple, error) {
 	if w != vector && w != point {
-		return nil, errors.New("internal error: w must be either 0.0 or 1.0")
+		return nil, errors.New("error: w must be either 0.0 or 1.0")
 	}
 
 	return &tuple{
