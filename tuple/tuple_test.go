@@ -391,3 +391,71 @@ func TestSubtract(t *testing.T) {
 		})
 	}
 }
+
+func TestNegate(t *testing.T) {
+	type args struct {
+		tpl1 *tuple
+	}
+	type want struct {
+		err bool
+		tpl *tuple
+	}
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Negates a vector",
+			args: args{
+				tpl1: &tuple{
+					x: 3,
+					y: -2,
+					z: 5,
+					w: 0,
+				},
+			},
+			want: want{
+				tpl: &tuple{
+					x: -3,
+					y: 2,
+					z: -5,
+					w: 0,
+				},
+				err: false,
+			},
+		},
+		{
+			name: "Negates a point",
+			args: args{
+				tpl1: &tuple{
+					x: 1,
+					y: 1,
+					z: 1,
+					w: 1,
+				},
+			},
+			want: want{
+				tpl: &tuple{
+					x: -1,
+					y: -1,
+					z: -1,
+					w: 1,
+				},
+				err: false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualTpl, err := Negate(tt.args.tpl1)
+			if tt.want.err {
+				assert.Error(t, err)
+				assert.Nil(t, actualTpl)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want.tpl, actualTpl)
+			}
+		})
+	}
+}
