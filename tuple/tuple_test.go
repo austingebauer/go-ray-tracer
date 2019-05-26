@@ -459,3 +459,95 @@ func TestNegate(t *testing.T) {
 		})
 	}
 }
+
+func TestScale(t *testing.T) {
+	type args struct {
+		tpl1   *tuple
+		scalar float64
+	}
+	type want struct {
+		err bool
+		tpl *tuple
+	}
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Scales a vector by 3.5",
+			args: args{
+				tpl1: &tuple{
+					x: 1,
+					y: -2,
+					z: 3,
+					w: 0,
+				},
+				scalar: 3.5,
+			},
+			want: want{
+				tpl: &tuple{
+					x: 3.5,
+					y: -7,
+					z: 10.5,
+					w: 0,
+				},
+				err: false,
+			},
+		},
+		{
+			name: "Scales a vector by 0.5",
+			args: args{
+				tpl1: &tuple{
+					x: 1,
+					y: -2,
+					z: 3,
+					w: 0,
+				},
+				scalar: 0.5,
+			},
+			want: want{
+				tpl: &tuple{
+					x: 0.5,
+					y: -1,
+					z: 1.5,
+					w: 0,
+				},
+				err: false,
+			},
+		},
+		{
+			name: "Scales a vector by -2",
+			args: args{
+				tpl1: &tuple{
+					x: 1,
+					y: -2,
+					z: 3,
+					w: 0,
+				},
+				scalar: -2,
+			},
+			want: want{
+				tpl: &tuple{
+					x: -2,
+					y: 4,
+					z: -6,
+					w: 0,
+				},
+				err: false,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualTpl, err := Scale(tt.args.tpl1, tt.args.scalar)
+			if tt.want.err {
+				assert.Error(t, err)
+				assert.Nil(t, actualTpl)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want.tpl, actualTpl)
+			}
+		})
+	}
+}

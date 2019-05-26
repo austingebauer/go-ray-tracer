@@ -70,10 +70,17 @@ func Subtract(tpl1, tpl2 *tuple) (*tuple, error) {
 	return newTuple(tpl1.x-tpl2.x, tpl1.y-tpl2.y, tpl1.z-tpl2.z, tpl1.w-tpl2.w)
 }
 
-// Negate negates the passed Tuple by multiplying each of it's components by -1.
+// Negate returns a new tuple by negating the passed Tuple.
+// Negating the passed tuple happens by multiplying each of it's components by -1.
 func Negate(tpl *tuple) (*tuple, error) {
-	// The w component does not get negated because it's a flag to signify a point or vector
-	return newTuple(tpl.x*-1, tpl.y*-1, tpl.z*-1, tpl.w)
+	return Scale(tpl, -1)
+}
+
+// Scale returns a new tuple that is the result of multiplying each
+// component of the passed tuple by the passed scalar.
+func Scale(tpl *tuple, scalar float64) (*tuple, error) {
+	// The w component does not get multipled because it's a flag to signify a point or vector
+	return newTuple(tpl.x*scalar, tpl.y*scalar, tpl.z*scalar, tpl.w)
 }
 
 // newTuple returns a new tuple that has the passed x, y, z, and w values.
