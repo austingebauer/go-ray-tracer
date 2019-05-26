@@ -1,7 +1,6 @@
 package tuple
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -253,13 +252,115 @@ func TestAdd(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tpl, err := Add(tt.args.tpl1, tt.args.tpl2)
+			actualTpl, err := Add(tt.args.tpl1, tt.args.tpl2)
 			if tt.want.err {
 				assert.Error(t, err)
-				assert.Nil(t, tpl)
+				assert.Nil(t, actualTpl)
 			} else {
 				assert.NoError(t, err)
-				assert.True(t, reflect.DeepEqual(tpl, tt.want.tpl))
+				assert.Equal(t, tt.want.tpl, actualTpl)
+			}
+		})
+	}
+}
+
+func TestSubtract(t *testing.T) {
+	type args struct {
+		tpl1 *tuple
+		tpl2 *tuple
+	}
+	type want struct {
+		err bool
+		tpl *tuple
+	}
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Subtracts vector from point tuples",
+			args: args{
+				tpl1: &tuple{
+					x: 3,
+					y: -2,
+					z: 5,
+					w: 1,
+				},
+				tpl2: &tuple{
+					x: -2,
+					y: 3,
+					z: 1,
+					w: 0,
+				},
+			},
+			want: want{
+				tpl: &tuple{
+					x: 5,
+					y: -5,
+					z: 4,
+					w: 1,
+				},
+				err: false,
+			},
+		},
+		{
+			name: "Subtracts vector and vector tuples",
+			args: args{
+				tpl1: &tuple{
+					x: 3,
+					y: -2,
+					z: 5,
+					w: 0,
+				},
+				tpl2: &tuple{
+					x: -2,
+					y: 3,
+					z: 7,
+					w: 0,
+				},
+			},
+			want: want{
+				tpl: &tuple{
+					x: 5,
+					y: -5,
+					z: -2,
+					w: 0,
+				},
+				err: false,
+			},
+		},
+		{
+			name: "Subtracts point from vector and expects an error",
+			args: args{
+				tpl1: &tuple{
+					x: 3,
+					y: -2,
+					z: 5,
+					w: 0,
+				},
+				tpl2: &tuple{
+					x: -2,
+					y: 3,
+					z: 1,
+					w: 1,
+				},
+			},
+			want: want{
+				tpl: nil,
+				err: true,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actualTpl, err := Subtract(tt.args.tpl1, tt.args.tpl2)
+			if tt.want.err {
+				assert.Error(t, err)
+				assert.Nil(t, actualTpl)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want.tpl, actualTpl)
 			}
 		})
 	}

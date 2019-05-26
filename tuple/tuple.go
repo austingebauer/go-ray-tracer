@@ -1,4 +1,5 @@
-// package tuple
+// package tuple represents a point or a vector in a left-handed coordinate system.
+// The package provides functions used to make calculations on points and vectors in a 3D space.
 package tuple
 
 import (
@@ -51,13 +52,22 @@ func Equals(tpl1, tpl2 *tuple) bool {
 		math.Float64Equals(tpl1.w, tpl2.w, math.Epsilon)
 }
 
-// Add creates and returns a new tuple by adding the corresponding components of each of the passed Tuples.
+// Add returns a new tuple by adding the corresponding components in each of the passed Tuples.
 func Add(tpl1, tpl2 *tuple) (*tuple, error) {
 	if tpl1.w+tpl2.w == (point + point) {
 		return nil, errors.New("error: cannot add two point tuples")
 	}
 
 	return newTuple(tpl1.x+tpl2.x, tpl1.y+tpl2.y, tpl1.z+tpl2.z, tpl1.w+tpl2.w)
+}
+
+// Subtract returns a new tuple by subtracting the corresponding components in each of the passed Tuples.
+func Subtract(tpl1, tpl2 *tuple) (*tuple, error) {
+	if tpl1.w-tpl2.w == (vector - point) {
+		return nil, errors.New("error: cannot subtract a point from a vector")
+	}
+
+	return newTuple(tpl1.x-tpl2.x, tpl1.y-tpl2.y, tpl1.z-tpl2.z, tpl1.w-tpl2.w)
 }
 
 // newTuple returns a new tuple that has the passed x, y, z, and w values.
