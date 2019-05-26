@@ -331,6 +331,32 @@ func TestSubtract(t *testing.T) {
 			},
 		},
 		{
+			name: "Negates a vector by subtracting from the zero vector",
+			args: args{
+				tpl1: &tuple{
+					x: 0,
+					y: 0,
+					z: 0,
+					w: 0,
+				},
+				tpl2: &tuple{
+					x: -2,
+					y: 3,
+					z: 7,
+					w: 0,
+				},
+			},
+			want: want{
+				tpl: &tuple{
+					x: 2,
+					y: -3,
+					z: -7,
+					w: 0,
+				},
+				err: false,
+			},
+		},
+		{
 			name: "Subtracts point from vector and expects an error",
 			args: args{
 				tpl1: &tuple{
