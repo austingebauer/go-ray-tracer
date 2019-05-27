@@ -5,8 +5,7 @@ package tuple
 import (
 	"errors"
 	"log"
-
-	"github.com/austingebauer/go-ray-tracer/math"
+	"math"
 )
 
 const (
@@ -46,10 +45,10 @@ func NewVector(x, y, z float64) *tuple {
 // Equals returns true if the passed tuple is equal to this tuple.
 // Two Tuples are equal if their x, y, z, and w members are equal.
 func Equals(tpl1, tpl2 *tuple) bool {
-	return math.Float64Equals(tpl1.x, tpl2.x, math.Epsilon) &&
-		math.Float64Equals(tpl1.y, tpl2.y, math.Epsilon) &&
-		math.Float64Equals(tpl1.z, tpl2.z, math.Epsilon) &&
-		math.Float64Equals(tpl1.w, tpl2.w, math.Epsilon)
+	return Float64Equals(tpl1.x, tpl2.x, Epsilon) &&
+		Float64Equals(tpl1.y, tpl2.y, Epsilon) &&
+		Float64Equals(tpl1.z, tpl2.z, Epsilon) &&
+		Float64Equals(tpl1.w, tpl2.w, Epsilon)
 }
 
 // Add returns a new tuple by adding the corresponding components in each of the passed Tuples.
@@ -81,6 +80,24 @@ func Negate(tpl *tuple) (*tuple, error) {
 func Scale(tpl *tuple, scalar float64) (*tuple, error) {
 	// The w component does not get multipled because it's a flag to signify a point or vector
 	return newTuple(tpl.x*scalar, tpl.y*scalar, tpl.z*scalar, tpl.w)
+}
+
+// Magnitude computes and returns the length of the passed vector.
+// The length of the passed tuple is calculated using Pythagoras' theorem.
+func Magnitude(tpl *tuple) float64 {
+	return math.Sqrt(math.Pow(tpl.x, 2) +
+		math.Pow(tpl.y, 2) +
+		math.Pow(tpl.z, 2))
+}
+
+// IsVector returns true if the passed tuple represents a vector.
+func IsVector(tpl *tuple) bool {
+	return tpl.w == vector
+}
+
+// IsPoint returns true if the passed tuple represents a point.
+func IsPoint(tpl *tuple) bool {
+	return tpl.w == point
 }
 
 // newTuple returns a new tuple that has the passed x, y, z, and w values.
