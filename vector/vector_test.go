@@ -1,6 +1,7 @@
 package vector
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -126,6 +127,51 @@ func TestVector_Magnitude(t *testing.T) {
 				-1,
 			},
 			want: 3,
+		},
+		{
+			name: "unit vector x",
+			fields: fields{
+				1,
+				0,
+				0,
+			},
+			want: 1,
+		},
+		{
+			name: "unit vector y",
+			fields: fields{
+				0,
+				1,
+				0,
+			},
+			want: 1,
+		},
+		{
+			name: "unit vector z",
+			fields: fields{
+				0,
+				0,
+				1,
+			},
+			want: 1,
+		},
+		{
+			name: "vector magnitude equals square root",
+			fields: fields{
+				1,
+				2,
+				3,
+			},
+			want: math.Sqrt(14),
+		},
+		{
+			name: "negative vector magnitude equals square root",
+			fields: fields{
+				-1,
+				-2,
+				-3,
+			},
+			want: math.Sqrt(14),
 		},
 	}
 	for _, tt := range tests {
