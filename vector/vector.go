@@ -1,19 +1,69 @@
 package vector
 
-import "github.com/austingebauer/go-ray-tracer/tuple"
+import (
+	"math"
 
+	"github.com/austingebauer/go-ray-tracer/utils"
+)
+
+// Vector represents a vector in a left-handed coordinate system
 type Vector struct {
-	*tuple.Tuple
+	// X, Y, and Z represent components in a left-handed coordinate system
+	X, Y, Z float64
 }
 
-// NewVector returns a new Vector that has the passed x, y, and z values.
+// NewVector returns a new Vector that has the passed X, Y, and Z values.
 func NewVector(x, y, z float64) *Vector {
-	tpl, _ := tuple.NewTuple(x, y, z, tuple.Vector)
 	return &Vector{
-		Tuple: tpl,
+		X: x,
+		Y: y,
+		Z: z,
 	}
 }
 
+// Equals returns true if the passed Vector is equal to this Vector.
+// Two Vectors are equal if their X, Y, Z components are equal.
 func (vec *Vector) Equals(vecQ *Vector) bool {
-	return tuple.Equals(vec.Tuple, vecQ.Tuple)
+	return utils.Float64Equals(vec.X, vecQ.X, utils.Epsilon) &&
+		utils.Float64Equals(vec.Y, vecQ.Y, utils.Epsilon) &&
+		utils.Float64Equals(vec.Z, vecQ.Z, utils.Epsilon)
+}
+
+// Magnitude computes and returns the length of this Vector.
+// The length is calculated using Pythagoras' theorem.
+func (vec *Vector) Magnitude() float64 {
+	return math.Sqrt(math.Pow(vec.X, 2) +
+		math.Pow(vec.Y, 2) +
+		math.Pow(vec.Z, 2))
+}
+
+// Negate multiplies each of this Vector's components by -1.
+func (vec *Vector) Negate() *Vector {
+	return vec.Scale(-1)
+}
+
+// Scale multiplies each of this Vector's components by the passed scalar value.
+func (vec *Vector) Scale(scalar float64) *Vector {
+	vec.X = vec.X * scalar
+	vec.Y = vec.Y * scalar
+	vec.Z = vec.Z * scalar
+	return vec
+}
+
+// Add modifies each component of this Vector by setting each of them
+// to the sum of the components in this Vector and the passed Vector.
+func (vec *Vector) Add(vec2 *Vector) *Vector {
+	vec.X = vec.X + vec2.X
+	vec.Y = vec.Y + vec2.Y
+	vec.Z = vec.Z + vec2.Z
+	return vec
+}
+
+// Subtract modifies each component of this Vector by setting each of them
+// to the difference of the components in this Vector and the passed Vector.
+func (vec *Vector) Subtract(vec2 *Vector) *Vector {
+	vec.X = vec.X - vec2.X
+	vec.Y = vec.Y - vec2.Y
+	vec.Z = vec.Z - vec2.Z
+	return vec
 }
