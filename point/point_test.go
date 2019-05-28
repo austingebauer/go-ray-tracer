@@ -4,8 +4,9 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/austingebauer/go-ray-tracer/vector"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
 func TestNewPoint(t *testing.T) {
@@ -56,7 +57,7 @@ func TestPoint_Equals(t *testing.T) {
 		want   bool
 	}{
 		{
-			name: "Vectors are equal",
+			name: "vectors are equal",
 			fields: fields{
 				1,
 				2,
@@ -72,7 +73,7 @@ func TestPoint_Equals(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "Vectors aren't equal",
+			name: "vectors aren't equal",
 			fields: fields{
 				1,
 				2,
@@ -111,7 +112,45 @@ func TestPoint_Negate(t *testing.T) {
 		fields fields
 		want   *Point
 	}{
-		// TODO: Add test cases.
+		{
+			name: "negate a point positive",
+			fields: fields{
+				1,
+				2,
+				3,
+			},
+			want: &Point{
+				-1,
+				-2,
+				-3,
+			},
+		},
+		{
+			name: "negate a point negative",
+			fields: fields{
+				-1,
+				-2,
+				-3,
+			},
+			want: &Point{
+				1,
+				2,
+				3,
+			},
+		},
+		{
+			name: "negate an origin zero point",
+			fields: fields{
+				0,
+				0,
+				0,
+			},
+			want: &Point{
+				0,
+				0,
+				0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -142,7 +181,22 @@ func TestPoint_Scale(t *testing.T) {
 		args   args
 		want   *Point
 	}{
-		// TODO: Add test cases.
+		{
+			name: "scale the point",
+			fields: fields{
+				0,
+				2,
+				-3,
+			},
+			args: args{
+				scalar: float64(2),
+			},
+			want: &Point{
+				0,
+				4,
+				-6,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -151,9 +205,7 @@ func TestPoint_Scale(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := pt.Scale(tt.args.scalar); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Point.Scale() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, pt.Scale(tt.args.scalar))
 		})
 	}
 }
@@ -165,7 +217,7 @@ func TestPoint_Add(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec vector.Vector
+		vec *vector.Vector
 	}
 	tests := []struct {
 		name   string
@@ -173,7 +225,26 @@ func TestPoint_Add(t *testing.T) {
 		args   args
 		want   *Point
 	}{
-		// TODO: Add test cases.
+		{
+			name: "point add vector method",
+			fields: fields{
+				0,
+				-1,
+				1,
+			},
+			args: args{
+				&vector.Vector{
+					X: 2,
+					Y: 3,
+					Z: -1,
+				},
+			},
+			want: &Point{
+				2,
+				2,
+				0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -182,9 +253,8 @@ func TestPoint_Add(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := pt.Add(tt.args.vec); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Point.Add() = %v, want %v", got, tt.want)
-			}
+
+			assert.Equal(t, tt.want, pt.Add(tt.args.vec))
 		})
 	}
 }
@@ -204,7 +274,26 @@ func TestPoint_Subtract(t *testing.T) {
 		args   args
 		want   *Point
 	}{
-		// TODO: Add test cases.
+		{
+			name: "point subtract vector method",
+			fields: fields{
+				0,
+				-1,
+				1,
+			},
+			args: args{
+				&vector.Vector{
+					X: 2,
+					Y: 3,
+					Z: -1,
+				},
+			},
+			want: &Point{
+				-2,
+				-4,
+				2,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -213,9 +302,8 @@ func TestPoint_Subtract(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := pt.Subtract(tt.args.vec); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Point.Subtract() = %v, want %v", got, tt.want)
-			}
+
+			assert.Equal(t, tt.want, pt.Subtract(tt.args.vec))
 		})
 	}
 }
@@ -230,13 +318,30 @@ func TestSubtract(t *testing.T) {
 		args args
 		want *vector.Vector
 	}{
-		// TODO: Add test cases.
+		{
+			name: "subtract two points for vector function",
+			args: args{
+				pt1: &Point{
+					-1,
+					0,
+					1,
+				},
+				pt2: &Point{
+					-2,
+					1,
+					0,
+				},
+			},
+			want: &vector.Vector{
+				1,
+				-1,
+				1,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Subtract(tt.args.pt1, tt.args.pt2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Subtract() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, Subtract(tt.args.pt1, tt.args.pt2))
 		})
 	}
 }

@@ -1,7 +1,6 @@
 package vector
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -55,7 +54,7 @@ func TestVector_Equals(t *testing.T) {
 		want   bool
 	}{
 		{
-			name: "Vectors are equal",
+			name: "vectors are equal",
 			fields: fields{
 				1,
 				2,
@@ -71,7 +70,7 @@ func TestVector_Equals(t *testing.T) {
 			want: true,
 		},
 		{
-			name: "Vectors aren't equal",
+			name: "vectors aren't equal",
 			fields: fields{
 				1,
 				2,
@@ -111,7 +110,7 @@ func TestVector_Magnitude(t *testing.T) {
 		want   float64
 	}{
 		{
-			name: "Vector has magnitude",
+			name: "vector has magnitude",
 			fields: fields{
 				2,
 				2,
@@ -120,7 +119,7 @@ func TestVector_Magnitude(t *testing.T) {
 			want: 3,
 		},
 		{
-			name: "Negative component vector has same magnitude",
+			name: "negative component vector has same magnitude",
 			fields: fields{
 				-2,
 				-2,
@@ -152,7 +151,45 @@ func TestVector_Negate(t *testing.T) {
 		fields fields
 		want   *Vector
 	}{
-		// TODO: Add test cases.
+		{
+			name: "negate a vector positive",
+			fields: fields{
+				1,
+				2,
+				3,
+			},
+			want: &Vector{
+				-1,
+				-2,
+				-3,
+			},
+		},
+		{
+			name: "negate a vector negative",
+			fields: fields{
+				-1,
+				-2,
+				-3,
+			},
+			want: &Vector{
+				1,
+				2,
+				3,
+			},
+		},
+		{
+			name: "negate a zero vector",
+			fields: fields{
+				0,
+				0,
+				0,
+			},
+			want: &Vector{
+				0,
+				0,
+				0,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -161,9 +198,7 @@ func TestVector_Negate(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := vec.Negate(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Vector.Negate() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, vec.Negate())
 		})
 	}
 }
@@ -183,7 +218,22 @@ func TestVector_Scale(t *testing.T) {
 		args   args
 		want   *Vector
 	}{
-		// TODO: Add test cases.
+		{
+			name: "scale the vector",
+			fields: fields{
+				0,
+				2,
+				-3,
+			},
+			args: args{
+				scalar: float64(2),
+			},
+			want: &Vector{
+				0,
+				4,
+				-6,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -192,9 +242,7 @@ func TestVector_Scale(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := vec.Scale(tt.args.scalar); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Vector.Scale() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, vec.Scale(tt.args.scalar))
 		})
 	}
 }
@@ -214,7 +262,26 @@ func TestVector_Add(t *testing.T) {
 		args   args
 		want   *Vector
 	}{
-		// TODO: Add test cases.
+		{
+			name: "vector add vector method",
+			fields: fields{
+				0,
+				-1,
+				1,
+			},
+			args: args{
+				&Vector{
+					2,
+					3,
+					0,
+				},
+			},
+			want: &Vector{
+				2,
+				2,
+				1,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -223,9 +290,7 @@ func TestVector_Add(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := vec.Add(tt.args.vec2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Vector.Add() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, vec.Add(tt.args.vec2))
 		})
 	}
 }
@@ -245,7 +310,26 @@ func TestVector_Subtract(t *testing.T) {
 		args   args
 		want   *Vector
 	}{
-		// TODO: Add test cases.
+		{
+			name: "vector subtract vector method",
+			fields: fields{
+				0,
+				-1,
+				2,
+			},
+			args: args{
+				&Vector{
+					0,
+					2,
+					3,
+				},
+			},
+			want: &Vector{
+				0,
+				-3,
+				-1,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -254,9 +338,7 @@ func TestVector_Subtract(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			if got := vec.Subtract(tt.args.vec2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Vector.Subtract() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, vec.Subtract(tt.args.vec2))
 		})
 	}
 }

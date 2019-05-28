@@ -1,3 +1,6 @@
+// Package point represents a point in a left-handed 3D 3D coordinate system
+//
+// Author: Austin Gebauer
 package point
 
 import (
@@ -5,9 +8,9 @@ import (
 	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
-// Point represents a point in a left-handed coordinate system
+// Point represents a point in a left-handed 3D coordinate system
 type Point struct {
-	// X, Y, and Z represent components in a left-handed coordinate system
+	// X, Y, and Z represent components in a left-handed 3D coordinate system
 	X, Y, Z float64
 }
 
@@ -43,7 +46,7 @@ func (pt *Point) Scale(scalar float64) *Point {
 
 // Add modifies each component of this Point by setting each of them
 // to the sum of the components in this Point and the passed Vector.
-func (pt *Point) Add(vec vector.Vector) *Point {
+func (pt *Point) Add(vec *vector.Vector) *Point {
 	pt.X = pt.X + vec.X
 	pt.Y = pt.Y + vec.Y
 	pt.Z = pt.Z + vec.Z

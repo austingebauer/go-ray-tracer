@@ -1,3 +1,6 @@
+// Package vector represents a vector in a left-handed 3D 3D coordinate system
+//
+// Author: Austin Gebauer
 package vector
 
 import (
@@ -6,9 +9,9 @@ import (
 	"github.com/austingebauer/go-ray-tracer/utils"
 )
 
-// Vector represents a vector in a left-handed coordinate system
+// Vector represents a vector in a left-handed 3D coordinate system
 type Vector struct {
-	// X, Y, and Z represent components in a left-handed coordinate system
+	// X, Y, and Z represent components in a left-handed 3D coordinate system
 	X, Y, Z float64
 }
 

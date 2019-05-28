@@ -4,7 +4,6 @@ package tuple
 
 import (
 	"errors"
-	"log"
 
 	"github.com/austingebauer/go-ray-tracer/utils"
 )
@@ -27,19 +26,13 @@ type tuple struct {
 
 // NewPoint returns a new tuple that has the passed x, y, and z values.
 func NewPoint(x, y, z float64) *tuple {
-	tpl, err := newTuple(x, y, z, point)
-	if err != nil {
-		log.Fatal(err)
-	}
+	tpl, _ := newTuple(x, y, z, point)
 	return tpl
 }
 
 // NewVector returns a new tuple that has the passed x, y, and z values.
 func NewVector(x, y, z float64) *tuple {
-	tpl, err := newTuple(x, y, z, vector)
-	if err != nil {
-		log.Fatal(err)
-	}
+	tpl, _ := newTuple(x, y, z, vector)
 	return tpl
 }
 
