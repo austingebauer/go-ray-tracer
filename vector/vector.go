@@ -53,6 +53,25 @@ func (vec *Vector) Scale(scalar float64) *Vector {
 	return vec
 }
 
+// Normalize normalizes this Vector by converting it to a unit vector.
+func (vec *Vector) Normalize() *Vector {
+	mag := vec.Magnitude()
+	vec.X = vec.X / mag
+	vec.Y = vec.Y / mag
+	vec.Z = vec.Z / mag
+	return vec
+}
+
+// Normalize returns a new Vector that is the result of normalizing the passed Vector.
+func Normalize(vec Vector) Vector {
+	vec.Normalize()
+	return Vector{
+		X: vec.X,
+		Y: vec.Y,
+		Z: vec.Z,
+	}
+}
+
 // Add modifies each component of this Vector by setting each of them
 // to the sum of the components in this Vector and the passed Vector.
 func (vec *Vector) Add(vec2 *Vector) *Vector {

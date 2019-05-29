@@ -388,3 +388,72 @@ func TestVector_Subtract(t *testing.T) {
 		})
 	}
 }
+
+func TestVector_Normalize(t *testing.T) {
+	type fields struct {
+		X float64
+		Y float64
+		Z float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   *Vector
+	}{
+		{
+			name: "normalize vector method",
+			fields: fields{
+				X: 4,
+				Y: 0,
+				Z: 0,
+			},
+			want: &Vector{
+				X: 1,
+				Y: 0,
+				Z: 0,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			vec := &Vector{
+				X: tt.fields.X,
+				Y: tt.fields.Y,
+				Z: tt.fields.Z,
+			}
+			assert.Equal(t, tt.want, vec.Normalize())
+		})
+	}
+}
+
+func TestNormalize(t *testing.T) {
+	type args struct {
+		vec Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want Vector
+	}{
+		{
+			name: "normalize vector function",
+			args: args{
+				Vector{
+					X: 4,
+					Y: 0,
+					Z: 0,
+				},
+			},
+			want: Vector{
+				X: 1,
+				Y: 0,
+				Z: 0,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Normalize(tt.args.vec))
+		})
+	}
+}

@@ -310,32 +310,32 @@ func TestPoint_Subtract(t *testing.T) {
 
 func TestSubtract(t *testing.T) {
 	type args struct {
-		pt1 *Point
-		pt2 *Point
+		pt1 Point
+		pt2 Point
 	}
 	tests := []struct {
 		name string
 		args args
-		want *vector.Vector
+		want vector.Vector
 	}{
 		{
 			name: "subtract two points for vector function",
 			args: args{
-				pt1: &Point{
+				pt1: Point{
 					-1,
 					0,
 					1,
 				},
-				pt2: &Point{
+				pt2: Point{
 					-2,
 					1,
 					0,
 				},
 			},
-			want: &vector.Vector{
-				1,
-				-1,
-				1,
+			want: vector.Vector{
+				X: 1,
+				Y: -1,
+				Z: 1,
 			},
 		},
 	}
