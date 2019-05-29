@@ -2,19 +2,54 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/austingebauer/go-ray-tracer/tuple"
+	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
+// Projectile represents an object with a position and a velocity.
+type Projectile struct {
+	Position *point.Point
+	Velocity *vector.Vector
+}
+
+// Environment represents a gravity and wind environment for Projectiles.
+type Environment struct {
+	Gravity *vector.Vector
+	Wind    *vector.Vector
+}
+
 func main() {
-	vec1 := tuple.NewVector(1, -2, 4)
-	vec2 := tuple.NewVector(1, -2, 4)
-	vecA, err := tuple.Add(vec1, vec2)
-	if err != nil {
-		log.Fatal(err)
+	proj := &Projectile{
+		// projectile starts one unit above the origin.
+		Position: point.NewPoint(0, 1, 0),
+		// velocity is normalized to 1 unit/tick.
+		Velocity: vector.NewVector(1, 1, 0).Normalize(),
 	}
 
-	fmt.Printf("%v\n", vecA)
-	fmt.Printf("%v\n", tuple.Equals(vec1, vec2))
+	env := &Environment{
+		// gravity -0.1 unit/tick
+		Gravity: vector.NewVector(0, -0.1, 0),
+		// wind is 0.01 unit/tick
+		Wind: vector.NewVector(-0.01, 0, 0),
+	}
+
+	// run tick repeatedly until the projectile's y position is less than or equal to 0
+	tickCount := 0
+	for proj.Position.Y >= 0 {
+		fmt.Printf("Tick %v: Projectile position <X: %v, Y: %v, Z: %v> \n", tickCount,
+			proj.Position.X, proj.Position.Y, proj.Position.Z)
+		tick(env, proj)
+		tickCount++
+	}
+}
+
+// tick moves the passed Projectile through the passed Environment.
+func tick(env *Environment, proj *Projectile) Projectile {
+	position := proj.Position.Add(*proj.Velocity)
+	velocity := proj.Velocity.Add(*env.Gravity).Add(*env.Wind)
+	return Projectile{
+		Position: position,
+		Velocity: velocity,
+	}
 }

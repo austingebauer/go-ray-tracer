@@ -300,7 +300,7 @@ func TestVector_Add(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec2 *Vector
+		vec2 Vector
 	}
 	tests := []struct {
 		name   string
@@ -316,7 +316,7 @@ func TestVector_Add(t *testing.T) {
 				1,
 			},
 			args: args{
-				&Vector{
+				Vector{
 					2,
 					3,
 					0,
@@ -348,7 +348,7 @@ func TestVector_Subtract(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec2 *Vector
+		vec2 Vector
 	}
 	tests := []struct {
 		name   string
@@ -364,7 +364,7 @@ func TestVector_Subtract(t *testing.T) {
 				2,
 			},
 			args: args{
-				&Vector{
+				Vector{
 					0,
 					2,
 					3,
@@ -401,7 +401,7 @@ func TestVector_Normalize(t *testing.T) {
 		want   *Vector
 	}{
 		{
-			name: "normalize vector method",
+			name: "normalize vector method 1",
 			fields: fields{
 				X: 4,
 				Y: 0,
@@ -413,6 +413,19 @@ func TestVector_Normalize(t *testing.T) {
 				Z: 0,
 			},
 		},
+		{
+			name: "normalize vector method 2",
+			fields: fields{
+				X: 1,
+				Y: 2,
+				Z: 3,
+			},
+			want: &Vector{
+				X: 1 / math.Sqrt(14),
+				Y: 2 / math.Sqrt(14),
+				Z: 3 / math.Sqrt(14),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -421,7 +434,10 @@ func TestVector_Normalize(t *testing.T) {
 				Y: tt.fields.Y,
 				Z: tt.fields.Z,
 			}
-			assert.Equal(t, tt.want, vec.Normalize())
+			vec.Normalize()
+			assert.Equal(t, tt.want, vec)
+			assert.Equal(t, float64(1), vec.Magnitude(),
+				"magnitude of normalized vector is always 1")
 		})
 	}
 }
@@ -436,7 +452,7 @@ func TestNormalize(t *testing.T) {
 		want Vector
 	}{
 		{
-			name: "normalize vector function",
+			name: "normalize vector function 1",
 			args: args{
 				Vector{
 					X: 4,
@@ -450,10 +466,192 @@ func TestNormalize(t *testing.T) {
 				Z: 0,
 			},
 		},
+		{
+			name: "normalize vector function 2",
+			args: args{
+				Vector{
+					X: 1,
+					Y: 2,
+					Z: 3,
+				},
+			},
+			want: Vector{
+				X: 1 / math.Sqrt(14),
+				Y: 2 / math.Sqrt(14),
+				Z: 3 / math.Sqrt(14),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, Normalize(tt.args.vec))
+			normalizedVec := Normalize(tt.args.vec)
+			assert.Equal(t, tt.want, normalizedVec)
+			assert.Equal(t, float64(1), normalizedVec.Magnitude())
+		})
+	}
+}
+
+func TestDotProduct(t *testing.T) {
+	type args struct {
+		vec1 Vector
+		vec2 Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "dot product of two vectors",
+			args: args{
+				vec1: Vector{
+					X: 1,
+					Y: 2,
+					Z: 3,
+				},
+				vec2: Vector{
+					X: 2,
+					Y: 3,
+					Z: 4,
+				},
+			},
+			want: 20,
+		},
+		{
+			name: "dot product of two identical unit vectors",
+			args: args{
+				vec1: Vector{
+					X: 0,
+					Y: 0,
+					Z: 1,
+				},
+				vec2: Vector{
+					X: 0,
+					Y: 0,
+					Z: 1,
+				},
+			},
+			want: 1,
+		},
+		{
+			name: "dot product of two vectors with 90 degree angle",
+			args: args{
+				vec1: Vector{
+					X: 0,
+					Y: 2,
+					Z: 0,
+				},
+				vec2: Vector{
+					X: 2,
+					Y: 0,
+					Z: 0,
+				},
+			},
+			want: 0,
+		},
+		{
+			name: "dot product of two unit vectors with 180 degree (opposite direction) angle",
+			args: args{
+				vec1: Vector{
+					X: 1,
+					Y: 0,
+					Z: 0,
+				},
+				vec2: Vector{
+					X: -1,
+					Y: 0,
+					Z: 0,
+				},
+			},
+			want: -1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, DotProduct(tt.args.vec1, tt.args.vec2))
+		})
+	}
+}
+
+func TestCrossProduct(t *testing.T) {
+	type args struct {
+		vec1 Vector
+		vec2 Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want Vector
+	}{
+		{
+			name: "cross product of two unit vectors",
+			args: args{
+				vec1: Vector{
+					X: 1,
+					Y: 0,
+					Z: 0,
+				},
+				vec2: Vector{
+					X: 0,
+					Y: 1,
+					Z: 0,
+				},
+			},
+			want: Vector{
+				X: 0,
+				Y: 0,
+				Z: 1,
+			},
+		},
+		{
+			name: "cross product of two unit vectors",
+			args: args{
+				vec1: Vector{
+					X: 0,
+					Y: 1,
+					Z: 0,
+				},
+				vec2: Vector{
+					X: 1,
+					Y: 0,
+					Z: 0,
+				},
+			},
+			want: Vector{
+				X: 0,
+				Y: 0,
+				Z: -1,
+			},
+		},
+		{
+			name: "cross product of two vectors",
+			args: args{
+				vec1: Vector{
+					X: 1,
+					Y: 2,
+					Z: 3,
+				},
+				vec2: Vector{
+					X: 2,
+					Y: 3,
+					Z: 4,
+				},
+			},
+			want: Vector{
+				X: -1,
+				Y: 2,
+				Z: -1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			perpendicularVec := CrossProduct(tt.args.vec1, tt.args.vec2)
+			assert.Equal(t, tt.want, perpendicularVec)
+			assert.Equal(t, float64(0), DotProduct(tt.args.vec1, perpendicularVec),
+				"dot product of vec1 and cross product vector must be 0 (90 degree angle)")
+			assert.Equal(t, float64(0), DotProduct(tt.args.vec2, perpendicularVec),
+				"dot product of vec2 and cross product vector must be 0 (90 degree angle)")
 		})
 	}
 }

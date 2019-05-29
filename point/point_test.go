@@ -217,7 +217,7 @@ func TestPoint_Add(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec *vector.Vector
+		vec vector.Vector
 	}
 	tests := []struct {
 		name   string
@@ -233,7 +233,7 @@ func TestPoint_Add(t *testing.T) {
 				1,
 			},
 			args: args{
-				&vector.Vector{
+				vector.Vector{
 					X: 2,
 					Y: 3,
 					Z: -1,
@@ -266,7 +266,7 @@ func TestPoint_Subtract(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec *vector.Vector
+		vec vector.Vector
 	}
 	tests := []struct {
 		name   string
@@ -282,7 +282,7 @@ func TestPoint_Subtract(t *testing.T) {
 				1,
 			},
 			args: args{
-				&vector.Vector{
+				vector.Vector{
 					X: 2,
 					Y: 3,
 					Z: -1,
