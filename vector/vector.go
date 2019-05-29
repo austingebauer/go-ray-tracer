@@ -1,6 +1,4 @@
-// Package vector represents a vector in a left-handed 3D 3D coordinate system
-//
-// Author: Austin Gebauer
+// Package vector represents a vector in a left-handed 3D coordinate system.
 package vector
 
 import (

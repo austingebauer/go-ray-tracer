@@ -1,6 +1,4 @@
-// Package point represents a point in a left-handed 3D 3D coordinate system
-//
-// Author: Austin Gebauer
+// Package point represents a point in a left-handed 3D coordinate system.
 package point
 
 import (

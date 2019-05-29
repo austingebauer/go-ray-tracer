@@ -1,4 +1,4 @@
-// package tuple represents a point or a vector in a left-handed coordinate system.
+// Package tuple represents a point or a vector in a left-handed coordinate system.
 // The package provides functions used to make calculations on points and vectors in a 3D space.
 package tuple
 
