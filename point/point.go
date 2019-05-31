@@ -60,7 +60,7 @@ func (pt *Point) Subtract(vec vector.Vector) *Point {
 	return pt
 }
 
-// Subtract creates and returns a new Vector with components equal to the
+// Subtract returns a new Vector with components equal to the
 // difference of the corresponding components in the passed Points.
 func Subtract(pt1 Point, pt2 Point) vector.Vector {
 	return vector.Vector{

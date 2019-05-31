@@ -1,6 +1,7 @@
 package canvas
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -102,6 +103,110 @@ func TestColor_Add(t *testing.T) {
 				Blue:  tt.fields.Blue,
 			}
 			assert.Equal(t, tt.want, c.Add(tt.args.c2))
+		})
+	}
+}
+
+func TestAdd(t *testing.T) {
+	type args struct {
+		c1 Color
+		c2 Color
+	}
+	tests := []struct {
+		name string
+		args args
+		want Color
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Add(tt.args.c1, tt.args.c2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Add() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestColor_Subtract(t *testing.T) {
+	type fields struct {
+		Red   float64
+		Green float64
+		Blue  float64
+	}
+	type args struct {
+		c2 Color
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Color
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Color{
+				Red:   tt.fields.Red,
+				Green: tt.fields.Green,
+				Blue:  tt.fields.Blue,
+			}
+			if got := c.Subtract(tt.args.c2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Color.Subtract() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSubtract(t *testing.T) {
+	type args struct {
+		c1 Color
+		c2 Color
+	}
+	tests := []struct {
+		name string
+		args args
+		want Color
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Subtract(tt.args.c1, tt.args.c2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Subtract() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestColor_Scale(t *testing.T) {
+	type fields struct {
+		Red   float64
+		Green float64
+		Blue  float64
+	}
+	type args struct {
+		scalar float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Color
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Color{
+				Red:   tt.fields.Red,
+				Green: tt.fields.Green,
+				Blue:  tt.fields.Blue,
+			}
+			if got := c.Scale(tt.args.scalar); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Color.Scale() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
