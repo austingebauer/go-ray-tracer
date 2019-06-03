@@ -1,7 +1,6 @@
 package canvas
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -57,26 +56,6 @@ func TestColor_Add(t *testing.T) {
 		{
 			name: "add color to color method",
 			fields: fields{
-				Red:   0.1,
-				Green: 0.3,
-				Blue:  3.3,
-			},
-			args: args{
-				c2: Color{
-					Red:   0.1,
-					Green: 0.1,
-					Blue:  0.1,
-				},
-			},
-			want: &Color{
-				Red:   0.2,
-				Green: 0.4,
-				Blue:  3.4,
-			},
-		},
-		{
-			name: "add color to color method",
-			fields: fields{
 				Red:   1,
 				Green: 0,
 				Blue:  -1,
@@ -117,13 +96,30 @@ func TestAdd(t *testing.T) {
 		args args
 		want Color
 	}{
-		// TODO: Add test cases.
+		{
+			name: "add color to color function",
+			args: args{
+				c1: Color{
+					Red:   1,
+					Green: 0,
+					Blue:  -1,
+				},
+				c2: Color{
+					Red:   2,
+					Green: 3,
+					Blue:  4,
+				},
+			},
+			want: Color{
+				Red:   3,
+				Green: 3,
+				Blue:  3,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Add(tt.args.c1, tt.args.c2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Add() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, Add(tt.args.c1, tt.args.c2))
 		})
 	}
 }
@@ -143,7 +139,26 @@ func TestColor_Subtract(t *testing.T) {
 		args   args
 		want   *Color
 	}{
-		// TODO: Add test cases.
+		{
+			name: "subtract color from color method",
+			fields: fields{
+				Red:   1,
+				Green: 0,
+				Blue:  -1,
+			},
+			args: args{
+				c2: Color{
+					Red:   2,
+					Green: 3,
+					Blue:  4,
+				},
+			},
+			want: &Color{
+				Red:   -1,
+				Green: -3,
+				Blue:  -5,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -152,9 +167,7 @@ func TestColor_Subtract(t *testing.T) {
 				Green: tt.fields.Green,
 				Blue:  tt.fields.Blue,
 			}
-			if got := c.Subtract(tt.args.c2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Color.Subtract() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, c.Subtract(tt.args.c2))
 		})
 	}
 }
@@ -169,13 +182,30 @@ func TestSubtract(t *testing.T) {
 		args args
 		want Color
 	}{
-		// TODO: Add test cases.
+		{
+			name: "subtract color from color function",
+			args: args{
+				c1: Color{
+					Red:   1,
+					Green: 0,
+					Blue:  -1,
+				},
+				c2: Color{
+					Red:   2,
+					Green: 3,
+					Blue:  4,
+				},
+			},
+			want: Color{
+				Red:   -1,
+				Green: -3,
+				Blue:  -5,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Subtract(tt.args.c1, tt.args.c2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Subtract() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, Subtract(tt.args.c1, tt.args.c2))
 		})
 	}
 }
@@ -195,7 +225,22 @@ func TestColor_Scale(t *testing.T) {
 		args   args
 		want   *Color
 	}{
-		// TODO: Add test cases.
+		{
+			name: "scale color by scalar",
+			fields: fields{
+				Red:   1,
+				Green: 0,
+				Blue:  -1,
+			},
+			args: args{
+				scalar: -3,
+			},
+			want: &Color{
+				Red:   -3,
+				Green: 0,
+				Blue:  3,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -204,9 +249,7 @@ func TestColor_Scale(t *testing.T) {
 				Green: tt.fields.Green,
 				Blue:  tt.fields.Blue,
 			}
-			if got := c.Scale(tt.args.scalar); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Color.Scale() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, c.Scale(tt.args.scalar))
 		})
 	}
 }

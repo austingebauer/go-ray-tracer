@@ -4,9 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewPoint(t *testing.T) {
@@ -255,6 +254,44 @@ func TestPoint_Add(t *testing.T) {
 			}
 
 			assert.Equal(t, tt.want, pt.Add(tt.args.vec))
+		})
+	}
+}
+
+func TestAdd(t *testing.T) {
+	type args struct {
+		pt  Point
+		vec vector.Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want Point
+	}{
+		{
+			name: "point add vector function",
+			args: args{
+				pt: Point{
+					0,
+					-1,
+					1,
+				},
+				vec: vector.Vector{
+					X: 2,
+					Y: 3,
+					Z: -1,
+				},
+			},
+			want: Point{
+				2,
+				2,
+				0,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Add(tt.args.pt, tt.args.vec))
 		})
 	}
 }

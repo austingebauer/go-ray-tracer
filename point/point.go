@@ -51,6 +51,16 @@ func (pt *Point) Add(vec vector.Vector) *Point {
 	return pt
 }
 
+// Add returns a new Point with components equal to the sum
+// of the corresponding components in the passed Point and Vector.
+func Add(pt Point, vec vector.Vector) Point {
+	return Point{
+		X: pt.X + vec.X,
+		Y: pt.Y + vec.Y,
+		Z: pt.Z + vec.Z,
+	}
+}
+
 // Subtract modifies each component of this Point by setting each of them
 // to the difference of the components in this Point and the passed Vector.
 func (pt *Point) Subtract(vec vector.Vector) *Point {

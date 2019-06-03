@@ -341,6 +341,44 @@ func TestVector_Add(t *testing.T) {
 	}
 }
 
+func TestAdd(t *testing.T) {
+	type args struct {
+		vec1 Vector
+		vec2 Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want Vector
+	}{
+		{
+			name: "vector add vector function",
+			args: args{
+				vec1: Vector{
+					0,
+					-1,
+					1,
+				},
+				vec2: Vector{
+					2,
+					3,
+					0,
+				},
+			},
+			want: Vector{
+				2,
+				2,
+				1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Add(tt.args.vec1, tt.args.vec2))
+		})
+	}
+}
+
 func TestVector_Subtract(t *testing.T) {
 	type fields struct {
 		X float64
@@ -652,6 +690,44 @@ func TestCrossProduct(t *testing.T) {
 				"dot product of vec1 and cross product vector must be 0 (90 degree angle)")
 			assert.Equal(t, float64(0), DotProduct(tt.args.vec2, perpendicularVec),
 				"dot product of vec2 and cross product vector must be 0 (90 degree angle)")
+		})
+	}
+}
+
+func TestSubtract(t *testing.T) {
+	type args struct {
+		vec1 Vector
+		vec2 Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want Vector
+	}{
+		{
+			name: "vector subtract vector function",
+			args: args{
+				vec1: Vector{
+					0,
+					-1,
+					1,
+				},
+				vec2: Vector{
+					2,
+					3,
+					0,
+				},
+			},
+			want: Vector{
+				-2,
+				-4,
+				1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Subtract(tt.args.vec1, tt.args.vec2))
 		})
 	}
 }

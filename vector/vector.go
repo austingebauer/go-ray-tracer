@@ -77,7 +77,8 @@ func DotProduct(vec1, vec2 Vector) float64 {
 		vec1.Z*vec2.Z
 }
 
-// CrossProduct computes and returns a new Vector that is the cross product of the passed Vectors.
+// CrossProduct computes and returns a new Vector that is the
+// cross product of the passed Vectors.
 func CrossProduct(vec1, vec2 Vector) Vector {
 	return Vector{
 		X: (vec1.Y * vec2.Z) - (vec1.Z * vec2.Y),
@@ -95,6 +96,16 @@ func (vec *Vector) Add(vec2 Vector) *Vector {
 	return vec
 }
 
+// Add returns a new Vector with components equal to the sum
+// of the corresponding components in the passed Vectors.
+func Add(vec1, vec2 Vector) Vector {
+	return Vector{
+		X: vec1.X + vec2.X,
+		Y: vec1.Y + vec2.Y,
+		Z: vec1.Z + vec2.Z,
+	}
+}
+
 // Subtract modifies each component of this Vector by setting each of them
 // to the difference of the components in this Vector and the passed Vector.
 func (vec *Vector) Subtract(vec2 Vector) *Vector {
@@ -102,4 +113,14 @@ func (vec *Vector) Subtract(vec2 Vector) *Vector {
 	vec.Y = vec.Y - vec2.Y
 	vec.Z = vec.Z - vec2.Z
 	return vec
+}
+
+// Subtract returns a new Vector with components equal to the difference
+// of the corresponding components in the passed Vectors.
+func Subtract(vec1, vec2 Vector) Vector {
+	return Vector{
+		X: vec1.X - vec2.X,
+		Y: vec1.Y - vec2.Y,
+		Z: vec1.Z - vec2.Z,
+	}
 }
