@@ -1,5 +1,5 @@
 # Targets not related to individual files
-.PHONY: all build test cover out clean
+.PHONY: all build test cover_func cover_html out clean
 
 # Build constants
 BUILD_OUT_DIR = bin

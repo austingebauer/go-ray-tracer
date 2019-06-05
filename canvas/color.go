@@ -54,3 +54,20 @@ func (c *Color) Scale(scalar float64) *Color {
 	c.Blue = c.Blue * scalar
 	return c
 }
+
+// Multiply modifies this Color by multiplying each of the passed Color's rgb values against this Color's rgb values.
+func (c *Color) Multiply(c1 Color) *Color {
+	c.Red = c.Red * c1.Red
+	c.Green = c.Green * c1.Green
+	c.Blue = c.Blue * c1.Blue
+	return c
+}
+
+// Multiply returns a new Color with rgb values set to the product of the passed Color rgb values.
+func Multiply(c1, c2 Color) *Color {
+	return &Color{
+		Red:   c1.Red * c2.Red,
+		Green: c1.Green * c2.Green,
+		Blue:  c1.Blue * c2.Blue,
+	}
+}

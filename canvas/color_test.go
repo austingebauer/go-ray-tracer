@@ -1,6 +1,7 @@
 package canvas
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -250,6 +251,94 @@ func TestColor_Scale(t *testing.T) {
 				Blue:  tt.fields.Blue,
 			}
 			assert.Equal(t, tt.want, c.Scale(tt.args.scalar))
+		})
+	}
+}
+
+func TestColor_Multiply(t *testing.T) {
+	type fields struct {
+		Red   float64
+		Green float64
+		Blue  float64
+	}
+	type args struct {
+		c1 Color
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Color
+	}{
+		{
+			name: "multiply colors method",
+			fields: fields{
+				Red:   1,
+				Green: 0.2,
+				Blue:  0.4,
+			},
+			args: args{
+				c1: Color{
+					Red:   0.9,
+					Green: 1,
+					Blue:  0.1,
+				},
+			},
+			want: &Color{
+				Red:   0.9,
+				Green: 0.2,
+				Blue:  0.04000000000000001,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Color{
+				Red:   tt.fields.Red,
+				Green: tt.fields.Green,
+				Blue:  tt.fields.Blue,
+			}
+			assert.Equal(t, tt.want, c.Multiply(tt.args.c1))
+		})
+	}
+}
+
+func TestMultiply(t *testing.T) {
+	type args struct {
+		c1 Color
+		c2 Color
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Color
+	}{
+		{
+			name: "multiply colors method",
+			args: args{
+				c1: Color{
+					Red:   1,
+					Green: 0.2,
+					Blue:  0.4,
+				},
+				c2: Color{
+					Red:   0.9,
+					Green: 1,
+					Blue:  0.1,
+				},
+			},
+			want: &Color{
+				Red:   0.9,
+				Green: 0.2,
+				Blue:  0.04000000000000001,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Multiply(tt.args.c1, tt.args.c2); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Multiply() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
