@@ -1,7 +1,9 @@
 package canvas
 
 type Color struct {
-	Red, Green, Blue float64
+	Red   float64
+	Green float64
+	Blue  float64
 }
 
 // NewColor returns a new Color that has the passed red, green, and blue values.
@@ -13,7 +15,8 @@ func NewColor(red, green, blue float64) *Color {
 	}
 }
 
-// Add modifies this Color by adding each of the passed Color's rgb values to this Color's rgb values.
+// Add modifies this Color by adding each of the passed Color's rgb values
+// to this Color's rgb values.
 func (c *Color) Add(c2 Color) *Color {
 	c.Red = c.Red + c2.Red
 	c.Green = c.Green + c2.Green
@@ -30,7 +33,8 @@ func Add(c1, c2 Color) Color {
 	}
 }
 
-// Add modifies this Color by adding each of the passed Color's rgb values to this Color's rgb values.
+// Add modifies this Color by adding each of the passed Color's rgb values
+// to this Color's rgb values.
 func (c *Color) Subtract(c2 Color) *Color {
 	c.Red = c.Red - c2.Red
 	c.Green = c.Green - c2.Green
@@ -55,7 +59,8 @@ func (c *Color) Scale(scalar float64) *Color {
 	return c
 }
 
-// Multiply modifies this Color by multiplying each of the passed Color's rgb values against this Color's rgb values.
+// Multiply modifies this Color by multiplying each of the passed Color's rgb values
+// against this Color's rgb values.
 func (c *Color) Multiply(c1 Color) *Color {
 	c.Red = c.Red * c1.Red
 	c.Green = c.Green * c1.Green
@@ -63,7 +68,8 @@ func (c *Color) Multiply(c1 Color) *Color {
 	return c
 }
 
-// Multiply returns a new Color with rgb values set to the product of the passed Color rgb values.
+// Multiply returns a new Color with rgb values set to the
+// product of the passed Color rgb values.
 func Multiply(c1, c2 Color) *Color {
 	return &Color{
 		Red:   c1.Red * c2.Red,
