@@ -1,6 +1,8 @@
 package canvas
 
 type Color struct {
+	// TODO: change to uint32
+	// Should be between 0-1 (e.g., 0.4)
 	Red   float64
 	Green float64
 	Blue  float64

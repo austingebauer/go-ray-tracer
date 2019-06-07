@@ -1,7 +1,8 @@
-// Package canvas represents a rectangular grid of pixels.
+// Package canvas represents a rectangular grid of Pixels.
 package canvas
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,23 +19,23 @@ func TestNewCanvas(t *testing.T) {
 		want *Canvas
 	}{
 		{
-			name: "new canvas has width, height, and default color black rgb(0,0,0)",
+			name: "new canvas has Width, Height, and default color black rgb(0,0,0)",
 			args: args{
 				width:  10,
 				height: 20,
 			},
 			want: &Canvas{
-				width:  10,
-				height: 20,
+				Width:  10,
+				Height: 20,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			canvas := NewCanvas(tt.args.width, tt.args.height)
-			assert.Equal(t, tt.want.height, canvas.height)
-			assert.Equal(t, tt.want.width, canvas.width)
-			assert.Equal(t, *NewColor(0, 0, 0), canvas.pixels[0][0])
+			assert.Equal(t, tt.want.Height, canvas.Height)
+			assert.Equal(t, tt.want.Width, canvas.Width)
+			assert.Equal(t, *NewColor(0, 0, 0), canvas.Pixels[0][0])
 		})
 	}
 }
@@ -50,11 +51,11 @@ func TestCanvas_WritePixel(t *testing.T) {
 		color Color
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   Color
-		error  bool
+		name      string
+		fields    fields
+		args      args
+		want      Color
+		wantError bool
 	}{
 		{
 			name: "write color to pixel on the canvas",
@@ -76,7 +77,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 				Green: 0,
 				Blue:  0,
 			},
-			error: false,
+			wantError: false,
 		},
 		{
 			name: "write color to pixel out of bounds x",
@@ -98,7 +99,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 				Green: 0,
 				Blue:  0,
 			},
-			error: true,
+			wantError: true,
 		},
 		{
 			name: "write color to pixel out of bounds y",
@@ -120,17 +121,17 @@ func TestCanvas_WritePixel(t *testing.T) {
 				Green: 0,
 				Blue:  0,
 			},
-			error: true,
+			wantError: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewCanvas(tt.fields.Width, tt.fields.Height)
 			err := c.WritePixel(tt.args.x, tt.args.y, tt.args.color)
-			if tt.error {
+			if tt.wantError {
 				assert.Error(t, err)
 			} else {
-				assert.Equal(t, tt.want, c.pixels[tt.args.y][tt.args.x])
+				assert.Equal(t, tt.want, c.Pixels[tt.args.y][tt.args.x])
 			}
 		})
 	}
@@ -147,11 +148,11 @@ func TestCanvas_PixelAt(t *testing.T) {
 		color Color
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   *Color
-		error  bool
+		name    string
+		fields  fields
+		args    args
+		want    *Color
+		wantErr bool
 	}{
 		{
 			name: "pixel at x and y on the canvas",
@@ -173,7 +174,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 				Green: 0,
 				Blue:  0,
 			},
-			error: false,
+			wantErr: false,
 		},
 		{
 			name: "pixel at x and y out of bounds on x",
@@ -195,7 +196,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 				Green: 0,
 				Blue:  0,
 			},
-			error: true,
+			wantErr: true,
 		},
 		{
 			name: "pixel at x and y out of bounds on y",
@@ -217,7 +218,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 				Green: 0,
 				Blue:  0,
 			},
-			error: true,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -225,11 +226,40 @@ func TestCanvas_PixelAt(t *testing.T) {
 			c := NewCanvas(tt.fields.Width, tt.fields.Height)
 			err := c.WritePixel(tt.args.x, tt.args.y, tt.args.color)
 			color, err := c.PixelAt(tt.args.y, tt.args.x)
-			if tt.error {
+			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
 				assert.Equal(t, tt.want, color)
+			}
+		})
+	}
+}
+
+func TestCanvas_ToPPM(t *testing.T) {
+	tests := []struct {
+		name       string
+		c          *Canvas
+		wantWriter string
+		wantErr    bool
+	}{
+		{
+			name:       "canvas to portable pixmap (PPM) file",
+			c:          NewCanvas(10, 10),
+			wantWriter: "P3\n10 10\n255\n",
+			wantErr:    false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			writer := &bytes.Buffer{}
+			err := tt.c.ToPPM(writer)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.wantWriter, writer.String())
 			}
 		})
 	}

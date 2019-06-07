@@ -1,19 +1,34 @@
-// Package canvas represents a rectangular grid of pixels.
+// Package canvas represents a rectangular grid of Pixels.
 package canvas
 
 import (
 	"errors"
 	"fmt"
+	"html/template"
+	"io"
 )
 
-// Canvas represents a rectangular grid of pixels.
+// ppmTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
+const ppmTemplate = `{{ .PPMIdentifier }}
+{{ .Width }} {{ .Height }}
+{{ .MaxColorValue }}
+`
+const (
+	ppmID         = "P3"
+	ppmFileName   = "pixels.ppm"
+	maxColorValue = 255
+)
+
+// Canvas represents a rectangular grid of Pixels.
 type Canvas struct {
-	width  uint64
-	height uint64
-	pixels [][]Color
+	Width         uint64
+	Height        uint64
+	Pixels        [][]Color
+	PPMIdentifier string
+	MaxColorValue uint8
 }
 
-// NewCanvas returns a new Canvas with the passed width and height.
+// NewCanvas returns a new Canvas with the passed Width and Height.
 func NewCanvas(width, height uint64) *Canvas {
 	pixels := make([][]Color, height)
 	for i := range pixels {
@@ -21,9 +36,11 @@ func NewCanvas(width, height uint64) *Canvas {
 	}
 
 	return &Canvas{
-		width:  width,
-		height: height,
-		pixels: pixels,
+		Width:         width,
+		Height:        height,
+		Pixels:        pixels,
+		PPMIdentifier: ppmID,
+		MaxColorValue: maxColorValue,
 	}
 }
 
@@ -34,7 +51,7 @@ func (c *Canvas) WritePixel(x uint64, y uint64, color Color) error {
 		return err
 	}
 
-	c.pixels[y][x] = color
+	c.Pixels[y][x] = color
 	return nil
 }
 
@@ -45,17 +62,32 @@ func (c *Canvas) PixelAt(x, y uint64) (*Color, error) {
 		return nil, err
 	}
 
-	return &c.pixels[y][x], nil
+	return &c.Pixels[y][x], nil
 }
 
 // ValidateInCanvasBounds validates that the passed x and y values fit into the pixel bounds of the canvas.
 func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
-	if y > c.height-1 {
-		return errors.New(fmt.Sprintf("y value '%v' must be less than '%v'", y, c.height))
+	if y > c.Height-1 {
+		return errors.New(fmt.Sprintf("y value '%v' must be less than '%v'", y, c.Height))
 	}
 
-	if x > c.width-1 {
-		return errors.New(fmt.Sprintf("x value '%v' must be less than '%v'", x, c.width))
+	if x > c.Width-1 {
+		return errors.New(fmt.Sprintf("x value '%v' must be less than '%v'", x, c.Width))
+	}
+
+	return nil
+}
+
+// ToPPM writes the current canvas to a file in the portable pixmap (PPM) format.
+func (c *Canvas) ToPPM(writer io.Writer) error {
+	tmpl, err := template.New(ppmID).Parse(ppmTemplate)
+	if err != nil {
+		return err
+	}
+
+	err = tmpl.Execute(writer, c)
+	if err != nil {
+		return err
 	}
 
 	return nil
