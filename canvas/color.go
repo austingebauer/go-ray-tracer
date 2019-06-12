@@ -1,15 +1,15 @@
 package canvas
 
+// A Color is represented by percentages of red, green, and blue in the range of 0-1.
+// The red, green, or blue values of a color may be lower or higher than 0-1.
 type Color struct {
-	// TODO: change to uint32
-	// Should be between 0-1 (e.g., 0.4)
-	Red   float64
-	Green float64
-	Blue  float64
+	Red   float32
+	Green float32
+	Blue  float32
 }
 
 // NewColor returns a new Color that has the passed red, green, and blue values.
-func NewColor(red, green, blue float64) *Color {
+func NewColor(red, green, blue float32) *Color {
 	return &Color{
 		Red:   red,
 		Green: green,
@@ -54,7 +54,7 @@ func Subtract(c1, c2 Color) Color {
 }
 
 // Scale multiplies each of this Color's rgb values by the passed scalar value.
-func (c *Color) Scale(scalar float64) *Color {
+func (c *Color) Scale(scalar float32) *Color {
 	c.Red = c.Red * scalar
 	c.Green = c.Green * scalar
 	c.Blue = c.Blue * scalar

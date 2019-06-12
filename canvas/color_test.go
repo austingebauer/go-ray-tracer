@@ -1,7 +1,6 @@
 package canvas
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,9 +8,9 @@ import (
 
 func TestNewColor(t *testing.T) {
 	type args struct {
-		red   float64
-		green float64
-		blue  float64
+		red   float32
+		green float32
+		blue  float32
 	}
 	tests := []struct {
 		name string
@@ -41,9 +40,9 @@ func TestNewColor(t *testing.T) {
 
 func TestColor_Add(t *testing.T) {
 	type fields struct {
-		Red   float64
-		Green float64
-		Blue  float64
+		Red   float32
+		Green float32
+		Blue  float32
 	}
 	type args struct {
 		c2 Color
@@ -127,9 +126,9 @@ func TestAdd(t *testing.T) {
 
 func TestColor_Subtract(t *testing.T) {
 	type fields struct {
-		Red   float64
-		Green float64
-		Blue  float64
+		Red   float32
+		Green float32
+		Blue  float32
 	}
 	type args struct {
 		c2 Color
@@ -213,12 +212,12 @@ func TestSubtract(t *testing.T) {
 
 func TestColor_Scale(t *testing.T) {
 	type fields struct {
-		Red   float64
-		Green float64
-		Blue  float64
+		Red   float32
+		Green float32
+		Blue  float32
 	}
 	type args struct {
-		scalar float64
+		scalar float32
 	}
 	tests := []struct {
 		name   string
@@ -257,9 +256,9 @@ func TestColor_Scale(t *testing.T) {
 
 func TestColor_Multiply(t *testing.T) {
 	type fields struct {
-		Red   float64
-		Green float64
-		Blue  float64
+		Red   float32
+		Green float32
+		Blue  float32
 	}
 	type args struct {
 		c1 Color
@@ -287,7 +286,7 @@ func TestColor_Multiply(t *testing.T) {
 			want: &Color{
 				Red:   0.9,
 				Green: 0.2,
-				Blue:  0.04000000000000001,
+				Blue:  0.040000003,
 			},
 		},
 	}
@@ -330,15 +329,13 @@ func TestMultiply(t *testing.T) {
 			want: &Color{
 				Red:   0.9,
 				Green: 0.2,
-				Blue:  0.04000000000000001,
+				Blue:  0.040000003,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Multiply(tt.args.c1, tt.args.c2); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Multiply() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, Multiply(tt.args.c1, tt.args.c2))
 		})
 	}
 }

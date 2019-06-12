@@ -245,8 +245,8 @@ func TestCanvas_ToPPM(t *testing.T) {
 	}{
 		{
 			name:       "canvas to portable pixmap (PPM) file",
-			c:          NewCanvas(10, 10),
-			wantWriter: "P3\n10 10\n255\n",
+			c:          NewCanvas(2, 2),
+			wantWriter: "P3\n2 2\n255\n{0 0 0}\n",
 			wantErr:    false,
 		},
 	}

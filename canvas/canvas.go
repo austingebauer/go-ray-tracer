@@ -12,7 +12,9 @@ import (
 const ppmTemplate = `{{ .PPMIdentifier }}
 {{ .Width }} {{ .Height }}
 {{ .MaxColorValue }}
+{{ pixels .Pixels }}
 `
+
 const (
 	ppmID         = "P3"
 	ppmFileName   = "pixels.ppm"
@@ -80,7 +82,11 @@ func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
 
 // ToPPM writes the current canvas to a file in the portable pixmap (PPM) format.
 func (c *Canvas) ToPPM(writer io.Writer) error {
-	tmpl, err := template.New(ppmID).Parse(ppmTemplate)
+	funcMap := template.FuncMap{
+		"pixels": writePPMPixels,
+	}
+
+	tmpl, err := template.New(ppmID).Funcs(funcMap).Parse(ppmTemplate)
 	if err != nil {
 		return err
 	}
@@ -91,4 +97,9 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 	}
 
 	return nil
+}
+
+// writePPMPixels returns a string containing rows of pixels with rgb values.
+func writePPMPixels(pixels [][]Color) string {
+	return fmt.Sprintf("%v", pixels[0][0])
 }
