@@ -245,13 +245,20 @@ func TestCanvas_ToPPM(t *testing.T) {
 	}{
 		{
 			name:       "canvas to portable pixmap (PPM) file",
-			c:          NewCanvas(2, 2),
+			c:          NewCanvas(10, 2),
 			wantWriter: "P3\n2 2\n255\n{0 0 0}\n",
 			wantErr:    false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			for i := 0; i < int(tt.c.Height); i++ {
+				for j := 0; j < int(tt.c.Width); j++ {
+					err := tt.c.WritePixel(uint64(j), uint64(i), *NewColor(1, 0.8, 0.6))
+					assert.NoError(t, err)
+				}
+			}
+
 			writer := &bytes.Buffer{}
 			err := tt.c.ToPPM(writer)
 

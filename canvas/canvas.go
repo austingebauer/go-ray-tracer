@@ -2,10 +2,12 @@
 package canvas
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"html/template"
 	"io"
+	"strings"
 )
 
 // ppmTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
@@ -16,9 +18,11 @@ const ppmTemplate = `{{ .PPMIdentifier }}
 `
 
 const (
-	ppmID         = "P3"
-	ppmFileName   = "pixels.ppm"
-	maxColorValue = 255
+	ppmID           = "P3"
+	ppmFileName     = "pixels.ppm"
+	maxColorValue   = 255
+	colorComponents = 3
+	newLineChar     = "\n"
 )
 
 // Canvas represents a rectangular grid of Pixels.
@@ -46,7 +50,8 @@ func NewCanvas(width, height uint64) *Canvas {
 	}
 }
 
-// WritePixel writes the passed Color to the Canvas at the pixel located at the passed x and y values.
+// WritePixel writes the passed Color to the Canvas at the pixel
+// located at the passed x and y values.
 func (c *Canvas) WritePixel(x uint64, y uint64, color Color) error {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
@@ -67,7 +72,8 @@ func (c *Canvas) PixelAt(x, y uint64) (*Color, error) {
 	return &c.Pixels[y][x], nil
 }
 
-// ValidateInCanvasBounds validates that the passed x and y values fit into the pixel bounds of the canvas.
+// ValidateInCanvasBounds validates that the passed x and y values
+// fit into the pixel bounds of the canvas.
 func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
 	if y > c.Height-1 {
 		return errors.New(fmt.Sprintf("y value '%v' must be less than '%v'", y, c.Height))
@@ -101,5 +107,23 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 
 // writePPMPixels returns a string containing rows of pixels with rgb values.
 func writePPMPixels(pixels [][]Color) string {
-	return fmt.Sprintf("%v", pixels[0][0])
+	var pixelBytes bytes.Buffer
+	lineChars := 0
+	for _, row := range pixels {
+		for _, color := range row {
+			pixelStr := fmt.Sprintf("%v %v %v",
+				color.Red*maxColorValue, color.Green*maxColorValue, color.Blue*maxColorValue)
+			pixelBytes.WriteString(pixelStr)
+			lineChars += len(pixelStr)
+
+			if lineChars > 70 {
+				pixelBytes.WriteString(newLineChar)
+				lineChars = 0
+			} else {
+				pixelBytes.WriteString(" ")
+			}
+		}
+	}
+
+	return strings.TrimSpace(pixelBytes.String())
 }
