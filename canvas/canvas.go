@@ -7,22 +7,19 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"strings"
 )
 
 // ppmTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
 const ppmTemplate = `{{ .PPMIdentifier }}
 {{ .Width }} {{ .Height }}
 {{ .MaxColorValue }}
-{{ pixels .Pixels }}
-`
+{{ pixels .Pixels }}`
 
 const (
-	ppmID           = "P3"
-	ppmFileName     = "pixels.ppm"
-	maxColorValue   = 255
-	colorComponents = 3
-	newLineChar     = "\n"
+	ppmID         = "P3"
+	ppmFileName   = "pixels.ppm"
+	maxColorValue = 255
+	newLineChar   = "\n"
 )
 
 // Canvas represents a rectangular grid of Pixels.
@@ -36,6 +33,8 @@ type Canvas struct {
 
 // NewCanvas returns a new Canvas with the passed Width and Height.
 func NewCanvas(width, height uint64) *Canvas {
+	// TODO: validate width and height
+
 	pixels := make([][]Color, height)
 	for i := range pixels {
 		pixels[i] = make([]Color, width)
@@ -107,23 +106,16 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 
 // writePPMPixels returns a string containing rows of pixels with rgb values.
 func writePPMPixels(pixels [][]Color) string {
-	var pixelBytes bytes.Buffer
-	lineChars := 0
+	pixelBytes := bytes.Buffer{}
 	for _, row := range pixels {
 		for _, color := range row {
-			pixelStr := fmt.Sprintf("%v %v %v",
-				color.Red*maxColorValue, color.Green*maxColorValue, color.Blue*maxColorValue)
-			pixelBytes.WriteString(pixelStr)
-			lineChars += len(pixelStr)
-
-			if lineChars > 70 {
-				pixelBytes.WriteString(newLineChar)
-				lineChars = 0
-			} else {
-				pixelBytes.WriteString(" ")
-			}
+			pixelBytes.WriteString(fmt.Sprintf("%v %v %v%v",
+				color.Red*maxColorValue,
+				color.Green*maxColorValue,
+				color.Blue*maxColorValue,
+				newLineChar))
 		}
 	}
 
-	return strings.TrimSpace(pixelBytes.String())
+	return pixelBytes.String()
 }

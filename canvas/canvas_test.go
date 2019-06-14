@@ -244,10 +244,56 @@ func TestCanvas_ToPPM(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name:       "canvas to portable pixmap (PPM) file",
-			c:          NewCanvas(10, 2),
-			wantWriter: "P3\n2 2\n255\n{0 0 0}\n",
-			wantErr:    false,
+			name: "canvas to portable pixmap (PPM) file 10x2",
+			c:    NewCanvas(10, 2),
+			wantWriter: "P3\n" +
+				"10 2\n" +
+				"255\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n" +
+				"255 204 153\n",
+			wantErr: false,
+		},
+		{
+			name: "canvas to portable pixmap (PPM) file 0x0",
+			c:    NewCanvas(0, 0),
+			wantWriter: "P3\n" +
+				"0 0\n" +
+				"255\n",
+			wantErr: false,
+		},
+		{
+			name: "canvas to portable pixmap (PPM) file 1x0",
+			c:    NewCanvas(1, 0),
+			wantWriter: "P3\n" +
+				"1 0\n" +
+				"255\n",
+			wantErr: false,
+		},
+		{
+			name: "canvas to portable pixmap (PPM) file 0x1",
+			c:    NewCanvas(0, 1),
+			wantWriter: "P3\n" +
+				"0 1\n" +
+				"255\n",
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
@@ -261,12 +307,12 @@ func TestCanvas_ToPPM(t *testing.T) {
 
 			writer := &bytes.Buffer{}
 			err := tt.c.ToPPM(writer)
-
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, tt.wantWriter, writer.String())
+				str := writer.String()
+				assert.Equal(t, tt.wantWriter, str)
 			}
 		})
 	}
