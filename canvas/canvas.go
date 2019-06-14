@@ -17,7 +17,6 @@ const ppmTemplate = `{{ .PPMIdentifier }}
 
 const (
 	ppmID         = "P3"
-	ppmFileName   = "pixels.ppm"
 	maxColorValue = 255
 	newLineChar   = "\n"
 )
