@@ -1,4 +1,4 @@
-package canvas
+package color
 
 // A Color is represented by percentages of red, green, and blue in the range of 0-1.
 // The red, green, or blue values of a color may be lower or higher than 0-1.

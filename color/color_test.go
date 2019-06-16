@@ -1,4 +1,4 @@
-package canvas
+package color
 
 import (
 	"testing"

@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/austingebauer/go-ray-tracer/color"
 )
 
 func TestNewCanvas(t *testing.T) {
@@ -35,7 +37,7 @@ func TestNewCanvas(t *testing.T) {
 			canvas := NewCanvas(tt.args.width, tt.args.height)
 			assert.Equal(t, tt.want.Height, canvas.Height)
 			assert.Equal(t, tt.want.Width, canvas.Width)
-			assert.Equal(t, *NewColor(0, 0, 0), canvas.Pixels[0][0])
+			assert.Equal(t, *color.NewColor(0, 0, 0), canvas.Pixels[0][0])
 		})
 	}
 }
@@ -48,13 +50,13 @@ func TestCanvas_WritePixel(t *testing.T) {
 	type args struct {
 		x     uint64
 		y     uint64
-		color Color
+		color color.Color
 	}
 	tests := []struct {
 		name      string
 		fields    fields
 		args      args
-		want      Color
+		want      color.Color
 		wantError bool
 	}{
 		{
@@ -66,13 +68,13 @@ func TestCanvas_WritePixel(t *testing.T) {
 			args: args{
 				x: 9,
 				y: 19,
-				color: Color{
+				color: color.Color{
 					Red:   1,
 					Green: 0,
 					Blue:  0,
 				},
 			},
-			want: Color{
+			want: color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -88,13 +90,13 @@ func TestCanvas_WritePixel(t *testing.T) {
 			args: args{
 				x: 100,
 				y: 2,
-				color: Color{
+				color: color.Color{
 					Red:   1,
 					Green: 0,
 					Blue:  0,
 				},
 			},
-			want: Color{
+			want: color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -110,13 +112,13 @@ func TestCanvas_WritePixel(t *testing.T) {
 			args: args{
 				x: 8,
 				y: 20,
-				color: Color{
+				color: color.Color{
 					Red:   1,
 					Green: 0,
 					Blue:  0,
 				},
 			},
-			want: Color{
+			want: color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -145,13 +147,13 @@ func TestCanvas_PixelAt(t *testing.T) {
 	type args struct {
 		x     uint64
 		y     uint64
-		color Color
+		color color.Color
 	}
 	tests := []struct {
 		name    string
 		fields  fields
 		args    args
-		want    *Color
+		want    *color.Color
 		wantErr bool
 	}{
 		{
@@ -163,13 +165,13 @@ func TestCanvas_PixelAt(t *testing.T) {
 			args: args{
 				x: 2,
 				y: 2,
-				color: Color{
+				color: color.Color{
 					Red:   1,
 					Green: 0,
 					Blue:  0,
 				},
 			},
-			want: &Color{
+			want: &color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -185,13 +187,13 @@ func TestCanvas_PixelAt(t *testing.T) {
 			args: args{
 				x: 20,
 				y: 0,
-				color: Color{
+				color: color.Color{
 					Red:   1,
 					Green: 0,
 					Blue:  0,
 				},
 			},
-			want: &Color{
+			want: &color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -207,13 +209,13 @@ func TestCanvas_PixelAt(t *testing.T) {
 			args: args{
 				x: 0,
 				y: 2,
-				color: Color{
+				color: color.Color{
 					Red:   1,
 					Green: 0,
 					Blue:  0,
 				},
 			},
-			want: &Color{
+			want: &color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -300,7 +302,7 @@ func TestCanvas_ToPPM(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			for i := 0; i < int(tt.c.Height); i++ {
 				for j := 0; j < int(tt.c.Width); j++ {
-					err := tt.c.WritePixel(uint64(j), uint64(i), *NewColor(1, 0.8, 0.6))
+					err := tt.c.WritePixel(uint64(j), uint64(i), *color.NewColor(1, 0.8, 0.6))
 					assert.NoError(t, err)
 				}
 			}

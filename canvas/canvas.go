@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+
+	"github.com/austingebauer/go-ray-tracer/color"
 )
 
 // ppmTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
@@ -25,18 +27,16 @@ const (
 type Canvas struct {
 	Width         uint64
 	Height        uint64
-	Pixels        [][]Color
+	Pixels        [][]color.Color
 	PPMIdentifier string
 	MaxColorValue uint8
 }
 
 // NewCanvas returns a new Canvas with the passed Width and Height.
 func NewCanvas(width, height uint64) *Canvas {
-	// TODO: validate width and height
-
-	pixels := make([][]Color, height)
+	pixels := make([][]color.Color, height)
 	for i := range pixels {
-		pixels[i] = make([]Color, width)
+		pixels[i] = make([]color.Color, width)
 	}
 
 	return &Canvas{
@@ -50,7 +50,7 @@ func NewCanvas(width, height uint64) *Canvas {
 
 // WritePixel writes the passed Color to the Canvas at the pixel
 // located at the passed x and y values.
-func (c *Canvas) WritePixel(x uint64, y uint64, color Color) error {
+func (c *Canvas) WritePixel(x uint64, y uint64, color color.Color) error {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func (c *Canvas) WritePixel(x uint64, y uint64, color Color) error {
 }
 
 // PixelAt returns the Color at the pixel located at the passed x and y values.
-func (c *Canvas) PixelAt(x, y uint64) (*Color, error) {
+func (c *Canvas) PixelAt(x, y uint64) (*color.Color, error) {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
 		return nil, err
@@ -74,11 +74,13 @@ func (c *Canvas) PixelAt(x, y uint64) (*Color, error) {
 // fit into the pixel bounds of the canvas.
 func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
 	if y > c.Height-1 {
-		return errors.New(fmt.Sprintf("y value '%v' must be less than '%v'", y, c.Height))
+		return errors.New(fmt.Sprintf(
+			"validate canvas bounds: y value '%v' must be less than '%v'", y, c.Height))
 	}
 
 	if x > c.Width-1 {
-		return errors.New(fmt.Sprintf("x value '%v' must be less than '%v'", x, c.Width))
+		return errors.New(fmt.Sprintf(
+			"validate canvas bounds: x value '%v' must be less than '%v'", x, c.Width))
 	}
 
 	return nil
@@ -104,7 +106,7 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 }
 
 // writePPMPixels returns a string containing rows of pixels with rgb values.
-func writePPMPixels(pixels [][]Color) string {
+func writePPMPixels(pixels [][]color.Color) string {
 	pixelBytes := bytes.Buffer{}
 	for _, row := range pixels {
 		for _, color := range row {
