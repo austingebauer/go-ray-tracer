@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/austingebauer/go-ray-tracer/canvas"
-	color2 "github.com/austingebauer/go-ray-tracer/color"
+	"github.com/austingebauer/go-ray-tracer/color"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/vector"
 )
@@ -61,8 +61,8 @@ func main() {
 			proj.Position.X, proj.Position.Y, proj.Position.Z)
 
 		// write the position of the projectile to the canvas
-		color := color2.NewColor(1, 1, 1)
-		err := c.WritePixel(uint64(proj.Position.X), uint64(canvasHeight-proj.Position.Y), *color)
+		white := color.NewColor(1, 1, 1)
+		err := c.WritePixel(uint64(proj.Position.X), uint64(canvasHeight-proj.Position.Y), *white)
 		if err != nil {
 			log.Fatal(err)
 		}
