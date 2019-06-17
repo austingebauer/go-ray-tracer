@@ -80,6 +80,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Printf("Wrote ppm rendering to: %v\n", ppmFile)
 }
 
 // tick moves the passed Projectile through the passed Environment.
