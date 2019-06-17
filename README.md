@@ -9,7 +9,13 @@ I'll be adding images of renderings that I create on my journey to write a 3D re
 
 ### 1. Projectile
 
-My very first rendering is a projectile with a starting point, initial velocity, wind, and gravity. 
+My very first rendering is a projectile with a starting point, initial velocity, wind, and gravity.
 
+To produce the rendering, run:
+```bash
+git checkout 7c481890
+go run main.go
+open renders/projectile/projectile.ppm
+```
 
 ![Projectile Rendering](renders/projectile/projectile.png)
