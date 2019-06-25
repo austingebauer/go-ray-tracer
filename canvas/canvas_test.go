@@ -319,3 +319,25 @@ func TestCanvas_ToPPM(t *testing.T) {
 		})
 	}
 }
+
+func TestCanvas_ToPPMError(t *testing.T) {
+	tests := []struct {
+		name       string
+		c          *Canvas
+		wantWriter string
+	}{
+		{
+			name: "canvas to portable pixmap (PPM) nil writer",
+			c:    NewCanvas(0, 1),
+			wantWriter: "P3\n" +
+				"0 1\n" +
+				"255\n",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.c.ToPPM(nil)
+			assert.Error(t, err)
+		})
+	}
+}

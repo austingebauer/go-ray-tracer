@@ -88,6 +88,10 @@ func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
 
 // ToPPM writes the current canvas to a file in the portable pixmap (PPM) format.
 func (c *Canvas) ToPPM(writer io.Writer) error {
+	if writer == nil {
+		return errors.New("writer must not be nil")
+	}
+
 	funcMap := template.FuncMap{
 		"pixels": writePPMPixels,
 	}
