@@ -84,7 +84,7 @@ func TestMatrix_Equals(t *testing.T) {
 		data [][]float64
 	}
 	type args struct {
-		mQ *Matrix
+		m1 *Matrix
 	}
 	tests := []struct {
 		name   string
@@ -103,7 +103,7 @@ func TestMatrix_Equals(t *testing.T) {
 				},
 			},
 			args: args{
-				mQ: &Matrix{
+				m1: &Matrix{
 					rows: 2,
 					cols: 2,
 					data: [][]float64{
@@ -125,7 +125,7 @@ func TestMatrix_Equals(t *testing.T) {
 				},
 			},
 			args: args{
-				mQ: &Matrix{
+				m1: &Matrix{
 					rows: 2,
 					cols: 2,
 					data: [][]float64{
@@ -147,7 +147,7 @@ func TestMatrix_Equals(t *testing.T) {
 				},
 			},
 			args: args{
-				mQ: &Matrix{
+				m1: &Matrix{
 					rows: 1,
 					cols: 1,
 					data: [][]float64{
@@ -165,7 +165,181 @@ func TestMatrix_Equals(t *testing.T) {
 				cols: tt.fields.cols,
 				data: tt.fields.data,
 			}
-			assert.Equal(t, tt.want, m.Equals(tt.args.mQ))
+			assert.Equal(t, tt.want, m.Equals(tt.args.m1))
+		})
+	}
+}
+
+func TestMultiply(t *testing.T) {
+	type args struct {
+		m1 Matrix
+		m2 Matrix
+	}
+	tests := []struct {
+		name      string
+		args      args
+		want      *Matrix
+		wantError bool
+	}{
+		{
+			name: "multiply two 4x4 matrices",
+			args: args{
+				m1: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{1, 2, 3, 4},
+						{5, 6, 7, 8},
+						{9, 8, 7, 6},
+						{5, 4, 3, 2},
+					},
+				},
+				m2: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-2, 1, 2, 3},
+						{3, 2, 1, -1},
+						{4, 3, 6, 5},
+						{1, 2, 7, 8},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{20, 22, 50, 48},
+					{44, 54, 114, 108},
+					{40, 58, 110, 102},
+					{16, 26, 46, 42},
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "multiply 1x3 and 3x2 matrices",
+			args: args{
+				m1: Matrix{
+					rows: 1,
+					cols: 3,
+					data: [][]float64{
+						{1, 2, 3},
+					},
+				},
+				m2: Matrix{
+					rows: 3,
+					cols: 2,
+					data: [][]float64{
+						{4, 3},
+						{2, 4},
+						{1, 5},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 1,
+				cols: 2,
+				data: [][]float64{
+					{11, 26},
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "multiply 2x3 and 3x2 matrices",
+			args: args{
+				m1: Matrix{
+					rows: 2,
+					cols: 3,
+					data: [][]float64{
+						{1, 2, 3},
+						{3, 2, 1},
+					},
+				},
+				m2: Matrix{
+					rows: 3,
+					cols: 2,
+					data: [][]float64{
+						{1, 2},
+						{2, 1},
+						{1, 2},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 2,
+				cols: 2,
+				data: [][]float64{
+					{8, 10},
+					{8, 10},
+				},
+			},
+		},
+		{
+			name: "multiply two 1x1 matrices",
+			args: args{
+				m1: Matrix{
+					rows: 1,
+					cols: 1,
+					data: [][]float64{
+						{1},
+					},
+				},
+				m2: Matrix{
+					rows: 1,
+					cols: 1,
+					data: [][]float64{
+						{4},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 1,
+				cols: 1,
+				data: [][]float64{
+					{4},
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "multiply two 2x2 and 4x2 matrices for error",
+			args: args{
+				m1: Matrix{
+					rows: 2,
+					cols: 2,
+					data: [][]float64{
+						{1, 1},
+						{1, 1},
+					},
+				},
+				m2: Matrix{
+					rows: 4,
+					cols: 2,
+					data: [][]float64{
+						{1, 1},
+						{1, 1},
+						{1, 1},
+						{1, 1},
+					},
+				},
+			},
+			want:      nil,
+			wantError: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m, err := Multiply(tt.args.m1, tt.args.m2)
+
+			if tt.wantError {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, m)
+				assert.Equal(t, true, m.Equals(tt.want))
+			}
 		})
 	}
 }

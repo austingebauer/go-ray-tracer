@@ -1,6 +1,10 @@
 package matrix
 
-import "github.com/austingebauer/go-ray-tracer/utils"
+import (
+	"errors"
+
+	"github.com/austingebauer/go-ray-tracer/utils"
+)
 
 // Matrix represents an n-dimensional grid of floating point numbers.
 type Matrix struct {
@@ -25,18 +29,46 @@ func NewMatrix(rows, cols uint) *Matrix {
 }
 
 // Equals returns true if this Matrix has identical rows, columns, and elements as the passed Matrix.
-func (m *Matrix) Equals(mQ *Matrix) bool {
-	if m.rows != mQ.rows || m.cols != mQ.cols {
+func (m *Matrix) Equals(m1 *Matrix) bool {
+	if m.rows != m1.rows || m.cols != m1.cols {
 		return false
 	}
 
 	for r := 0; r < int(m.rows); r++ {
 		for c := 0; c < int(m.cols); c++ {
-			if !utils.Float64Equals(m.data[r][c], mQ.data[r][c], utils.Epsilon) {
+			if !utils.Float64Equals(m.data[r][c], m1.data[r][c], utils.Epsilon) {
 				return false
 			}
 		}
 	}
 
 	return true
+}
+
+// Multiply returns a new Matrix that is the result of multiplying the passed matrices.
+// If the column length in m1 is not equal to the row length in m2, an error is returned.
+func Multiply(m1, m2 Matrix) (*Matrix, error) {
+	// To multiply an m×n matrix by an n×p matrix, the n's must be the same.
+	if m1.cols != m2.rows {
+		return nil, errors.New("column length in m1 must be equal to the row length in m2")
+	}
+
+	// The result is an m×p matrix.
+	multM := NewMatrix(m1.rows, m2.cols)
+
+	// Multiply the two matrices
+	for m := 0; m < int(multM.rows); m++ {
+		for p := 0; p < int(multM.cols); p++ {
+
+			// Compute the dot product over m1 columns and m2 rows for range 0 < n
+			var dotProduct float64
+			for n := 0; n < int(m1.cols); n++ {
+				dotProduct += m1.data[m][n] * m2.data[n][p]
+			}
+
+			// Store dot product in m and p
+			multM.data[m][p] = dotProduct
+		}
+	}
+	return multM, nil
 }
