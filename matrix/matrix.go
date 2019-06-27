@@ -50,7 +50,7 @@ func (m *Matrix) Equals(m1 *Matrix) bool {
 func Multiply(m1, m2 Matrix) (*Matrix, error) {
 	// To multiply an m×n matrix by an n×p matrix, the n's must be the same.
 	if m1.cols != m2.rows {
-		return nil, errors.New("column length in m1 must be equal to the row length in m2")
+		return nil, errors.New("column length of m1 must be equal to the row length of m2")
 	}
 
 	// The result is an m×p matrix.
