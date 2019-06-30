@@ -6,7 +6,8 @@ import (
 	"github.com/austingebauer/go-ray-tracer/utils"
 )
 
-const Identity *Matrix = &Matrix{
+// Identity is a 4x4 identity matrix.
+var Identity = Matrix{
 	rows: 4,
 	cols: 4,
 	data: [][]float64{

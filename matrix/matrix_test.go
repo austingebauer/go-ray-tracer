@@ -328,6 +328,60 @@ func TestMultiply(t *testing.T) {
 			want:      nil,
 			wantError: true,
 		},
+		{
+			name: "multiply 4x4 matrix by 4x4 identity matrix",
+			args: args{
+				m1: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{1, 2, 3, 4},
+						{5, 6, 7, 8},
+						{9, 8, 7, 6},
+						{5, 4, 3, 2},
+					},
+				},
+				m2: Identity,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 2, 3, 4},
+					{5, 6, 7, 8},
+					{9, 8, 7, 6},
+					{5, 4, 3, 2},
+				},
+			},
+			wantError: false,
+		},
+		{
+			name: "multiply 4x4 identity matrix by 4x1 tuple",
+			args: args{
+				m1: Identity,
+				m2: Matrix{
+					rows: 4,
+					cols: 1,
+					data: [][]float64{
+						{1},
+						{5},
+						{9},
+						{5},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 1,
+				data: [][]float64{
+					{1},
+					{5},
+					{9},
+					{5},
+				},
+			},
+			wantError: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
