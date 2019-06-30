@@ -6,6 +6,17 @@ import (
 	"github.com/austingebauer/go-ray-tracer/utils"
 )
 
+const Identity *Matrix = &Matrix{
+	rows: 4,
+	cols: 4,
+	data: [][]float64{
+		{1, 0, 0, 0},
+		{0, 1, 0, 0},
+		{0, 0, 1, 0},
+		{0, 0, 0, 1},
+	},
+}
+
 // Matrix represents an n-dimensional grid of floating point numbers.
 type Matrix struct {
 	rows, cols uint
