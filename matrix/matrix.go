@@ -97,14 +97,31 @@ func Multiply(m1, m2 Matrix) (*Matrix, error) {
 
 // Transpose returns a new Matrix that is the result of transposing the passed Matrix.
 // Transposing a Matrix turns the nth row into the nth column in the resulting Matrix.
-func Transpose(m1 Matrix) *Matrix {
-	transM := NewMatrix(m1.cols, m1.rows)
+func Transpose(m Matrix) *Matrix {
+	transM := NewMatrix(m.cols, m.rows)
 
-	for r := 0; r < int(m1.rows); r++ {
-		for c := 0; c < int(m1.cols); c++ {
-			transM.data[c][r] = m1.data[r][c]
+	for r := 0; r < int(m.rows); r++ {
+		for c := 0; c < int(m.cols); c++ {
+			transM.data[c][r] = m.data[r][c]
 		}
 	}
 
 	return transM
+}
+
+// Determinant calculate and returns the determinant of the passed 2x2 Matrix.
+// If the passed matrix is not 2x2, then an error is returned.
+func Determinant2x2(m Matrix) (float64, error) {
+	/*
+			m = | a b |
+		        | c d |
+
+			det(m) = ad - bc
+	*/
+
+	if m.rows != 2 || m.cols != 2 {
+		return 0, errors.New("matrix must have row and column length of 2")
+	}
+
+	return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0]), nil
 }
