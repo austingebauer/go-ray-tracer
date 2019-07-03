@@ -40,6 +40,16 @@ func NewMatrix(rows, cols uint) *Matrix {
 	return &m
 }
 
+// NewIdentityMatrix returns a new identity Matrix having row and column length equal to the passed size.
+func NewIdentityMatrix(size uint) *Matrix {
+	m := NewMatrix(size, size)
+	for i := 0; i < int(m.rows); i++ {
+		m.data[i][i] = 1
+	}
+
+	return m
+}
+
 // Equals returns true if this Matrix has identical rows, columns, and elements as the passed Matrix.
 func (m *Matrix) Equals(m1 *Matrix) bool {
 	if m.rows != m1.rows || m.cols != m1.cols {

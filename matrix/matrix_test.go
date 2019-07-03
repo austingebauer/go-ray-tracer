@@ -341,7 +341,7 @@ func TestMultiply(t *testing.T) {
 						{5, 4, 3, 2},
 					},
 				},
-				m2: Identity,
+				m2: *NewIdentityMatrix(4),
 			},
 			want: &Matrix{
 				rows: 4,
@@ -358,7 +358,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 4x4 identity matrix by 4x1 tuple",
 			args: args{
-				m1: Identity,
+				m1: *NewIdentityMatrix(4),
 				m2: Matrix{
 					rows: 4,
 					cols: 1,
@@ -478,9 +478,9 @@ func TestTranspose(t *testing.T) {
 		{
 			name: "transposition of the 4x4 identity matrix is the 4x4 identity matrix",
 			args: args{
-				m1: Identity,
+				m1: *NewIdentityMatrix(4),
 			},
-			want: &Identity,
+			want: NewIdentityMatrix(4),
 		},
 	}
 	for _, tt := range tests {
