@@ -397,3 +397,95 @@ func TestMultiply(t *testing.T) {
 		})
 	}
 }
+
+func TestTranspose(t *testing.T) {
+	type args struct {
+		m1 Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		{
+			name: "transposition of 4x4 matrix",
+			args: args{
+				m1: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{0, 9, 3, 0},
+						{9, 8, 0, 8},
+						{1, 8, 5, 3},
+						{0, 0, 5, 8},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{0, 9, 1, 0},
+					{9, 8, 8, 0},
+					{3, 0, 5, 5},
+					{0, 8, 3, 8},
+				},
+			},
+		},
+		{
+			name: "transposition of 2x2 matrix",
+			args: args{
+				m1: Matrix{
+					rows: 2,
+					cols: 2,
+					data: [][]float64{
+						{1, 2},
+						{3, 4},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 2,
+				cols: 2,
+				data: [][]float64{
+					{1, 3},
+					{2, 4},
+				},
+			},
+		},
+		{
+			name: "transposition of 2x3 matrix",
+			args: args{
+				m1: Matrix{
+					rows: 2,
+					cols: 3,
+					data: [][]float64{
+						{1, 2, 3},
+						{4, 5, 6},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 3,
+				cols: 2,
+				data: [][]float64{
+					{1, 4},
+					{2, 5},
+					{3, 6},
+				},
+			},
+		},
+		{
+			name: "transposition of the 4x4 identity matrix is the 4x4 identity matrix",
+			args: args{
+				m1: Identity,
+			},
+			want: &Identity,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Transpose(tt.args.m1))
+		})
+	}
+}

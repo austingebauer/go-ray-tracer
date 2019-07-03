@@ -84,3 +84,17 @@ func Multiply(m1, m2 Matrix) (*Matrix, error) {
 	}
 	return multM, nil
 }
+
+// Transpose returns a new Matrix that is the result of transposing the passed Matrix.
+// Transposing a Matrix turns the nth row into the nth column in the resulting Matrix.
+func Transpose(m1 Matrix) *Matrix {
+	transM := NewMatrix(m1.cols, m1.rows)
+
+	for r := 0; r < int(m1.rows); r++ {
+		for c := 0; c < int(m1.cols); c++ {
+			transM.data[c][r] = m1.data[r][c]
+		}
+	}
+
+	return transM
+}
