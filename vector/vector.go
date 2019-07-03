@@ -4,7 +4,7 @@ package vector
 import (
 	"math"
 
-	"github.com/austingebauer/go-ray-tracer/utils"
+	"github.com/austingebauer/go-ray-tracer/math_utils"
 )
 
 // Vector represents a vector in a left-handed 3D coordinate system
@@ -25,9 +25,9 @@ func NewVector(x, y, z float64) *Vector {
 // Equals returns true if the passed Vector is equal to this Vector.
 // Two Vectors are equal if their X, Y, Z components are equal.
 func (vec *Vector) Equals(vecQ *Vector) bool {
-	return utils.Float64Equals(vec.X, vecQ.X, utils.Epsilon) &&
-		utils.Float64Equals(vec.Y, vecQ.Y, utils.Epsilon) &&
-		utils.Float64Equals(vec.Z, vecQ.Z, utils.Epsilon)
+	return math_utils.Float64Equals(vec.X, vecQ.X, math_utils.Epsilon) &&
+		math_utils.Float64Equals(vec.Y, vecQ.Y, math_utils.Epsilon) &&
+		math_utils.Float64Equals(vec.Z, vecQ.Z, math_utils.Epsilon)
 }
 
 // Magnitude computes and returns the length of this Vector.

@@ -1,4 +1,4 @@
-package utils
+package math_utils
 
 import (
 	"testing"

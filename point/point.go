@@ -2,7 +2,7 @@
 package point
 
 import (
-	"github.com/austingebauer/go-ray-tracer/utils"
+	"github.com/austingebauer/go-ray-tracer/math_utils"
 	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
@@ -24,9 +24,9 @@ func NewPoint(x, y, z float64) *Point {
 // Equals returns true if the passed Point is equal to this Point.
 // Two Points are equal if their X, Y, Z components are equal.
 func (pt *Point) Equals(ptQ *Point) bool {
-	return utils.Float64Equals(pt.X, ptQ.X, utils.Epsilon) &&
-		utils.Float64Equals(pt.Y, ptQ.Y, utils.Epsilon) &&
-		utils.Float64Equals(pt.Z, ptQ.Z, utils.Epsilon)
+	return math_utils.Float64Equals(pt.X, ptQ.X, math_utils.Epsilon) &&
+		math_utils.Float64Equals(pt.Y, ptQ.Y, math_utils.Epsilon) &&
+		math_utils.Float64Equals(pt.Z, ptQ.Z, math_utils.Epsilon)
 }
 
 // Negate multiplies each of this Point's components by -1.

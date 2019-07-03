@@ -3,7 +3,7 @@ package matrix
 import (
 	"errors"
 
-	"github.com/austingebauer/go-ray-tracer/utils"
+	"github.com/austingebauer/go-ray-tracer/math_utils"
 )
 
 // Identity is a 4x4 identity matrix.
@@ -58,7 +58,7 @@ func (m *Matrix) Equals(m1 *Matrix) bool {
 
 	for r := 0; r < int(m.rows); r++ {
 		for c := 0; c < int(m.cols); c++ {
-			if !utils.Float64Equals(m.data[r][c], m1.data[r][c], utils.Epsilon) {
+			if !math_utils.Float64Equals(m.data[r][c], m1.data[r][c], math_utils.Epsilon) {
 				return false
 			}
 		}

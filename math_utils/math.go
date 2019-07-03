@@ -1,5 +1,5 @@
 // Package utils contains utility functions.
-package utils
+package math_utils
 
 import "math"
 
