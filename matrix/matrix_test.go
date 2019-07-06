@@ -543,3 +543,134 @@ func TestDeterminant2x2(t *testing.T) {
 		})
 	}
 }
+
+func TestSubmatrix(t *testing.T) {
+	type args struct {
+		m   Matrix
+		row uint
+		col uint
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Matrix
+		wantErr bool
+	}{
+		{
+			name: "submatrix of a 3x3 matrix is a 2x2 matrix",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{1, 5, 0},
+						{-3, 2, 7},
+						{0, 6, -3},
+					},
+				},
+				row: 0,
+				col: 2,
+			},
+			want: &Matrix{
+				rows: 2,
+				cols: 2,
+				data: [][]float64{
+					{-3, 2},
+					{0, 6},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "submatrix of a 4x4 matrix is a 3x3 matrix",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-6, 1, 1, 6},
+						{-8, 5, 8, 6},
+						{-1, 0, 8, 2},
+						{-7, 1, -1, 1},
+					},
+				},
+				row: 2,
+				col: 1,
+			},
+			want: &Matrix{
+				rows: 3,
+				cols: 3,
+				data: [][]float64{
+					{-6, 1, 6},
+					{-8, 8, 6},
+					{-7, -1, 1},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "submatrix of a 4x4 matrix with row out of bounds",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-6, 1, 1, 6},
+						{-8, 5, 8, 6},
+						{-1, 0, 8, 2},
+						{-7, 1, -1, 1},
+					},
+				},
+				row: 4,
+				col: 1,
+			},
+			want: &Matrix{
+				rows: 3,
+				cols: 3,
+				data: [][]float64{
+					{-6, 1, 6},
+					{-8, 8, 6},
+					{-7, -1, 1},
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "submatrix of a 4x4 matrix with col out of bounds",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-6, 1, 1, 6},
+						{-8, 5, 8, 6},
+						{-1, 0, 8, 2},
+						{-7, 1, -1, 1},
+					},
+				},
+				row: 0,
+				col: 4,
+			},
+			want: &Matrix{
+				rows: 3,
+				cols: 3,
+				data: [][]float64{
+					{-6, 1, 6},
+					{-8, 8, 6},
+					{-7, -1, 1},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Submatrix(tt.args.m, tt.args.row, tt.args.col)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}

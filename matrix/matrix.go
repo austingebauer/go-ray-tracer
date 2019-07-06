@@ -125,3 +125,45 @@ func Determinant2x2(m Matrix) (float64, error) {
 
 	return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0]), nil
 }
+
+// Submatrix returns a new Matrix that is the result of removing
+// the passed row and column index from the passed Matrix.
+// If the passed row or col are not in bounds of the passed Matrix,
+// then an error is returned.
+func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
+	if row < 0 || row >= m.rows {
+		return nil, errors.New("row is out of bounds of the passed matrix")
+	}
+
+	if col < 0 || col >= m.cols {
+		return nil, errors.New("col is out of bounds of the passed matrix")
+	}
+
+	subM := NewMatrix(m.rows-1, m.cols-1)
+	for r := 0; r < int(m.rows); r++ {
+		for c := 0; c < int(m.cols); c++ {
+			if r == int(row) || c == int(col) {
+				continue
+			}
+
+			// hold current value of r and c
+			rowPlacement := r
+			colPlacement := c
+
+			// if current row or col are beyond the passed row and col to remove,
+			// then their placement in the submatrix will be minus one of their
+			// current location.
+			if rowPlacement > int(row) {
+				rowPlacement--
+			}
+
+			if colPlacement > int(col) {
+				colPlacement--
+			}
+
+			subM.data[rowPlacement][colPlacement] = m.data[r][c]
+		}
+	}
+
+	return subM, nil
+}
