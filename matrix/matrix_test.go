@@ -674,3 +674,100 @@ func TestSubmatrix(t *testing.T) {
 		})
 	}
 }
+
+func TestMinor3x3(t *testing.T) {
+	type args struct {
+		m   Matrix
+		row uint
+		col uint
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    float64
+		wantErr bool
+	}{
+		{
+			name: "minor of a 3x3 matrix",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 1,
+				col: 0,
+			},
+			want:    25,
+			wantErr: false,
+		},
+		{
+			name: "minor of a 2x2 matrix for an error",
+			args: args{
+				m: Matrix{
+					rows: 2,
+					cols: 2,
+					data: [][]float64{
+						{3, 5},
+						{2, -1},
+					},
+				},
+				row: 1,
+				col: 0,
+			},
+			want:    25,
+			wantErr: true,
+		},
+		{
+			name: "minor of a 3x3 matrix with submatrix row out of bounds for an error",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 5,
+				col: 0,
+			},
+			want:    25,
+			wantErr: true,
+		},
+		{
+			name: "minor of a 3x3 matrix with submatrix col out of bounds for an error",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 5,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 1,
+				col: 4,
+			},
+			want:    25,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Minor3x3(tt.args.m, tt.args.row, tt.args.col)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}

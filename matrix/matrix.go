@@ -167,3 +167,18 @@ func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
 
 	return subM, nil
 }
+
+// Minor3x3 returns the determinant of the submatrix.
+// If the passed matrix is not 3x3, then an error is returned.
+func Minor3x3(m Matrix, row, col uint) (float64, error) {
+	if m.rows != 3 || m.cols != 3 {
+		return 0, errors.New("matrix must have row and column length of 3")
+	}
+
+	subM, err := Submatrix(m, row, col)
+	if err != nil {
+		return 0, err
+	}
+
+	return Determinant2x2(*subM)
+}
