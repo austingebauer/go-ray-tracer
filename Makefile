@@ -24,5 +24,8 @@ cover_html: test
 out:
 	mkdir -p $(BUILD_OUT_DIR)
 
+loc:
+	find . -type f -not -path "vendor" -name "*.go" | xargs wc -l
+
 clean:
 	rm -rf $(BUILD_OUT_DIR)
