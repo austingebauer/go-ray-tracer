@@ -190,5 +190,17 @@ func Cofactor3x3(m Matrix, row, col uint) (float64, error) {
 		return 0, errors.New("matrix must have row and column length of 3")
 	}
 
-	return 0, nil
+	minor, err := Minor3x3(m, row, col)
+	if err != nil {
+		return 0, err
+	}
+
+	// If row plus column is an odd number, then the cofactor is the negated minor.
+	// Otherwise, the cofactor is the unmodified minor.
+	shouldNegateMinor := row+col%2 == 1
+	if shouldNegateMinor {
+		minor = minor * -1
+	}
+
+	return minor, nil
 }

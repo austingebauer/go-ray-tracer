@@ -745,7 +745,7 @@ func TestMinor3x3(t *testing.T) {
 			args: args{
 				m: Matrix{
 					rows: 3,
-					cols: 5,
+					cols: 3,
 					data: [][]float64{
 						{3, 5, 0},
 						{2, -1, -7},
@@ -800,7 +800,7 @@ func TestCofactor3x3(t *testing.T) {
 				col: 0,
 			},
 			want:    -12,
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "cofactor of a 3x3 matrix 2",
@@ -818,6 +818,61 @@ func TestCofactor3x3(t *testing.T) {
 				col: 0,
 			},
 			want:    -25,
+			wantErr: false,
+		},
+		{
+			name: "cofactor of a 4x3 matrix for an error",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 1,
+				col: 0,
+			},
+			want:    -25,
+			wantErr: true,
+		},
+		{
+			name: "cofactor of a 3x3 matrix with submatrix row out of bounds for an error",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 5,
+				col: 0,
+			},
+			want:    25,
+			wantErr: true,
+		},
+		{
+			name: "cofactor of a 3x3 matrix with submatrix col out of bounds for an error",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 1,
+				col: 4,
+			},
+			want:    25,
 			wantErr: true,
 		},
 	}
