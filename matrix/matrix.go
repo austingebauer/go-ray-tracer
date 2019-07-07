@@ -182,3 +182,13 @@ func Minor3x3(m Matrix, row, col uint) (float64, error) {
 
 	return Determinant2x2(*subM)
 }
+
+// Cofactor3x3 returns the cofactor of the submatrix.
+// If the passed matrix is not 3x3, then an error is returned.
+func Cofactor3x3(m Matrix, row, col uint) (float64, error) {
+	if m.rows != 3 || m.cols != 3 {
+		return 0, errors.New("matrix must have row and column length of 3")
+	}
+
+	return 0, nil
+}

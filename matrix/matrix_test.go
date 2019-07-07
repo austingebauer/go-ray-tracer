@@ -771,3 +771,65 @@ func TestMinor3x3(t *testing.T) {
 		})
 	}
 }
+
+func TestCofactor3x3(t *testing.T) {
+	type args struct {
+		m   Matrix
+		row uint
+		col uint
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    float64
+		wantErr bool
+	}{
+		{
+			name: "cofactor of a 3x3 matrix 1",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 0,
+				col: 0,
+			},
+			want:    -12,
+			wantErr: true,
+		},
+		{
+			name: "cofactor of a 3x3 matrix 2",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{3, 5, 0},
+						{2, -1, -7},
+						{6, -1, 5},
+					},
+				},
+				row: 1,
+				col: 0,
+			},
+			want:    -25,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Cofactor3x3(tt.args.m, tt.args.row, tt.args.col)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}
