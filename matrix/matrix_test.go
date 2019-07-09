@@ -844,35 +844,35 @@ func TestDeterminant(t *testing.T) {
 		args args
 		want float64
 	}{
-		//{
-		//	name: "determinant of 2x2 matrix",
-		//	args: args{
-		//		m: Matrix{
-		//			rows: 2,
-		//			cols: 2,
-		//			data: [][]float64{
-		//				{1, -2},
-		//				{1, 3},
-		//			},
-		//		},
-		//	},
-		//	want: 5,
-		//},
-		//{
-		//	name: "determinant of 3x3 matrix",
-		//	args: args{
-		//		m: Matrix{
-		//			rows: 3,
-		//			cols: 3,
-		//			data: [][]float64{
-		//				{1, 2, 6},
-		//				{-5, 8, -4},
-		//				{2, 6, 4},
-		//			},
-		//		},
-		//	},
-		//	want: -196,
-		//},
+		{
+			name: "determinant of 2x2 matrix",
+			args: args{
+				m: Matrix{
+					rows: 2,
+					cols: 2,
+					data: [][]float64{
+						{1, -2},
+						{1, 3},
+					},
+				},
+			},
+			want: 5,
+		},
+		{
+			name: "determinant of 3x3 matrix",
+			args: args{
+				m: Matrix{
+					rows: 3,
+					cols: 3,
+					data: [][]float64{
+						{1, 2, 6},
+						{-5, 8, -4},
+						{2, 6, 4},
+					},
+				},
+			},
+			want: -196,
+		},
 		{
 			name: "determinant of 4x4 matrix",
 			args: args{
