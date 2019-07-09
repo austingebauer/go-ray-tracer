@@ -109,21 +109,21 @@ func Transpose(m Matrix) *Matrix {
 	return transM
 }
 
-// Determinant calculate and returns the determinant of the passed 2x2 Matrix.
-// If the passed matrix is not 2x2, then an error is returned.
-func Determinant2x2(m Matrix) (float64, error) {
-	/*
-			m = | a b |
-		        | c d |
-
-			det(m) = ad - bc
-	*/
-
-	if m.rows != 2 || m.cols != 2 {
-		return 0, errors.New("matrix must have row and column length of 2")
+// Determinant calculate and returns the determinant of the passed Matrix.
+func Determinant(m Matrix) float64 {
+	if m.rows == 2 && m.cols == 2 {
+		return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0])
 	}
 
-	return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0]), nil
+	// for each column in the selected row
+	var det float64 = 0
+	row := 0
+	for col := 0; col < int(m.cols); col++ {
+		cofactor, _ := Cofactor3x3(m, uint(row), uint(col))
+		det = det + (m.data[row][col] * cofactor)
+	}
+
+	return det
 }
 
 // Submatrix returns a new Matrix that is the result of removing
@@ -171,24 +171,24 @@ func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
 // Minor3x3 returns the determinant of the submatrix.
 // If the passed matrix is not 3x3, then an error is returned.
 func Minor3x3(m Matrix, row, col uint) (float64, error) {
-	if m.rows != 3 || m.cols != 3 {
-		return 0, errors.New("matrix must have row and column length of 3")
-	}
+	//if m.rows != 3 || m.cols != 3 {
+	//	return 0, errors.New("matrix must have row and column length of 3")
+	//}
 
 	subM, err := Submatrix(m, row, col)
 	if err != nil {
 		return 0, err
 	}
 
-	return Determinant2x2(*subM)
+	return Determinant(*subM), nil
 }
 
 // Cofactor3x3 returns the cofactor of the submatrix.
 // If the passed matrix is not 3x3, then an error is returned.
 func Cofactor3x3(m Matrix, row, col uint) (float64, error) {
-	if m.rows != 3 || m.cols != 3 {
-		return 0, errors.New("matrix must have row and column length of 3")
-	}
+	//if m.rows != 3 || m.cols != 3 {
+	//	return 0, errors.New("matrix must have row and column length of 3")
+	//}
 
 	minor, err := Minor3x3(m, row, col)
 	if err != nil {

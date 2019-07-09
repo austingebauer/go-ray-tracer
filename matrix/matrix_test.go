@@ -490,60 +490,6 @@ func TestTranspose(t *testing.T) {
 	}
 }
 
-func TestDeterminant2x2(t *testing.T) {
-	type args struct {
-		m Matrix
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    float64
-		wantErr bool
-	}{
-		{
-			name: "determinant of 2x2 matrix",
-			args: args{
-				m: Matrix{
-					rows: 2,
-					cols: 2,
-					data: [][]float64{
-						{1, 5},
-						{-3, 2},
-					},
-				},
-			},
-			want:    17,
-			wantErr: false,
-		},
-		{
-			name: "determinant of 2x1 matrix with error",
-			args: args{
-				m: Matrix{
-					rows: 2,
-					cols: 1,
-					data: [][]float64{
-						{1},
-						{3},
-					},
-				},
-			},
-			want:    13,
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := Determinant2x2(tt.args.m)
-
-			if tt.wantErr {
-				assert.Error(t, err)
-			} else {
-				assert.Equal(t, tt.want, got)
-			}
-		})
-	}
-}
-
 func TestSubmatrix(t *testing.T) {
 	type args struct {
 		m   Matrix
@@ -885,6 +831,68 @@ func TestCofactor3x3(t *testing.T) {
 			} else {
 				assert.Equal(t, tt.want, got)
 			}
+		})
+	}
+}
+
+func TestDeterminant(t *testing.T) {
+	type args struct {
+		m Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		//{
+		//	name: "determinant of 2x2 matrix",
+		//	args: args{
+		//		m: Matrix{
+		//			rows: 2,
+		//			cols: 2,
+		//			data: [][]float64{
+		//				{1, -2},
+		//				{1, 3},
+		//			},
+		//		},
+		//	},
+		//	want: 5,
+		//},
+		//{
+		//	name: "determinant of 3x3 matrix",
+		//	args: args{
+		//		m: Matrix{
+		//			rows: 3,
+		//			cols: 3,
+		//			data: [][]float64{
+		//				{1, 2, 6},
+		//				{-5, 8, -4},
+		//				{2, 6, 4},
+		//			},
+		//		},
+		//	},
+		//	want: -196,
+		//},
+		{
+			name: "determinant of 4x4 matrix",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-2, -8, 3, 5},
+						{-3, 1, 7, 3},
+						{1, 2, -9, 6},
+						{-6, 7, 7, -9},
+					},
+				},
+			},
+			want: -4071,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Determinant(tt.args.m))
 		})
 	}
 }
