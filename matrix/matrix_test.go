@@ -621,7 +621,7 @@ func TestSubmatrix(t *testing.T) {
 	}
 }
 
-func TestMinor3x3(t *testing.T) {
+func TestMinor(t *testing.T) {
 	type args struct {
 		m   Matrix
 		row uint
@@ -652,21 +652,21 @@ func TestMinor3x3(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "minor of a 2x2 matrix for an error",
+			name: "minor of a 2x2 matrix",
 			args: args{
 				m: Matrix{
 					rows: 2,
 					cols: 2,
 					data: [][]float64{
-						{3, 5},
-						{2, -1},
+						{3, 3},
+						{5, 5},
 					},
 				},
-				row: 1,
+				row: 0,
 				col: 0,
 			},
-			want:    25,
-			wantErr: true,
+			want:    5,
+			wantErr: false,
 		},
 		{
 			name: "minor of a 3x3 matrix with submatrix row out of bounds for an error",
@@ -707,7 +707,7 @@ func TestMinor3x3(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Minor3x3(tt.args.m, tt.args.row, tt.args.col)
+			got, err := Minor(tt.args.m, tt.args.row, tt.args.col)
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -718,7 +718,7 @@ func TestMinor3x3(t *testing.T) {
 	}
 }
 
-func TestCofactor3x3(t *testing.T) {
+func TestCofactor(t *testing.T) {
 	type args struct {
 		m   Matrix
 		row uint
@@ -767,25 +767,6 @@ func TestCofactor3x3(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "cofactor of a 4x3 matrix for an error",
-			args: args{
-				m: Matrix{
-					rows: 4,
-					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
-					},
-				},
-				row: 1,
-				col: 0,
-			},
-			want:    -25,
-			wantErr: true,
-		},
-		{
 			name: "cofactor of a 3x3 matrix with submatrix row out of bounds for an error",
 			args: args{
 				m: Matrix{
@@ -824,7 +805,7 @@ func TestCofactor3x3(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Cofactor3x3(tt.args.m, tt.args.row, tt.args.col)
+			got, err := Cofactor(tt.args.m, tt.args.row, tt.args.col)
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -844,6 +825,19 @@ func TestDeterminant(t *testing.T) {
 		args args
 		want float64
 	}{
+		{
+			name: "determinant of 1x1 matrix",
+			args: args{
+				m: Matrix{
+					rows: 1,
+					cols: 1,
+					data: [][]float64{
+						{-11},
+					},
+				},
+			},
+			want: -11,
+		},
 		{
 			name: "determinant of 2x2 matrix",
 			args: args{

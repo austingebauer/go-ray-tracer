@@ -111,6 +111,10 @@ func Transpose(m Matrix) *Matrix {
 
 // Determinant calculate and returns the determinant of the passed Matrix.
 func Determinant(m Matrix) float64 {
+	if m.rows == 1 && m.cols == 1 {
+		return m.data[0][0]
+	}
+
 	if m.rows == 2 && m.cols == 2 {
 		return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0])
 	}
@@ -119,7 +123,7 @@ func Determinant(m Matrix) float64 {
 	var det float64 = 0
 	row := 0
 	for col := 0; col < int(m.cols); col++ {
-		cofactor, _ := Cofactor3x3(m, uint(row), uint(col))
+		cofactor, _ := Cofactor(m, uint(row), uint(col))
 		det = det + (m.data[row][col] * cofactor)
 	}
 
@@ -168,13 +172,10 @@ func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
 	return subM, nil
 }
 
-// Minor3x3 returns the determinant of the submatrix.
-// If the passed matrix is not 3x3, then an error is returned.
-func Minor3x3(m Matrix, row, col uint) (float64, error) {
-	//if m.rows != 3 || m.cols != 3 {
-	//	return 0, errors.New("matrix must have row and column length of 3")
-	//}
-
+// Minor returns the determinant of the submatrix.
+// If the passed row or col are not in bounds of the passed Matrix,
+// then an error is returned.
+func Minor(m Matrix, row, col uint) (float64, error) {
 	subM, err := Submatrix(m, row, col)
 	if err != nil {
 		return 0, err
@@ -183,14 +184,11 @@ func Minor3x3(m Matrix, row, col uint) (float64, error) {
 	return Determinant(*subM), nil
 }
 
-// Cofactor3x3 returns the cofactor of the submatrix.
-// If the passed matrix is not 3x3, then an error is returned.
-func Cofactor3x3(m Matrix, row, col uint) (float64, error) {
-	//if m.rows != 3 || m.cols != 3 {
-	//	return 0, errors.New("matrix must have row and column length of 3")
-	//}
-
-	minor, err := Minor3x3(m, row, col)
+// Cofactor returns the cofactor of the submatrix.
+// If the passed row or col are not in bounds of the passed Matrix,
+// then an error is returned.
+func Cofactor(m Matrix, row, col uint) (float64, error) {
+	minor, err := Minor(m, row, col)
 	if err != nil {
 		return 0, err
 	}
