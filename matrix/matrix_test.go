@@ -1092,6 +1092,32 @@ func TestInverse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "inverse of 4x4 matrix 2",
+			args: args{
+				a: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{9, 3, 0, 9},
+						{-5, -2, -6, -3},
+						{-4, 9, 6, 4},
+						{-7, 6, 6, 2},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{-0.04074, -0.07778, 0.14444, -0.22222},
+					{-0.07778, 0.03333, 0.36667, -0.33333},
+					{-0.02901, -0.14630, -0.10926, 0.12963},
+					{0.17778, 0.06667, -0.26667, 0.33333},
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -1104,6 +1130,76 @@ func TestInverse(t *testing.T) {
 				assert.NotNil(t, b)
 				assert.True(t, b.Equals(tt.want))
 			}
+		})
+	}
+}
+
+func TestMultiplyProductByInverse(t *testing.T) {
+	type args struct {
+		a Matrix
+		b Matrix
+	}
+
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "matrix product (c = a * b) multiplied by its inverse (c * inverse(b) = a)",
+			args: args{
+				a: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{3, -9, 7, 3},
+						{3, -8, 2, -9},
+						{-4, 4, 4, 1},
+						{-6, 5, -1, 1},
+					},
+				},
+				b: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{8, 2, 2, 2},
+						{3, -1, 7, 0},
+						{7, 0, 5, 4},
+						{6, -2, 0, 5},
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// cA = a * b
+			cA, err := Multiply(tt.args.a, tt.args.b)
+			assert.NoError(t, err)
+			assert.NotNil(t, cA)
+
+			// cB = b * a
+			cB, err := Multiply(tt.args.b, tt.args.a)
+			assert.NoError(t, err)
+			assert.NotNil(t, cB)
+
+			// a = cA * inverse(b)
+			inverseB, err := Inverse(tt.args.b)
+			assert.NoError(t, err)
+			assert.NotNil(t, inverseB)
+			shouldBeA, err := Multiply(*cA, *inverseB)
+			assert.NoError(t, err)
+			assert.NotNil(t, shouldBeA)
+			assert.True(t, tt.args.a.Equals(shouldBeA))
+
+			// b = cB * inverse(a)
+			inverseA, err := Inverse(tt.args.a)
+			assert.NoError(t, err)
+			assert.NotNil(t, inverseA)
+			shouldBeB, err := Multiply(*cB, *inverseA)
+			assert.NoError(t, err)
+			assert.NotNil(t, shouldBeB)
+			assert.True(t, tt.args.b.Equals(shouldBeB))
 		})
 	}
 }
