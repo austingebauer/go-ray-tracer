@@ -215,9 +215,13 @@ func Inverse(m Matrix) (*Matrix, error) {
 		return nil, errors.New("the passed matrix is not invertible")
 	}
 
-	determinantM := Determinant(m)
 	mInverted := NewMatrix(m.rows, m.cols)
 
+	// Calculate the determinant of m
+	determinantM := Determinant(m)
+
+	// Place the cofactor of each element divided by
+	// the determinant into a transposition of m.
 	for row := 0; row < int(m.rows); row++ {
 		for col := 0; col < int(m.cols); col++ {
 			c, err := Cofactor(m, uint(row), uint(col))
