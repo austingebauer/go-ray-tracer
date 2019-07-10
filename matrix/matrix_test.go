@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/austingebauer/go-ray-tracer/math_utils"
 )
 
 func TestNewMatrix(t *testing.T) {
@@ -767,6 +769,25 @@ func TestCofactor(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "cofactor of a 4x4 matrix",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-5, 2, 6, -8},
+						{1, -5, 1, 8},
+						{7, 7, -6, -7},
+						{1, -3, 7, 4},
+					},
+				},
+				row: 0,
+				col: 0,
+			},
+			want:    116,
+			wantErr: false,
+		},
+		{
 			name: "cofactor of a 3x3 matrix with submatrix row out of bounds for an error",
 			args: args{
 				m: Matrix{
@@ -936,6 +957,105 @@ func TestIsInvertible(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want, IsInvertible(tt.args.m))
+		})
+	}
+}
+
+func TestInverse(t *testing.T) {
+	type args struct {
+		a Matrix
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Matrix
+		wantErr bool
+	}{
+		{
+			name: "inverse of 4x4 matrix",
+			args: args{
+				a: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-5, 2, 6, -8},
+						{1, -5, 1, 8},
+						{7, 7, -6, -7},
+						{1, -3, 7, 4},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{0.21805, 0.45113, 0.24060, -0.04511},
+					{-0.80827, -1.45677, -0.44361, 0.52068},
+					{-0.07895, -0.22368, -0.05263, 0.19737},
+					{-0.52256, -0.81391, -0.30075, 0.30639},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "inverse of 4x4 matrix that's not invertible",
+			args: args{
+				a: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-4, 2, -2, -3},
+						{9, 6, 2, 6},
+						{0, -5, 1, -5},
+						{0, 0, 0, 0},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{0.21805, 0.45113, 0.24060, -0.04511},
+					{-0.80827, -1.45677, -0.44361, 0.52068},
+					{-0.07895, -0.22368, -0.05263, 0.19737},
+					{-0.52256, -0.81391, -0.30075, 0.30639},
+				},
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// inverse of a is b
+			b, err := Inverse(tt.args.a)
+			if tt.wantErr {
+				assert.Error(t, err)
+				assert.Nil(t, b)
+			} else {
+				assert.NotNil(t, b)
+				assert.True(t, true, b.Equals(tt.want))
+
+				// determinant of a is 532.0
+				assert.Equal(t, 532.0, Determinant(tt.args.a))
+
+				// cofactor of a at 2,3 is -160.0
+				cf, err := Cofactor(tt.args.a, 2, 3)
+				assert.NoError(t, err)
+				assert.Equal(t, -160.0, cf)
+
+				// b[3][2] is -160.0/532.0
+				assert.True(t, math_utils.Float64Equals(-160.0/532.0, b.data[3][2],
+					math_utils.Epsilon))
+
+				// cofactor of a at 3,2 is 105.0
+				cf, err = Cofactor(tt.args.a, 3, 2)
+				assert.NoError(t, err)
+				assert.Equal(t, 105.0, cf)
+
+				// b[2][3] is 105.0/532.0
+				assert.True(t, math_utils.Float64Equals(105.0/532.0, b.data[2][3],
+					math_utils.Epsilon))
+			}
 		})
 	}
 }

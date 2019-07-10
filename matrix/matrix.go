@@ -195,7 +195,7 @@ func Cofactor(m Matrix, row, col uint) (float64, error) {
 
 	// If row plus column is an odd number, then the cofactor is the negated minor.
 	// Otherwise, the cofactor is the unmodified minor.
-	shouldNegateMinor := row+col%2 == 1
+	shouldNegateMinor := (row+col)%2 == 1
 	if shouldNegateMinor {
 		minor = minor * -1
 	}
@@ -207,4 +207,28 @@ func Cofactor(m Matrix, row, col uint) (float64, error) {
 // The passed Matrix is invertible if it's determinant is equal to 0.
 func IsInvertible(m Matrix) bool {
 	return Determinant(m) != 0
+}
+
+// Inverse returns the inverse of the passed Matrix.
+func Inverse(m Matrix) (*Matrix, error) {
+	if !IsInvertible(m) {
+		return nil, errors.New("the passed matrix is not invertible")
+	}
+
+	determinantM := Determinant(m)
+	mInverted := NewMatrix(m.rows, m.cols)
+
+	for row := 0; row < int(m.rows); row++ {
+		for col := 0; col < int(m.cols); col++ {
+			c, err := Cofactor(m, uint(row), uint(col))
+			if err != nil {
+				return nil, err
+			}
+
+			// note that col and row are reversed in the placement to accomplish transposing
+			mInverted.data[col][row] = c / determinantM
+		}
+	}
+
+	return mInverted, nil
 }
