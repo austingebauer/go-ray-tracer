@@ -40,7 +40,8 @@ func NewMatrix(rows, cols uint) *Matrix {
 	return &m
 }
 
-// NewIdentityMatrix returns a new identity Matrix having row and column length equal to the passed size.
+// NewIdentityMatrix returns a new identity Matrix having row and column
+// length equal to the passed size.
 func NewIdentityMatrix(size uint) *Matrix {
 	m := NewMatrix(size, size)
 	for i := 0; i < int(m.rows); i++ {
@@ -50,7 +51,8 @@ func NewIdentityMatrix(size uint) *Matrix {
 	return m
 }
 
-// Equals returns true if this Matrix has identical rows, columns, and elements as the passed Matrix.
+// Equals returns true if this Matrix has identical rows, columns,
+// and elements as the passed Matrix.
 func (m *Matrix) Equals(m1 *Matrix) bool {
 	if m.rows != m1.rows || m.cols != m1.cols {
 		return false
@@ -220,8 +222,7 @@ func Inverse(m Matrix) (*Matrix, error) {
 	// Calculate the determinant of m
 	determinantM := Determinant(m)
 
-	// Place the cofactor of each element divided by
-	// the determinant into a transposition of m.
+	// Place the cofactor of each element divided by the determinant into a transposition of m.
 	for row := 0; row < int(m.rows); row++ {
 		for col := 0; col < int(m.cols); col++ {
 			c, err := Cofactor(m, uint(row), uint(col))

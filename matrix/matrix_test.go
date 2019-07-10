@@ -961,7 +961,7 @@ func TestIsInvertible(t *testing.T) {
 	}
 }
 
-func TestInverse(t *testing.T) {
+func TestInverseDetailed(t *testing.T) {
 	type args struct {
 		a Matrix
 	}
@@ -995,8 +995,51 @@ func TestInverse(t *testing.T) {
 					{-0.52256, -0.81391, -0.30075, 0.30639},
 				},
 			},
-			wantErr: false,
 		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// inverse of a is b
+			b, err := Inverse(tt.args.a)
+
+			assert.NotNil(t, b)
+			assert.NoError(t, err)
+			assert.True(t, b.Equals(tt.want))
+
+			// determinant of a is 532.0
+			assert.Equal(t, 532.0, Determinant(tt.args.a))
+
+			// cofactor of a at 2,3 is -160.0
+			cf, err := Cofactor(tt.args.a, 2, 3)
+			assert.NoError(t, err)
+			assert.Equal(t, -160.0, cf)
+
+			// b[3][2] is -160.0/532.0
+			assert.True(t, math_utils.Float64Equals(-160.0/532.0, b.data[3][2],
+				math_utils.Epsilon))
+
+			// cofactor of a at 3,2 is 105.0
+			cf, err = Cofactor(tt.args.a, 3, 2)
+			assert.NoError(t, err)
+			assert.Equal(t, 105.0, cf)
+
+			// b[2][3] is 105.0/532.0
+			assert.True(t, math_utils.Float64Equals(105.0/532.0, b.data[2][3],
+				math_utils.Epsilon))
+		})
+	}
+}
+
+func TestInverse(t *testing.T) {
+	type args struct {
+		a Matrix
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Matrix
+		wantErr bool
+	}{
 		{
 			name: "inverse of 4x4 matrix that's not invertible",
 			args: args{
@@ -1023,38 +1066,43 @@ func TestInverse(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "inverse of 4x4 matrix 1",
+			args: args{
+				a: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{8, -5, 9, 2},
+						{7, 5, 6, 1},
+						{-6, 0, 9, 6},
+						{-3, 0, -9, -4},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{-0.15385, -0.15385, -0.28205, -0.53846},
+					{-0.07692, 0.12308, 0.02564, 0.03077},
+					{0.35897, 0.35897, 0.43590, 0.92308},
+					{-0.69231, -0.69231, -0.76923, -1.92308},
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// inverse of a is b
 			b, err := Inverse(tt.args.a)
 			if tt.wantErr {
 				assert.Error(t, err)
 				assert.Nil(t, b)
 			} else {
+				assert.NoError(t, err)
 				assert.NotNil(t, b)
-				assert.True(t, true, b.Equals(tt.want))
-
-				// determinant of a is 532.0
-				assert.Equal(t, 532.0, Determinant(tt.args.a))
-
-				// cofactor of a at 2,3 is -160.0
-				cf, err := Cofactor(tt.args.a, 2, 3)
-				assert.NoError(t, err)
-				assert.Equal(t, -160.0, cf)
-
-				// b[3][2] is -160.0/532.0
-				assert.True(t, math_utils.Float64Equals(-160.0/532.0, b.data[3][2],
-					math_utils.Epsilon))
-
-				// cofactor of a at 3,2 is 105.0
-				cf, err = Cofactor(tt.args.a, 3, 2)
-				assert.NoError(t, err)
-				assert.Equal(t, 105.0, cf)
-
-				// b[2][3] is 105.0/532.0
-				assert.True(t, math_utils.Float64Equals(105.0/532.0, b.data[2][3],
-					math_utils.Epsilon))
+				assert.True(t, b.Equals(tt.want))
 			}
 		})
 	}
