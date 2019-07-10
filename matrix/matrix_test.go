@@ -890,3 +890,52 @@ func TestDeterminant(t *testing.T) {
 		})
 	}
 }
+
+func TestIsInvertible(t *testing.T) {
+	type args struct {
+		m Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "4x4 matrix is invertible",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{6, 4, 4, 4},
+						{5, 5, 7, 6},
+						{4, -9, 3, -7},
+						{9, 1, 7, -6},
+					},
+				},
+			},
+			want: true,
+		},
+		{
+			name: "4x4 matrix is not invertible",
+			args: args{
+				m: Matrix{
+					rows: 4,
+					cols: 4,
+					data: [][]float64{
+						{-4, 2, -2, -3},
+						{9, 6, 2, 6},
+						{0, -5, 1, -5},
+						{0, 0, 0, 0},
+					},
+				},
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, IsInvertible(tt.args.m))
+		})
+	}
+}

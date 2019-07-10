@@ -202,3 +202,9 @@ func Cofactor(m Matrix, row, col uint) (float64, error) {
 
 	return minor, nil
 }
+
+// IsInvertible returns true if the passed Matrix is invertible.
+// The passed Matrix is invertible if it's determinant is equal to 0.
+func IsInvertible(m Matrix) bool {
+	return Determinant(m) != 0
+}
