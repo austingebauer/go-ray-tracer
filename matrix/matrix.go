@@ -6,18 +6,6 @@ import (
 	"github.com/austingebauer/go-ray-tracer/math_utils"
 )
 
-// Identity is a 4x4 identity matrix.
-var Identity = Matrix{
-	rows: 4,
-	cols: 4,
-	data: [][]float64{
-		{1, 0, 0, 0},
-		{0, 1, 0, 0},
-		{0, 0, 1, 0},
-		{0, 0, 0, 1},
-	},
-}
-
 // Matrix represents an n-dimensional grid of floating point numbers.
 type Matrix struct {
 	rows, cols uint
@@ -38,6 +26,37 @@ func NewMatrix(rows, cols uint) *Matrix {
 	m.data = d
 
 	return &m
+}
+
+// GetRows returns the number of rows that the Matrix has.
+func (m *Matrix) GetRows() uint {
+	return m.rows
+}
+
+// GetCols returns the number of columns that the Matrix has.
+func (m *Matrix) GetCols() uint {
+	return m.cols
+}
+
+// SetValue sets the passed value at the passed row and column in the Matrix.
+func (m *Matrix) SetValue(row, col uint, val float64) error {
+	err := CheckInBounds(*m, row, col)
+	if err != nil {
+		return err
+	}
+
+	m.data[row][col] = val
+	return nil
+}
+
+// GetValue sets the passed value at the passed row and column in the Matrix.
+func (m *Matrix) GetValue(row, col uint) (float64, error) {
+	err := CheckInBounds(*m, row, col)
+	if err != nil {
+		return 0, err
+	}
+
+	return m.data[row][col], nil
 }
 
 // NewIdentityMatrix returns a new identity Matrix having row and column
@@ -137,12 +156,9 @@ func Determinant(m Matrix) float64 {
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
 func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
-	if row < 0 || row >= m.rows {
-		return nil, errors.New("row is out of bounds of the passed matrix")
-	}
-
-	if col < 0 || col >= m.cols {
-		return nil, errors.New("col is out of bounds of the passed matrix")
+	err := CheckInBounds(m, row, col)
+	if err != nil {
+		return nil, err
 	}
 
 	subM := NewMatrix(m.rows-1, m.cols-1)
@@ -236,4 +252,32 @@ func Inverse(m Matrix) (*Matrix, error) {
 	}
 
 	return mInverted, nil
+}
+
+// CheckInBounds returns an error if either the row or column values
+// are out of bounds of the passed Matrix.
+func CheckInBounds(m Matrix, row, col uint) error {
+	if row < 0 || row >= m.rows {
+		return errors.New("row is out of bounds of the passed matrix")
+	}
+
+	if col < 0 || col >= m.cols {
+		return errors.New("col is out of bounds of the passed matrix")
+	}
+
+	return nil
+}
+
+// Translation returns a 4x4 translation Matrix.
+// The translation Matrix returned has the form:
+//   | 1 0 0 x |
+//   | 0 1 0 y |
+//   | 0 0 1 z |
+//   | 0 0 0 1 |
+func Translation(x, y, z float64) *Matrix {
+	m := NewIdentityMatrix(4)
+	m.data[0][3] = x
+	m.data[1][3] = y
+	m.data[2][3] = z
+	return m
 }

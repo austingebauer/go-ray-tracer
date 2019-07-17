@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/austingebauer/go-ray-tracer/math_utils"
+	_ "github.com/austingebauer/go-ray-tracer/point"
 )
 
 func TestNewMatrix(t *testing.T) {
@@ -1202,4 +1203,395 @@ func TestMultiplyProductByInverse(t *testing.T) {
 			assert.True(t, tt.args.b.Equals(shouldBeB))
 		})
 	}
+}
+
+func TestMatrix_GetRows(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   uint
+	}{
+		{
+			name: "get the number of rows in the matrix",
+			fields: fields{
+				rows: 2,
+				cols: 3,
+				data: [][]float64{
+					{0, 0},
+					{0, 0},
+				},
+			},
+			want: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+
+			assert.Equal(t, tt.want, m.GetRows())
+		})
+	}
+}
+
+func TestMatrix_GetCols(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   uint
+	}{
+		{
+			name: "get the number of columns in the matrix",
+			fields: fields{
+				rows: 2,
+				cols: 3,
+				data: [][]float64{
+					{0, 0},
+					{0, 0},
+				},
+			},
+			want: 3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+
+			assert.Equal(t, tt.want, m.GetCols())
+		})
+	}
+}
+
+func TestMatrix_SetValue(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		row uint
+		col uint
+		val float64
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "set value in the row and column of the matrix",
+			fields: fields{
+				rows: 2,
+				cols: 3,
+				data: [][]float64{
+					{0, 0},
+					{0, 0},
+				},
+			},
+			args: args{
+				row: 1,
+				col: 1,
+				val: -99,
+			},
+			wantErr: false,
+		},
+		{
+			name: "set value in the row and column of the matrix out of bounds",
+			fields: fields{
+				rows: 2,
+				cols: 3,
+				data: [][]float64{
+					{0, 0},
+					{0, 0},
+				},
+			},
+			args: args{
+				row: 1,
+				col: 4,
+				val: -99,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+
+			err := m.SetValue(tt.args.row, tt.args.col, tt.args.val)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, m.data[tt.args.row][tt.args.col], tt.args.val)
+			}
+		})
+	}
+}
+
+func TestMatrix_GetValue(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		row uint
+		col uint
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    float64
+		wantErr bool
+	}{
+		{
+			name: "get value in the row and column of the matrix",
+			fields: fields{
+				rows: 2,
+				cols: 3,
+				data: [][]float64{
+					{0, 0},
+					{0, -99},
+				},
+			},
+			args: args{
+				row: 1,
+				col: 1,
+			},
+			want:    -99,
+			wantErr: false,
+		},
+		{
+			name: "get value in the row and column of the matrix out of bounds",
+			fields: fields{
+				rows: 2,
+				cols: 3,
+				data: [][]float64{
+					{0, 0},
+					{0, 0},
+				},
+			},
+			args: args{
+				row: 1,
+				col: 4,
+			},
+			want:    -1,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+
+			got, err := m.GetValue(tt.args.row, tt.args.col)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
+}
+
+func TestNewIdentityMatrix(t *testing.T) {
+	type args struct {
+		size uint
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		{
+			name: "1x1 identity matrix",
+			args: args{
+				size: 1,
+			},
+			want: &Matrix{
+				rows: 1,
+				cols: 1,
+				data: [][]float64{
+					{1},
+				},
+			},
+		},
+		{
+			name: "2x2 identity matrix",
+			args: args{
+				size: 2,
+			},
+			want: &Matrix{
+				rows: 2,
+				cols: 2,
+				data: [][]float64{
+					{1, 0},
+					{0, 1},
+				},
+			},
+		},
+		{
+			name: "4x4 identity matrix",
+			args: args{
+				size: 4,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 0},
+					{0, 1, 0, 0},
+					{0, 0, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, NewIdentityMatrix(tt.args.size), tt.want)
+		})
+	}
+}
+
+func TestCheckInBounds(t *testing.T) {
+	type args struct {
+		m   Matrix
+		row uint
+		col uint
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "check that row and column are in bounds of the matrix",
+			args: args{
+				m:   *NewMatrix(4, 4),
+				row: 3,
+				col: 0,
+			},
+			wantErr: false,
+		},
+		{
+			name: "check that row and column are in bounds of the matrix",
+			args: args{
+				m:   *NewMatrix(4, 4),
+				row: 0,
+				col: 3,
+			},
+			wantErr: false,
+		},
+		{
+			name: "check that row and column are out of bounds of the matrix",
+			args: args{
+				m:   *NewMatrix(4, 4),
+				row: 3,
+				col: 4,
+			},
+			wantErr: true,
+		},
+		{
+			name: "check that row and column are out of bounds of the matrix",
+			args: args{
+				m:   *NewMatrix(4, 4),
+				row: 4,
+				col: 0,
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := CheckInBounds(tt.args.m, tt.args.row, tt.args.col)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestTranslation(t *testing.T) {
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		{
+			name: "translation matrix with x, y, and z values",
+			args: args{
+				x: 5,
+				y: -3,
+				z: 2,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 5},
+					{0, 1, 0, -3},
+					{0, 0, 1, 2},
+					{0, 0, 0, 1},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Translation(tt.args.x, tt.args.y, tt.args.z))
+		})
+	}
+}
+
+func TestTransformPoint(t *testing.T) {
+	transform := Translation(5, -3, 2)
+	p := NewPoint(-3, 4, 5)
+	m, err := Multiply(*transform, *ToMatrix(*p))
+	assert.NoError(t, err)
+	assert.NotNil(t, m)
+
+	ptMult := ToPoint(*m)
+	assert.Equal(t, NewPoint(2, 1, 7), ptMult)
+}
+
+func TestInverseTransformPoint(t *testing.T) {
+
+}
+
+func TestTransformVector(t *testing.T) {
+
 }

@@ -5,6 +5,11 @@ import (
 	"math"
 
 	"github.com/austingebauer/go-ray-tracer/math_utils"
+	"github.com/austingebauer/go-ray-tracer/matrix"
+)
+
+const (
+	vectorW = 0
 )
 
 // Vector represents a vector in a left-handed 3D coordinate system
@@ -123,4 +128,25 @@ func Subtract(vec1, vec2 Vector) Vector {
 		Y: vec1.Y - vec2.Y,
 		Z: vec1.Z - vec2.Z,
 	}
+}
+
+// ToMatrix returns a 4x1 Matrix that represents the passed Vector.
+func ToMatrix(vec Vector) *matrix.Matrix {
+	m := matrix.NewMatrix(4, 1)
+	_ := m.SetValue(0, 0, vec.X)
+	_ = m.SetValue(1, 0, vec.Y)
+	_ = m.SetValue(2, 0, vec.Z)
+	_ = m.SetValue(3, 0, vectorW)
+
+	return m
+}
+
+// ToVector returns a Point representation of the passed Matrix.
+func ToVector(m matrix.Matrix) *Vector {
+	// TODO: error check on 4x1 matrix
+
+	x, _ := m.GetValue(0, 0)
+	y, _ := m.GetValue(1, 0)
+	z, _ := m.GetValue(2, 0)
+	return NewVector(x, y, z)
 }
