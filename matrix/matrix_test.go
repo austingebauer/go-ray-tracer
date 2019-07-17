@@ -6,7 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/austingebauer/go-ray-tracer/math_utils"
-	_ "github.com/austingebauer/go-ray-tracer/point"
 )
 
 func TestNewMatrix(t *testing.T) {
@@ -1575,23 +1574,4 @@ func TestTranslation(t *testing.T) {
 			assert.Equal(t, tt.want, Translation(tt.args.x, tt.args.y, tt.args.z))
 		})
 	}
-}
-
-func TestTransformPoint(t *testing.T) {
-	transform := Translation(5, -3, 2)
-	p := NewPoint(-3, 4, 5)
-	m, err := Multiply(*transform, *ToMatrix(*p))
-	assert.NoError(t, err)
-	assert.NotNil(t, m)
-
-	ptMult := ToPoint(*m)
-	assert.Equal(t, NewPoint(2, 1, 7), ptMult)
-}
-
-func TestInverseTransformPoint(t *testing.T) {
-
-}
-
-func TestTransformVector(t *testing.T) {
-
 }

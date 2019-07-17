@@ -133,7 +133,7 @@ func Subtract(vec1, vec2 Vector) Vector {
 // ToMatrix returns a 4x1 Matrix that represents the passed Vector.
 func ToMatrix(vec Vector) *matrix.Matrix {
 	m := matrix.NewMatrix(4, 1)
-	_ := m.SetValue(0, 0, vec.X)
+	_ = m.SetValue(0, 0, vec.X)
 	_ = m.SetValue(1, 0, vec.Y)
 	_ = m.SetValue(2, 0, vec.Z)
 	_ = m.SetValue(3, 0, vectorW)

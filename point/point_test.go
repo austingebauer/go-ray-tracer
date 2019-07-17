@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/vector"
 	"github.com/stretchr/testify/assert"
 )
@@ -381,4 +382,19 @@ func TestSubtract(t *testing.T) {
 			assert.Equal(t, tt.want, Subtract(tt.args.pt1, tt.args.pt2))
 		})
 	}
+}
+
+func TestTransformPoint(t *testing.T) {
+	transform := matrix.Translation(5, -3, 2)
+	p := NewPoint(-3, 4, 5)
+	m, err := matrix.Multiply(*transform, *ToMatrix(*p))
+	assert.NoError(t, err)
+	assert.NotNil(t, m)
+
+	ptMult := ToPoint(*m)
+	assert.Equal(t, NewPoint(2, 1, 7), ptMult)
+}
+
+func TestInverseTransformPoint(t *testing.T) {
+
 }

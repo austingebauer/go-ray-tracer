@@ -731,3 +731,7 @@ func TestSubtract(t *testing.T) {
 		})
 	}
 }
+
+func TestTransformVector(t *testing.T) {
+
+}
