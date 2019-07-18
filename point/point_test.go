@@ -391,10 +391,114 @@ func TestTransformPoint(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, m)
 
-	ptMult := ToPoint(*m)
+	ptMult, err := ToPoint(*m)
+	assert.NoError(t, err)
 	assert.Equal(t, NewPoint(2, 1, 7), ptMult)
 }
 
 func TestInverseTransformPoint(t *testing.T) {
+	p := NewPoint(-3, 4, 5)
+	transform := matrix.Translation(5, -3, 2)
 
+	inverseT, err := matrix.Inverse(*transform)
+	assert.NoError(t, err)
+	assert.NotNil(t, inverseT)
+
+	m, err := matrix.Multiply(*inverseT, *ToMatrix(*p))
+	assert.NoError(t, err)
+	assert.NotNil(t, m)
+
+	ptMult, err := ToPoint(*m)
+	assert.NoError(t, err)
+	assert.Equal(t, NewPoint(-8, 7, 3), ptMult)
+}
+
+func TestToMatrix(t *testing.T) {
+	type args struct {
+		pt Point
+	}
+	tests := []struct {
+		name string
+		args args
+		want *matrix.Matrix
+	}{
+		{
+			name: "point to matrix conversion",
+			args: args{
+				pt: *NewPoint(1, -2, 3),
+			},
+			want: matrix.NewMatrix(4, 1),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.want.SetValue(0, 0, 1)
+			assert.NoError(t, err)
+			err = tt.want.SetValue(1, 0, -2)
+			assert.NoError(t, err)
+			err = tt.want.SetValue(2, 0, 3)
+			assert.NoError(t, err)
+			err = tt.want.SetValue(3, 0, 1)
+			assert.NoError(t, err)
+
+			assert.Equal(t, tt.want, ToMatrix(tt.args.pt))
+		})
+	}
+}
+
+func TestToPoint(t *testing.T) {
+	type args struct {
+		m matrix.Matrix
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Point
+		wantErr bool
+	}{
+		{
+			name: "matrix to point conversion",
+			args: args{
+				m: *matrix.NewMatrix(4, 1),
+			},
+			want:    NewPoint(1, -2, 3),
+			wantErr: false,
+		},
+		{
+			name: "matrix to point conversion error row length",
+			args: args{
+				m: *matrix.NewMatrix(2, 1),
+			},
+			want:    NewPoint(1, -2, 3),
+			wantErr: true,
+		},
+		{
+			name: "matrix to point conversion error col length",
+			args: args{
+				m: *matrix.NewMatrix(4, 2),
+			},
+			want:    NewPoint(1, -2, 3),
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.wantErr {
+				got, err := ToPoint(tt.args.m)
+				assert.Error(t, err)
+				assert.Nil(t, got)
+			} else {
+				err := tt.args.m.SetValue(0, 0, 1)
+				assert.NoError(t, err)
+				err = tt.args.m.SetValue(1, 0, -2)
+				assert.NoError(t, err)
+				err = tt.args.m.SetValue(2, 0, 3)
+				assert.NoError(t, err)
+
+				got, err := ToPoint(tt.args.m)
+				assert.NotNil(t, got)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
 }

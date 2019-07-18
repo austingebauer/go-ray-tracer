@@ -2,6 +2,7 @@
 package vector
 
 import (
+	"errors"
 	"math"
 
 	"github.com/austingebauer/go-ray-tracer/math_utils"
@@ -142,11 +143,18 @@ func ToMatrix(vec Vector) *matrix.Matrix {
 }
 
 // ToVector returns a Point representation of the passed Matrix.
-func ToVector(m matrix.Matrix) *Vector {
-	// TODO: error check on 4x1 matrix
+// An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
+func ToVector(m matrix.Matrix) (*Vector, error) {
+	if m.GetRows() != 3 && m.GetRows() != 4 {
+		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a vector")
+	}
+
+	if m.GetCols() != 1 {
+		return nil, errors.New("matrix m must have 1 column to be converted to a vector")
+	}
 
 	x, _ := m.GetValue(0, 0)
 	y, _ := m.GetValue(1, 0)
 	z, _ := m.GetValue(2, 0)
-	return NewVector(x, y, z)
+	return NewVector(x, y, z), nil
 }

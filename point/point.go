@@ -2,6 +2,8 @@
 package point
 
 import (
+	"errors"
+
 	"github.com/austingebauer/go-ray-tracer/math_utils"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/vector"
@@ -97,11 +99,18 @@ func ToMatrix(pt Point) *matrix.Matrix {
 }
 
 // ToPoint returns a Point representation of the passed Matrix.
-func ToPoint(m matrix.Matrix) *Point {
-	// TODO: error check on 4x1 matrix
+// An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
+func ToPoint(m matrix.Matrix) (*Point, error) {
+	if m.GetRows() != 3 && m.GetRows() != 4 {
+		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a point")
+	}
+
+	if m.GetCols() != 1 {
+		return nil, errors.New("matrix m must have 1 column to be converted to a point")
+	}
 
 	x, _ := m.GetValue(0, 0)
 	y, _ := m.GetValue(1, 0)
 	z, _ := m.GetValue(2, 0)
-	return NewPoint(x, y, z)
+	return NewPoint(x, y, z), nil
 }

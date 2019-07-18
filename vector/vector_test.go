@@ -5,6 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/austingebauer/go-ray-tracer/matrix"
 )
 
 func TestNewVector(t *testing.T) {
@@ -733,5 +735,105 @@ func TestSubtract(t *testing.T) {
 }
 
 func TestTransformVector(t *testing.T) {
+	transform := matrix.Translation(5, -3, 2)
+	vec := NewVector(-3, 4, 5)
+	prod, err := matrix.Multiply(*transform, *ToMatrix(*vec))
+	assert.NoError(t, err)
+	assert.NotNil(t, prod)
 
+	// The vector must be the same after a translation happens to it.
+	// Moving a vector around in space does not change the direction it points.
+	mVec, err := ToVector(*prod)
+	assert.NoError(t, err)
+	assert.Equal(t, vec, mVec)
+}
+
+func TestToMatrix(t *testing.T) {
+	type args struct {
+		vec Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want *matrix.Matrix
+	}{
+		{
+			name: "vector to matrix conversion",
+			args: args{
+				vec: *NewVector(1, -2, 3),
+			},
+			want: matrix.NewMatrix(4, 1),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.want.SetValue(0, 0, 1)
+			assert.NoError(t, err)
+			err = tt.want.SetValue(1, 0, -2)
+			assert.NoError(t, err)
+			err = tt.want.SetValue(2, 0, 3)
+			assert.NoError(t, err)
+			err = tt.want.SetValue(3, 0, 0)
+			assert.NoError(t, err)
+
+			assert.Equal(t, tt.want, ToMatrix(tt.args.vec))
+		})
+	}
+}
+
+func TestToVector(t *testing.T) {
+	type args struct {
+		m matrix.Matrix
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Vector
+		wantErr bool
+	}{
+		{
+			name: "matrix to vector conversion",
+			args: args{
+				m: *matrix.NewMatrix(4, 1),
+			},
+			want:    NewVector(1, -2, 3),
+			wantErr: false,
+		},
+		{
+			name: "matrix to vector conversion error row length",
+			args: args{
+				m: *matrix.NewMatrix(2, 1),
+			},
+			want:    NewVector(1, -2, 3),
+			wantErr: true,
+		},
+		{
+			name: "matrix to vector conversion error col length",
+			args: args{
+				m: *matrix.NewMatrix(4, 2),
+			},
+			want:    NewVector(1, -2, 3),
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.wantErr {
+				got, err := ToVector(tt.args.m)
+				assert.Error(t, err)
+				assert.Nil(t, got)
+			} else {
+				err := tt.args.m.SetValue(0, 0, 1)
+				assert.NoError(t, err)
+				err = tt.args.m.SetValue(1, 0, -2)
+				assert.NoError(t, err)
+				err = tt.args.m.SetValue(2, 0, 3)
+				assert.NoError(t, err)
+
+				got, err := ToVector(tt.args.m)
+				assert.NotNil(t, got)
+				assert.Equal(t, tt.want, got)
+			}
+		})
+	}
 }
