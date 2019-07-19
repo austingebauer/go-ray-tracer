@@ -502,3 +502,16 @@ func TestToPoint(t *testing.T) {
 		})
 	}
 }
+
+func TestScalingPoint(t *testing.T) {
+	transform := matrix.Scaling(2, 3, 4)
+	pt := NewPoint(-4, 6, 8)
+
+	mult, err := matrix.Multiply(*transform, *ToMatrix(*pt))
+	assert.NoError(t, err)
+
+	ptMult, err := ToPoint(*mult)
+	assert.NoError(t, err)
+
+	assert.Equal(t, NewPoint(-8, 18, 32), ptMult)
+}

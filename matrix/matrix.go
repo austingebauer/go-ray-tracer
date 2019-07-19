@@ -281,3 +281,17 @@ func Translation(x, y, z float64) *Matrix {
 	m.data[2][3] = z
 	return m
 }
+
+// Scaling returns a 4x4 scaling Matrix.
+// The scaling Matrix returned has the form:
+//   | x 0 0 0 |
+//   | 0 y 0 0 |
+//   | 0 0 z 0 |
+//   | 0 0 0 1 |
+func Scaling(x, y, z float64) *Matrix {
+	m := NewIdentityMatrix(4)
+	m.data[0][0] = x
+	m.data[1][1] = y
+	m.data[2][2] = z
+	return m
+}

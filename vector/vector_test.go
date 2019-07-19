@@ -837,3 +837,16 @@ func TestToVector(t *testing.T) {
 		})
 	}
 }
+
+func TestScalingVector(t *testing.T) {
+	transform := matrix.Scaling(2, 3, 4)
+	pt := NewVector(-4, 6, 8)
+
+	mult, err := matrix.Multiply(*transform, *ToMatrix(*pt))
+	assert.NoError(t, err)
+
+	ptMult, err := ToVector(*mult)
+	assert.NoError(t, err)
+
+	assert.Equal(t, NewVector(-8, 18, 32), ptMult)
+}
