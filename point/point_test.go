@@ -515,3 +515,15 @@ func TestScalingPoint(t *testing.T) {
 
 	assert.Equal(t, NewPoint(-8, 18, 32), ptMult)
 }
+
+func TestPointReflectionOverAxis(t *testing.T) {
+	transform := matrix.Scaling(-1, 1, 1)
+	pt := NewPoint(2, 3, 4)
+
+	mult, err := matrix.Multiply(*transform, *ToMatrix(*pt))
+	assert.NoError(t, err)
+
+	ptReflectedOnX, err := ToPoint(*mult)
+	assert.NoError(t, err)
+	assert.Equal(t, NewPoint(-2, 3, 4), ptReflectedOnX)
+}
