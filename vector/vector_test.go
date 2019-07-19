@@ -840,27 +840,28 @@ func TestToVector(t *testing.T) {
 
 func TestScalingVector(t *testing.T) {
 	transform := matrix.Scaling(2, 3, 4)
-	pt := NewVector(-4, 6, 8)
+	vec := NewVector(-4, 6, 8)
 
-	mult, err := matrix.Multiply(*transform, *ToMatrix(*pt))
+	mult, err := matrix.Multiply(*transform, *ToMatrix(*vec))
 	assert.NoError(t, err)
 
-	ptMult, err := ToVector(*mult)
+	vecMult, err := ToVector(*mult)
 	assert.NoError(t, err)
 
-	assert.Equal(t, NewVector(-8, 18, 32), ptMult)
+	assert.Equal(t, NewVector(-8, 18, 32), vecMult)
 }
 
-// TODO: finish test
-//func TestScalingInverseVector(t *testing.T) {
-//	transform := matrix.Scaling(2, 3, 4)
-//	pt := NewVector(-4, 6, 8)
-//
-//	mult, err := matrix.Multiply(*transform, *ToMatrix(*pt))
-//	assert.NoError(t, err)
-//
-//	ptMult, err := ToVector(*mult)
-//	assert.NoError(t, err)
-//
-//	assert.Equal(t, NewVector(-8, 18, 32), ptMult)
-//}
+func TestScalingInverseVector(t *testing.T) {
+	transform := matrix.Scaling(2, 3, 4)
+	invM, err := matrix.Inverse(*transform)
+	assert.NoError(t, err)
+
+	vec := NewVector(-4, 6, 8)
+	mult, err := matrix.Multiply(*invM, *ToMatrix(*vec))
+	assert.NoError(t, err)
+
+	vecMult, err := ToVector(*mult)
+	assert.NoError(t, err)
+
+	assert.Equal(t, NewVector(-2, 2, 2), vecMult)
+}

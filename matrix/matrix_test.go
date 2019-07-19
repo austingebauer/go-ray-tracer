@@ -1575,3 +1575,40 @@ func TestTranslation(t *testing.T) {
 		})
 	}
 }
+
+func TestScaling(t *testing.T) {
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		{
+			name: "scaling matrix with x, y, and z values",
+			args: args{
+				x: 5,
+				y: -3,
+				z: 2,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{5, 0, 0, 0},
+					{0, -3, 0, 0},
+					{0, 0, 2, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Scaling(tt.args.x, tt.args.y, tt.args.z))
+		})
+	}
+}
