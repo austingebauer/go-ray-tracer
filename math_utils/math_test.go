@@ -1,7 +1,10 @@
 package math_utils
 
 import (
+	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFloat64Equals(t *testing.T) {
@@ -57,6 +60,84 @@ func TestFloat64Equals(t *testing.T) {
 			if got := Float64Equals(tt.args.a, tt.args.b, tt.args.c); got != tt.want {
 				t.Errorf("Float64Equals() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func TestToRadians(t *testing.T) {
+	type args struct {
+		degrees float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "30 degrees to radians",
+			args: args{
+				degrees: 30,
+			},
+			want: math.Pi / 6,
+		},
+		{
+			name: "90 degrees to radians",
+			args: args{
+				degrees: 90,
+			},
+			want: math.Pi / 2,
+		},
+		{
+			name: "180 degrees to radians",
+			args: args{
+				degrees: 180,
+			},
+			want: math.Pi,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			rad := ToRadians(tt.args.degrees)
+			assert.True(t, Float64Equals(tt.want, rad, Epsilon))
+		})
+	}
+}
+
+func TestToDegrees(t *testing.T) {
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "pi/6 radians to degrees",
+			args: args{
+				radians: math.Pi / 6,
+			},
+			want: 30,
+		},
+		{
+			name: "pi/2 radians to degrees",
+			args: args{
+				radians: math.Pi / 2,
+			},
+			want: 90,
+		},
+		{
+			name: "pi radians to degrees",
+			args: args{
+				radians: math.Pi,
+			},
+			want: 180,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			deg := ToDegrees(tt.args.radians)
+			assert.True(t, Float64Equals(tt.want, deg, Epsilon))
 		})
 	}
 }

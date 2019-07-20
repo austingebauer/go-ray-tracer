@@ -295,3 +295,4 @@ func Scaling(x, y, z float64) *Matrix {
 	m.data[2][2] = z
 	return m
 }
+

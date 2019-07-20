@@ -13,3 +13,14 @@ const (
 func Float64Equals(a, b, epsilon float64) bool {
 	return math.Abs(a-b) < epsilon
 }
+
+// ToRadians returns the conversion of the passed degree value into radians.
+func ToRadians(degrees float64) float64 {
+	return degrees * (math.Pi / 180)
+}
+
+// ToDegrees returns the conversion of the passed radian value into degrees.
+func ToDegrees(radians float64) float64 {
+	rad := radians * (180 / math.Pi)
+	return rad
+}
