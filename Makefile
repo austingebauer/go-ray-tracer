@@ -7,7 +7,7 @@ BINARY_FILE_NAME = go-ray-tracer
 MAIN_PROGRAM_FILE = main.go
 TEST_COVERAGE_PROFILE = coverage.out
 
-all: out build test cover_func
+all: out build test vet cover_func loc
 
 build: out
 	go build -o $(BUILD_OUT_DIR)/$(BINARY_FILE_NAME) $(MAIN_PROGRAM_FILE)
@@ -26,6 +26,9 @@ out:
 
 loc:
 	find . -type f -not -path "vendor" -name "*.go" | xargs wc -l
+
+vet:
+	go vet ./...
 
 clean:
 	rm -rf $(BUILD_OUT_DIR)

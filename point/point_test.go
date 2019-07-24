@@ -5,9 +5,10 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/vector"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestNewPoint(t *testing.T) {
@@ -529,15 +530,22 @@ func TestPointReflectionOverAxis(t *testing.T) {
 	assert.Equal(t, NewPoint(-2, 3, 4), ptReflectedOnX)
 }
 
-func TestPointRotateAroundX(t *testing.T) {
-	pt := NewPoint(0, 1, 0)
+func TestPointRotateXAxis(t *testing.T) {
+	ptM := ToMatrix(*NewPoint(0, 1, 0))
 	half_quarter := matrix.RotationX(math.Pi / 4)
-	//full_quarter := matrix.RotationX(math.Pi / 2)
+	full_quarter := matrix.RotationX(math.Pi / 2)
 
-	rotM, err := matrix.Multiply(*half_quarter, *ToMatrix(*pt))
+	// rotate the point around the x axis Pi/4 radians
+	rotM, err := matrix.Multiply(*half_quarter, *ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := ToPoint(*rotM)
 	assert.NoError(t, err)
+	assert.True(t, NewPoint(0, math.Sqrt(2)/2, math.Sqrt(2)/2).Equals(rotMPoint))
 
-	assert.Equal(t, NewPoint(0, math.Sqrt(2)/2, math.Sqrt(2)/2), rotMPoint)
+	// rotate the point around the x axis Pi/2 radians
+	rotM, err = matrix.Multiply(*full_quarter, *ptM)
+	assert.NoError(t, err)
+	rotMPoint, err = ToPoint(*rotM)
+	assert.NoError(t, err)
+	assert.True(t, NewPoint(0, 0, 1).Equals(rotMPoint))
 }
