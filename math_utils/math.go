@@ -21,6 +21,5 @@ func ToRadians(degrees float64) float64 {
 
 // ToDegrees returns the conversion of the passed radian value into degrees.
 func ToDegrees(radians float64) float64 {
-	rad := radians * (180 / math.Pi)
-	return rad
+	return radians * (180 / math.Pi)
 }

@@ -14,7 +14,7 @@ import (
 const (
 	canvasWidth  = 900
 	canvasHeight = 600
-	ppmFile      = "renders/projectile/projectile.ppm"
+	ppmFile      = "docs/renderings/projectile/projectile.ppm"
 )
 
 // Projectile represents an object with a position and a velocity.

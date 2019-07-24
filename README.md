@@ -18,4 +18,4 @@ go run main.go
 open renders/projectile/projectile.ppm
 ```
 
-![Projectile Rendering](renders/projectile/projectile.png)
+![Projectile Rendering](docs/renderings/projectile/projectile.png)
