@@ -2,6 +2,7 @@ package matrix
 
 import (
 	"errors"
+	"math"
 
 	"github.com/austingebauer/go-ray-tracer/math_utils"
 )
@@ -269,6 +270,7 @@ func CheckInBounds(m Matrix, row, col uint) error {
 }
 
 // Translation returns a 4x4 translation Matrix.
+//
 // The translation Matrix returned has the form:
 //   | 1 0 0 x |
 //   | 0 1 0 y |
@@ -283,6 +285,7 @@ func Translation(x, y, z float64) *Matrix {
 }
 
 // Scaling returns a 4x4 scaling Matrix.
+//
 // The scaling Matrix returned has the form:
 //   | x 0 0 0 |
 //   | 0 y 0 0 |
@@ -296,3 +299,19 @@ func Scaling(x, y, z float64) *Matrix {
 	return m
 }
 
+// RotationX returns a 4x4 rotation Matrix that can be used to
+// rotate a Point or Vector by the passed number of radians.
+//
+// The rotation Matrix returned has the form:
+//   | 1 0      0       0 |
+//   | 0 cos(r) -sin(r) 0 |
+//   | 0 sin(r) cos(r)  0 |
+//   | 0 0      0       1 |
+func RotationX(radians float64) *Matrix {
+	m := NewIdentityMatrix(4)
+	m.data[1][1] = math.Cos(radians)
+	m.data[1][2] = -1 * math.Sin(radians)
+	m.data[2][1] = math.Sin(radians)
+	m.data[2][2] = math.Cos(radians)
+	return m
+}

@@ -1,6 +1,7 @@
 package point
 
 import (
+	"math"
 	"reflect"
 	"testing"
 
@@ -526,4 +527,17 @@ func TestPointReflectionOverAxis(t *testing.T) {
 	ptReflectedOnX, err := ToPoint(*mult)
 	assert.NoError(t, err)
 	assert.Equal(t, NewPoint(-2, 3, 4), ptReflectedOnX)
+}
+
+func TestPointRotateAroundX(t *testing.T) {
+	pt := NewPoint(0, 1, 0)
+	half_quarter := matrix.RotationX(math.Pi / 4)
+	//full_quarter := matrix.RotationX(math.Pi / 2)
+
+	rotM, err := matrix.Multiply(*half_quarter, *ToMatrix(*pt))
+	assert.NoError(t, err)
+	rotMPoint, err := ToPoint(*rotM)
+	assert.NoError(t, err)
+
+	assert.Equal(t, NewPoint(0, math.Sqrt(2)/2, math.Sqrt(2)/2), rotMPoint)
 }
