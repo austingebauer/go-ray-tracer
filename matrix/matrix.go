@@ -299,8 +299,8 @@ func Scaling(x, y, z float64) *Matrix {
 	return m
 }
 
-// RotationX returns a 4x4 rotation Matrix that can be used to
-// rotate a Point or Vector by the passed number of radians.
+// RotationX returns a 4x4 rotation Matrix that can be used to rotate
+// a Point or Vector around the X axis by the passed number of radians.
 //
 // The rotation Matrix returned has the form:
 //   | 1 0      0       0 |
@@ -313,5 +313,39 @@ func RotationX(radians float64) *Matrix {
 	m.data[1][2] = -1 * math.Sin(radians)
 	m.data[2][1] = math.Sin(radians)
 	m.data[2][2] = math.Cos(radians)
+	return m
+}
+
+// RotationY returns a 4x4 rotation Matrix that can be used to rotate
+// a Point or Vector around the Y axis by the passed number of radians.
+//
+// The rotation Matrix returned has the form:
+//   | cos(r)  0 sin(r) 0 |
+//   | 0       1 0      0 |
+//   | -sin(r) 0 cos(r) 0 |
+//   | 0       0 0      1 |
+func RotationY(radians float64) *Matrix {
+	m := NewIdentityMatrix(4)
+	m.data[0][0] = math.Cos(radians)
+	m.data[0][2] = math.Sin(radians)
+	m.data[2][0] = -1 * math.Sin(radians)
+	m.data[2][2] = math.Cos(radians)
+	return m
+}
+
+// RotationZ returns a 4x4 rotation Matrix that can be used to rotate
+// a Point or Vector around the Z axis by the passed number of radians.
+//
+// The rotation Matrix returned has the form:
+//   | cos(r) -sin(r) 0 0 |
+//   | sin(r) cos(r)  0 0 |
+//   | 0      0       1 0 |
+//   | 0      0       0 1 |
+func RotationZ(radians float64) *Matrix {
+	m := NewIdentityMatrix(4)
+	m.data[0][0] = math.Cos(radians)
+	m.data[0][1] = -1 * math.Sin(radians)
+	m.data[1][0] = math.Sin(radians)
+	m.data[1][1] = math.Cos(radians)
 	return m
 }
