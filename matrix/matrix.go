@@ -349,3 +349,22 @@ func RotationZ(radians float64) *Matrix {
 	m.data[1][1] = math.Cos(radians)
 	return m
 }
+
+// Shearing returns a 4x4 shearing Matrix that can be used for a
+// shear transformation of a Point.
+//
+// The shearing Matrix returned has the form:
+//   | 1  xy xz 0 |
+//   | yx 1  yz 0 |
+//   | zx zy 1  0 |
+//   | 0  0  0  1 |
+func Shearing(xy, xz, yx, yz, zx, zy float64) *Matrix {
+	m := NewIdentityMatrix(4)
+	m.data[0][1] = xy
+	m.data[0][2] = xz
+	m.data[1][0] = yx
+	m.data[1][2] = yz
+	m.data[2][0] = zx
+	m.data[2][1] = zy
+	return m
+}

@@ -589,3 +589,75 @@ func TestPointRotateZAxis(t *testing.T) {
 	assert.NoError(t, err)
 	assert.True(t, NewPoint(-1, 0, 0).Equals(rotMPoint))
 }
+
+func TestPointShearing(t *testing.T) {
+	type args struct {
+		transform *matrix.Matrix
+		pt        *Point
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Point
+	}{
+		{
+			name: "shearing transformation of x in proportion to y",
+			args: args{
+				transform: matrix.Shearing(1, 0, 0, 0, 0, 0),
+				pt:        NewPoint(2, 3, 4),
+			},
+			want: NewPoint(5, 3, 4),
+		},
+		{
+			name: "shearing transformation of x in proportion to z",
+			args: args{
+				transform: matrix.Shearing(0, 1, 0, 0, 0, 0),
+				pt:        NewPoint(2, 3, 4),
+			},
+			want: NewPoint(6, 3, 4),
+		},
+		{
+			name: "shearing transformation of y in proportion to x",
+			args: args{
+				transform: matrix.Shearing(0, 0, 1, 0, 0, 0),
+				pt:        NewPoint(2, 3, 4),
+			},
+			want: NewPoint(2, 5, 4),
+		},
+		{
+			name: "shearing transformation of y in proportion to z",
+			args: args{
+				transform: matrix.Shearing(0, 0, 0, 1, 0, 0),
+				pt:        NewPoint(2, 3, 4),
+			},
+			want: NewPoint(2, 7, 4),
+		},
+		{
+			name: "shearing transformation of z in proportion to x",
+			args: args{
+				transform: matrix.Shearing(0, 0, 0, 0, 1, 0),
+				pt:        NewPoint(2, 3, 4),
+			},
+			want: NewPoint(2, 3, 6),
+		},
+		{
+			name: "shearing transformation of z in proportion to y",
+			args: args{
+				transform: matrix.Shearing(0, 0, 0, 0, 0, 1),
+				pt:        NewPoint(2, 3, 4),
+			},
+			want: NewPoint(2, 3, 7),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mPt := ToMatrix(*tt.args.pt)
+			shearM, err := matrix.Multiply(*tt.args.transform, *mPt)
+			assert.NoError(t, err)
+
+			shearPt, err := ToPoint(*shearM)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.want, shearPt)
+		})
+	}
+}
