@@ -737,7 +737,7 @@ func TestSubtract(t *testing.T) {
 func TestTransformVector(t *testing.T) {
 	transform := matrix.Translation(5, -3, 2)
 	vec := NewVector(-3, 4, 5)
-	prod, err := matrix.Multiply(*transform, *ToMatrix(*vec))
+	prod, err := matrix.Multiply(transform, ToMatrix(vec))
 	assert.NoError(t, err)
 	assert.NotNil(t, prod)
 
@@ -750,7 +750,7 @@ func TestTransformVector(t *testing.T) {
 
 func TestToMatrix(t *testing.T) {
 	type args struct {
-		vec Vector
+		vec *Vector
 	}
 	tests := []struct {
 		name string
@@ -760,7 +760,7 @@ func TestToMatrix(t *testing.T) {
 		{
 			name: "vector to matrix conversion",
 			args: args{
-				vec: *NewVector(1, -2, 3),
+				vec: NewVector(1, -2, 3),
 			},
 			want: matrix.NewMatrix(4, 1),
 		},
@@ -842,7 +842,7 @@ func TestScalingVector(t *testing.T) {
 	transform := matrix.Scaling(2, 3, 4)
 	vec := NewVector(-4, 6, 8)
 
-	mult, err := matrix.Multiply(*transform, *ToMatrix(*vec))
+	mult, err := matrix.Multiply(transform, ToMatrix(vec))
 	assert.NoError(t, err)
 
 	vecMult, err := ToVector(*mult)
@@ -853,11 +853,11 @@ func TestScalingVector(t *testing.T) {
 
 func TestScalingInverseVector(t *testing.T) {
 	transform := matrix.Scaling(2, 3, 4)
-	invM, err := matrix.Inverse(*transform)
+	invM, err := matrix.Inverse(transform)
 	assert.NoError(t, err)
 
 	vec := NewVector(-4, 6, 8)
-	mult, err := matrix.Multiply(*invM, *ToMatrix(*vec))
+	mult, err := matrix.Multiply(invM, ToMatrix(vec))
 	assert.NoError(t, err)
 
 	vecMult, err := ToVector(*mult)

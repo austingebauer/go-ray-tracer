@@ -88,7 +88,7 @@ func Subtract(pt1 Point, pt2 Point) vector.Vector {
 }
 
 // ToMatrix returns a 4x1 Matrix that represents the passed Point.
-func ToMatrix(pt Point) *matrix.Matrix {
+func ToMatrix(pt *Point) *matrix.Matrix {
 	m := matrix.NewMatrix(4, 1)
 	_ = m.SetValue(0, 0, pt.X)
 	_ = m.SetValue(1, 0, pt.Y)

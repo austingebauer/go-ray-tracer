@@ -41,7 +41,7 @@ func (m *Matrix) GetCols() uint {
 
 // SetValue sets the passed value at the passed row and column in the Matrix.
 func (m *Matrix) SetValue(row, col uint, val float64) error {
-	err := CheckInBounds(*m, row, col)
+	err := CheckInBounds(m, row, col)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (m *Matrix) SetValue(row, col uint, val float64) error {
 
 // GetValue sets the passed value at the passed row and column in the Matrix.
 func (m *Matrix) GetValue(row, col uint) (float64, error) {
-	err := CheckInBounds(*m, row, col)
+	err := CheckInBounds(m, row, col)
 	if err != nil {
 		return 0, err
 	}
@@ -91,7 +91,7 @@ func (m *Matrix) Equals(m1 *Matrix) bool {
 
 // Multiply returns a new Matrix that is the result of multiplying the passed matrices.
 // If the column length in m1 is not equal to the row length in m2, an error is returned.
-func Multiply(m1, m2 Matrix) (*Matrix, error) {
+func Multiply(m1, m2 *Matrix) (*Matrix, error) {
 	// To multiply an m×n matrix by an n×p matrix, the n's must be the same.
 	if m1.cols != m2.rows {
 		return nil, errors.New("column length of m1 must be equal to the row length of m2")
@@ -132,7 +132,7 @@ func Transpose(m Matrix) *Matrix {
 }
 
 // Determinant calculate and returns the determinant of the passed Matrix.
-func Determinant(m Matrix) float64 {
+func Determinant(m *Matrix) float64 {
 	if m.rows == 1 && m.cols == 1 {
 		return m.data[0][0]
 	}
@@ -156,7 +156,7 @@ func Determinant(m Matrix) float64 {
 // the passed row and column index from the passed Matrix.
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
-func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
+func Submatrix(m *Matrix, row, col uint) (*Matrix, error) {
 	err := CheckInBounds(m, row, col)
 	if err != nil {
 		return nil, err
@@ -194,19 +194,19 @@ func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
 // Minor returns the determinant of the submatrix.
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
-func Minor(m Matrix, row, col uint) (float64, error) {
+func Minor(m *Matrix, row, col uint) (float64, error) {
 	subM, err := Submatrix(m, row, col)
 	if err != nil {
 		return 0, err
 	}
 
-	return Determinant(*subM), nil
+	return Determinant(subM), nil
 }
 
 // Cofactor returns the cofactor of the submatrix.
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
-func Cofactor(m Matrix, row, col uint) (float64, error) {
+func Cofactor(m *Matrix, row, col uint) (float64, error) {
 	minor, err := Minor(m, row, col)
 	if err != nil {
 		return 0, err
@@ -224,12 +224,12 @@ func Cofactor(m Matrix, row, col uint) (float64, error) {
 
 // IsInvertible returns true if the passed Matrix is invertible.
 // The passed Matrix is invertible if it's determinant is equal to 0.
-func IsInvertible(m Matrix) bool {
+func IsInvertible(m *Matrix) bool {
 	return Determinant(m) != 0
 }
 
 // Inverse returns the inverse of the passed Matrix.
-func Inverse(m Matrix) (*Matrix, error) {
+func Inverse(m *Matrix) (*Matrix, error) {
 	if !IsInvertible(m) {
 		return nil, errors.New("the passed matrix is not invertible")
 	}
@@ -247,7 +247,7 @@ func Inverse(m Matrix) (*Matrix, error) {
 				return nil, err
 			}
 
-			// note that col and row are reversed in the placement to accomplish transposing
+			// Note that col and row are reversed in the placement to accomplish transposing
 			mInverted.data[col][row] = c / determinantM
 		}
 	}
@@ -257,7 +257,7 @@ func Inverse(m Matrix) (*Matrix, error) {
 
 // CheckInBounds returns an error if either the row or column values
 // are out of bounds of the passed Matrix.
-func CheckInBounds(m Matrix, row, col uint) error {
+func CheckInBounds(m *Matrix, row, col uint) error {
 	if row < 0 || row >= m.rows {
 		return errors.New("row is out of bounds of the passed matrix")
 	}
@@ -269,6 +269,8 @@ func CheckInBounds(m Matrix, row, col uint) error {
 	return nil
 }
 
+// TODO: Rename to suggest it's returning a matrix not performing the transform
+//
 // Translation returns a 4x4 translation Matrix.
 //
 // The translation Matrix returned has the form:
@@ -281,6 +283,15 @@ func Translation(x, y, z float64) *Matrix {
 	m.data[0][3] = x
 	m.data[1][3] = y
 	m.data[2][3] = z
+	return m
+}
+
+func (m *Matrix) Translate(x, y, z float64) *Matrix {
+	transform := Translation(x, y, z)
+	mRes, _ := Multiply(transform, m)
+	m.data = mRes.data
+	m.rows = mRes.rows
+	m.cols = mRes.cols
 	return m
 }
 
@@ -299,6 +310,15 @@ func Scaling(x, y, z float64) *Matrix {
 	return m
 }
 
+func (m *Matrix) Scale(x, y, z float64) *Matrix {
+	transform := Scaling(x, y, z)
+	mRes, _ := Multiply(transform, m)
+	m.data = mRes.data
+	m.rows = mRes.rows
+	m.cols = mRes.cols
+	return m
+}
+
 // RotationX returns a 4x4 rotation Matrix that can be used to rotate
 // a Point or Vector around the X axis by the passed number of radians.
 //
@@ -313,6 +333,15 @@ func RotationX(radians float64) *Matrix {
 	m.data[1][2] = -1 * math.Sin(radians)
 	m.data[2][1] = math.Sin(radians)
 	m.data[2][2] = math.Cos(radians)
+	return m
+}
+
+func (m *Matrix) RotateX(radians float64) *Matrix {
+	transform := RotationX(radians)
+	mRes, _ := Multiply(transform, m)
+	m.data = mRes.data
+	m.rows = mRes.rows
+	m.cols = mRes.cols
 	return m
 }
 
