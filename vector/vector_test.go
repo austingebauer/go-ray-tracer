@@ -735,7 +735,7 @@ func TestSubtract(t *testing.T) {
 }
 
 func TestTransformVector(t *testing.T) {
-	transform := matrix.Translation(5, -3, 2)
+	transform := matrix.NewTranslationMatrix(5, -3, 2)
 	vec := NewVector(-3, 4, 5)
 	prod, err := matrix.Multiply(transform, ToMatrix(vec))
 	assert.NoError(t, err)
@@ -839,7 +839,7 @@ func TestToVector(t *testing.T) {
 }
 
 func TestScalingVector(t *testing.T) {
-	transform := matrix.Scaling(2, 3, 4)
+	transform := matrix.NewScalingMatrix(2, 3, 4)
 	vec := NewVector(-4, 6, 8)
 
 	mult, err := matrix.Multiply(transform, ToMatrix(vec))
@@ -852,7 +852,7 @@ func TestScalingVector(t *testing.T) {
 }
 
 func TestScalingInverseVector(t *testing.T) {
-	transform := matrix.Scaling(2, 3, 4)
+	transform := matrix.NewScalingMatrix(2, 3, 4)
 	invM, err := matrix.Inverse(transform)
 	assert.NoError(t, err)
 

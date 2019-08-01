@@ -269,16 +269,14 @@ func CheckInBounds(m *Matrix, row, col uint) error {
 	return nil
 }
 
-// TODO: Rename to suggest it's returning a matrix not performing the transform
-//
-// Translation returns a 4x4 translation Matrix.
+// NewTranslationMatrix returns a 4x4 translation Matrix.
 //
 // The translation Matrix returned has the form:
 //   | 1 0 0 x |
 //   | 0 1 0 y |
 //   | 0 0 1 z |
 //   | 0 0 0 1 |
-func Translation(x, y, z float64) *Matrix {
+func NewTranslationMatrix(x, y, z float64) *Matrix {
 	m := NewIdentityMatrix(4)
 	m.data[0][3] = x
 	m.data[1][3] = y
@@ -286,8 +284,9 @@ func Translation(x, y, z float64) *Matrix {
 	return m
 }
 
+// Translate...
 func (m *Matrix) Translate(x, y, z float64) *Matrix {
-	transform := Translation(x, y, z)
+	transform := NewTranslationMatrix(x, y, z)
 	mRes, _ := Multiply(transform, m)
 	m.data = mRes.data
 	m.rows = mRes.rows
@@ -295,14 +294,14 @@ func (m *Matrix) Translate(x, y, z float64) *Matrix {
 	return m
 }
 
-// Scaling returns a 4x4 scaling Matrix.
+// NewScalingMatrix returns a 4x4 scaling Matrix.
 //
 // The scaling Matrix returned has the form:
 //   | x 0 0 0 |
 //   | 0 y 0 0 |
 //   | 0 0 z 0 |
 //   | 0 0 0 1 |
-func Scaling(x, y, z float64) *Matrix {
+func NewScalingMatrix(x, y, z float64) *Matrix {
 	m := NewIdentityMatrix(4)
 	m.data[0][0] = x
 	m.data[1][1] = y
@@ -310,8 +309,9 @@ func Scaling(x, y, z float64) *Matrix {
 	return m
 }
 
+// Scale...
 func (m *Matrix) Scale(x, y, z float64) *Matrix {
-	transform := Scaling(x, y, z)
+	transform := NewScalingMatrix(x, y, z)
 	mRes, _ := Multiply(transform, m)
 	m.data = mRes.data
 	m.rows = mRes.rows
@@ -319,7 +319,7 @@ func (m *Matrix) Scale(x, y, z float64) *Matrix {
 	return m
 }
 
-// RotationX returns a 4x4 rotation Matrix that can be used to rotate
+// NewXRotationMatrix returns a 4x4 rotation Matrix that can be used to rotate
 // a Point or Vector around the X axis by the passed number of radians.
 //
 // The rotation Matrix returned has the form:
@@ -327,7 +327,7 @@ func (m *Matrix) Scale(x, y, z float64) *Matrix {
 //   | 0 cos(r) -sin(r) 0 |
 //   | 0 sin(r) cos(r)  0 |
 //   | 0 0      0       1 |
-func RotationX(radians float64) *Matrix {
+func NewXRotationMatrix(radians float64) *Matrix {
 	m := NewIdentityMatrix(4)
 	m.data[1][1] = math.Cos(radians)
 	m.data[1][2] = -1 * math.Sin(radians)
@@ -336,8 +336,9 @@ func RotationX(radians float64) *Matrix {
 	return m
 }
 
+// RotateX...
 func (m *Matrix) RotateX(radians float64) *Matrix {
-	transform := RotationX(radians)
+	transform := NewXRotationMatrix(radians)
 	mRes, _ := Multiply(transform, m)
 	m.data = mRes.data
 	m.rows = mRes.rows
@@ -345,7 +346,7 @@ func (m *Matrix) RotateX(radians float64) *Matrix {
 	return m
 }
 
-// RotationY returns a 4x4 rotation Matrix that can be used to rotate
+// NewYRotationMatrix returns a 4x4 rotation Matrix that can be used to rotate
 // a Point or Vector around the Y axis by the passed number of radians.
 //
 // The rotation Matrix returned has the form:
@@ -353,7 +354,7 @@ func (m *Matrix) RotateX(radians float64) *Matrix {
 //   | 0       1 0      0 |
 //   | -sin(r) 0 cos(r) 0 |
 //   | 0       0 0      1 |
-func RotationY(radians float64) *Matrix {
+func NewYRotationMatrix(radians float64) *Matrix {
 	m := NewIdentityMatrix(4)
 	m.data[0][0] = math.Cos(radians)
 	m.data[0][2] = math.Sin(radians)
@@ -362,7 +363,17 @@ func RotationY(radians float64) *Matrix {
 	return m
 }
 
-// RotationZ returns a 4x4 rotation Matrix that can be used to rotate
+// RotateY...
+func (m *Matrix) RotateY(radians float64) *Matrix {
+	transform := NewYRotationMatrix(radians)
+	mRes, _ := Multiply(transform, m)
+	m.data = mRes.data
+	m.rows = mRes.rows
+	m.cols = mRes.cols
+	return m
+}
+
+// NewZRotationMatrix returns a 4x4 rotation Matrix that can be used to rotate
 // a Point or Vector around the Z axis by the passed number of radians.
 //
 // The rotation Matrix returned has the form:
@@ -370,7 +381,7 @@ func RotationY(radians float64) *Matrix {
 //   | sin(r) cos(r)  0 0 |
 //   | 0      0       1 0 |
 //   | 0      0       0 1 |
-func RotationZ(radians float64) *Matrix {
+func NewZRotationMatrix(radians float64) *Matrix {
 	m := NewIdentityMatrix(4)
 	m.data[0][0] = math.Cos(radians)
 	m.data[0][1] = -1 * math.Sin(radians)
@@ -379,7 +390,17 @@ func RotationZ(radians float64) *Matrix {
 	return m
 }
 
-// Shearing returns a 4x4 shearing Matrix that can be used for a
+// RotateZ...
+func (m *Matrix) RotateZ(radians float64) *Matrix {
+	transform := NewZRotationMatrix(radians)
+	mRes, _ := Multiply(transform, m)
+	m.data = mRes.data
+	m.rows = mRes.rows
+	m.cols = mRes.cols
+	return m
+}
+
+// NewShearingMatrix returns a 4x4 shearing Matrix that can be used for a
 // shear transformation of a Point.
 //
 // The shearing Matrix returned has the form:
@@ -387,7 +408,7 @@ func RotationZ(radians float64) *Matrix {
 //   | yx 1  yz 0 |
 //   | zx zy 1  0 |
 //   | 0  0  0  1 |
-func Shearing(xy, xz, yx, yz, zx, zy float64) *Matrix {
+func NewShearingMatrix(xy, xz, yx, yz, zx, zy float64) *Matrix {
 	m := NewIdentityMatrix(4)
 	m.data[0][1] = xy
 	m.data[0][2] = xz
@@ -395,5 +416,15 @@ func Shearing(xy, xz, yx, yz, zx, zy float64) *Matrix {
 	m.data[1][2] = yz
 	m.data[2][0] = zx
 	m.data[2][1] = zy
+	return m
+}
+
+// Shear...
+func (m *Matrix) Shear(xy, xz, yx, yz, zx, zy float64) *Matrix {
+	transform := NewShearingMatrix(xy, xz, yx, yz, zx, zy)
+	mRes, _ := Multiply(transform, m)
+	m.data = mRes.data
+	m.rows = mRes.rows
+	m.cols = mRes.cols
 	return m
 }

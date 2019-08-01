@@ -1,11 +1,11 @@
 package matrix
 
 import (
+	"reflect"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/austingebauer/go-ray-tracer/math_utils"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewMatrix(t *testing.T) {
@@ -1571,7 +1571,7 @@ func TestTranslation(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, Translation(tt.args.x, tt.args.y, tt.args.z))
+			assert.Equal(t, tt.want, NewTranslationMatrix(tt.args.x, tt.args.y, tt.args.z))
 		})
 	}
 }
@@ -1608,7 +1608,331 @@ func TestScaling(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, Scaling(tt.args.x, tt.args.y, tt.args.z))
+			assert.Equal(t, tt.want, NewScalingMatrix(tt.args.x, tt.args.y, tt.args.z))
+		})
+	}
+}
+
+func TestNewTranslationMatrix(t *testing.T) {
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewTranslationMatrix(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewTranslationMatrix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_Translate(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			if got := m.Translate(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Matrix.Translate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewScalingMatrix(t *testing.T) {
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewScalingMatrix(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewScalingMatrix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_Scale(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			if got := m.Scale(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Matrix.Scale() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewXRotationMatrix(t *testing.T) {
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewXRotationMatrix(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewXRotationMatrix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_RotateX(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			if got := m.RotateX(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Matrix.RotateX() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewYRotationMatrix(t *testing.T) {
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewYRotationMatrix(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewYRotationMatrix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_RotateY(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			if got := m.RotateY(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Matrix.RotateY() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewZRotationMatrix(t *testing.T) {
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewZRotationMatrix(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewZRotationMatrix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_RotateZ(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		radians float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			if got := m.RotateZ(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Matrix.RotateZ() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewShearingMatrix(t *testing.T) {
+	type args struct {
+		xy float64
+		xz float64
+		yx float64
+		yz float64
+		zx float64
+		zy float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewShearingMatrix(tt.args.xy, tt.args.xz, tt.args.yx, tt.args.yz, tt.args.zx, tt.args.zy); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewShearingMatrix() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMatrix_Shear(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		xy float64
+		xz float64
+		yx float64
+		yz float64
+		zx float64
+		zy float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			if got := m.Shear(tt.args.xy, tt.args.xz, tt.args.yx, tt.args.yz, tt.args.zx, tt.args.zy); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Matrix.Shear() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

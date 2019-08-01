@@ -100,7 +100,7 @@ func ToMatrix(pt *Point) *matrix.Matrix {
 
 // ToPoint returns a Point representation of the passed Matrix.
 // An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
-func ToPoint(m matrix.Matrix) (*Point, error) {
+func ToPoint(m *matrix.Matrix) (*Point, error) {
 	if m.GetRows() != 3 && m.GetRows() != 4 {
 		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a point")
 	}
