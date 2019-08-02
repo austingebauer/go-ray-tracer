@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"os"
 
 	"github.com/austingebauer/go-ray-tracer/canvas"
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	projectilePPMFile      = "docs/renderings/clock/clock.ppm"
+	projectilePPMFile      = "docs/renderings/projectile/projectile.ppm"
 	projectileCanvasWidth  = 900
 	projectileCanvasHeight = 600
 	clockPPMFile           = "docs/renderings/clock/clock.ppm"
@@ -33,57 +34,76 @@ type Environment struct {
 }
 
 func main() {
-	// RenderProjectile()
+	RenderProjectile()
 	RenderClock()
 }
 
+// RenderClock renders a clock.
 func RenderClock() {
+	// Orient the clock about the z-axis, such that the face of the clock
+	// would be in the xy-plane while looking towards negative z-axis.
+
+	// Set up the canvas
 	c := canvas.NewCanvas(clockCanvasWidth, clockCanvasHeight)
+	var canvasRadius float64 = clockCanvasWidth / 4
+	var canvasOriginWidth float64 = clockCanvasWidth / 2
+	var canvasOriginHeight float64 = clockCanvasHeight / 2
+
+	// Set some colors to render for different points
 	white := color.NewColor(1, 1, 1)
+	green := color.NewColor(0, 1, 0)
 
-	origin := point.NewPoint(clockCanvasWidth/2, clockCanvasHeight/2, 0)
-	err := c.WritePixel(uint64(origin.X), uint64(origin.Y), *white)
+	// Set the origin
+	origin := point.NewPoint(0, 0, 0)
+	err := c.WritePixel(
+		uint64(origin.X)+uint64(canvasOriginWidth),
+		uint64(origin.Y)+uint64(canvasOriginHeight), *white)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Write the start to the canvas
-	stopPt, err := point.ToPoint(point.ToMatrix(origin).Translate(100, 0, 0))
+	// Set twelve point on the clock
+	twelve, err := point.ToPoint(point.ToMatrix(origin).Translate(0, 1, 0))
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = c.WritePixel(uint64(stopPt.X), uint64(stopPt.Y), *white)
+	err = c.WritePixel(
+		uint64(canvasOriginWidth)+(uint64(twelve.X*canvasRadius)),
+		uint64(canvasOriginHeight)-(uint64(twelve.Y*canvasRadius)),
+		*green)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Rotate from the start by pi/6
-	//currentPt, err := point.ToPoint(point.ToMatrix(stopPt).RotateZ(math.Pi / 6))
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//err = c.WritePixel(uint64(currentPt.X), uint64(currentPt.Y), *white)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
+	// Set the next point to be rendered by a rotation about the z-axis
+	next, err := point.ToPoint(point.ToMatrix(twelve).RotateZ(math.Pi / 6))
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// While current point doesn't equal start start point, rotate pi/6 and write pixels
-	//for !currentPt.Equals(stopPt) {
-	//	var err error
-	//	currentPt, err = point.ToPoint(point.ToMatrix(currentPt).RotateZ(math.Pi / 6))
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//
-	//	err = c.WritePixel(uint64(currentPt.X), uint64(currentPt.Y), *white)
-	//	if err != nil {
-	//		log.Fatal(err)
-	//	}
-	//}
+	// Rotate by pi/6 about the z-axis to render 1-12 o'clock
+	for hour := 0; hour < 11; hour++ {
+
+		// render next hour hand
+		err = c.WritePixel(
+			uint64(canvasOriginWidth)+(uint64(next.X*canvasRadius)),
+			uint64(canvasOriginHeight)-(uint64(next.Y*canvasRadius)),
+			*green)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// rotate the next point pi/6
+		next, err = point.ToPoint(point.ToMatrix(next).RotateZ(math.Pi / 6))
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	WriteCanvasToFile(c, clockPPMFile)
 }
 
+// Render clock renders a projectile.
 func RenderProjectile() {
 	// projectile starts one unit above the origin.
 	start := point.NewPoint(0, 1, 0)
