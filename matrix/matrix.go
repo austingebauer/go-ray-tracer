@@ -1,3 +1,5 @@
+// Package matrix represents a matrix of a given dimension.
+// It provides commonly used matrix operations.
 package matrix
 
 import (
