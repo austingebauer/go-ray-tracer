@@ -7,7 +7,7 @@ BINARY_FILE_NAME = go-ray-tracer
 MAIN_PROGRAM_FILE = main.go
 TEST_COVERAGE_PROFILE = coverage.out
 
-all: out build test vet cover_func loc
+all: out build vet test loc
 
 build: out
 	go build -o $(BUILD_OUT_DIR)/$(BINARY_FILE_NAME) $(MAIN_PROGRAM_FILE)
