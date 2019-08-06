@@ -1766,32 +1766,36 @@ func TestNewXRotationMatrix(t *testing.T) {
 }
 
 func TestMatrix_RotateX(t *testing.T) {
-	type fields struct {
-		rows uint
-		cols uint
-		data [][]float64
-	}
 	type args struct {
 		radians float64
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   *Matrix
+		name string
+		m    *Matrix
+		args args
+		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "rotate identity matrix around x-axis",
+			m:    NewIdentityMatrix(4),
+			args: args{
+				radians: math.Pi,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 0},
+					{0, math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0},
+					{0, math.Sin(math.Pi), math.Cos(math.Pi), 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &Matrix{
-				rows: tt.fields.rows,
-				cols: tt.fields.cols,
-				data: tt.fields.data,
-			}
-			if got := m.RotateX(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Matrix.RotateX() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, tt.m.RotateX(tt.args.radians))
 		})
 	}
 }
@@ -1830,32 +1834,36 @@ func TestNewYRotationMatrix(t *testing.T) {
 }
 
 func TestMatrix_RotateY(t *testing.T) {
-	type fields struct {
-		rows uint
-		cols uint
-		data [][]float64
-	}
 	type args struct {
 		radians float64
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   *Matrix
+		name string
+		m    *Matrix
+		args args
+		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "rotate identity matrix around y-axis",
+			m:    NewIdentityMatrix(4),
+			args: args{
+				radians: math.Pi,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{math.Cos(math.Pi), 0, math.Sin(math.Pi), 0},
+					{0, 1, 0, 0},
+					{-1 * math.Sin(math.Pi), 0, math.Cos(math.Pi), 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &Matrix{
-				rows: tt.fields.rows,
-				cols: tt.fields.cols,
-				data: tt.fields.data,
-			}
-			if got := m.RotateY(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Matrix.RotateY() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, tt.m.RotateY(tt.args.radians))
 		})
 	}
 }
@@ -1894,32 +1902,36 @@ func TestNewZRotationMatrix(t *testing.T) {
 }
 
 func TestMatrix_RotateZ(t *testing.T) {
-	type fields struct {
-		rows uint
-		cols uint
-		data [][]float64
-	}
 	type args struct {
 		radians float64
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   *Matrix
+		name string
+		m    *Matrix
+		args args
+		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "rotate identity matrix around z-axis",
+			m:    NewIdentityMatrix(4),
+			args: args{
+				radians: math.Pi,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0, 0},
+					{math.Sin(math.Pi), math.Cos(math.Pi), 0, 0},
+					{0, 0, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &Matrix{
-				rows: tt.fields.rows,
-				cols: tt.fields.cols,
-				data: tt.fields.data,
-			}
-			if got := m.RotateZ(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Matrix.RotateZ() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, tt.m.RotateZ(tt.args.radians))
 		})
 	}
 }
@@ -1970,11 +1982,6 @@ func TestNewShearingMatrix(t *testing.T) {
 }
 
 func TestMatrix_Shear(t *testing.T) {
-	type fields struct {
-		rows uint
-		cols uint
-		data [][]float64
-	}
 	type args struct {
 		xy float64
 		xz float64
@@ -1984,23 +1991,37 @@ func TestMatrix_Shear(t *testing.T) {
 		zy float64
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   *Matrix
+		name string
+		m    *Matrix
+		args args
+		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "shear an identity matrix",
+			m:    NewIdentityMatrix(4),
+			args: args{
+				xy: 1,
+				xz: 2,
+				yx: 3,
+				yz: 4,
+				zx: 5,
+				zy: 6,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 1, 2, 0},
+					{3, 1, 4, 0},
+					{5, 6, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			m := &Matrix{
-				rows: tt.fields.rows,
-				cols: tt.fields.cols,
-				data: tt.fields.data,
-			}
-			if got := m.Shear(tt.args.xy, tt.args.xz, tt.args.yx, tt.args.yz, tt.args.zx, tt.args.zy); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Matrix.Shear() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, tt.m.Shear(tt.args.xy, tt.args.xz, tt.args.yx, tt.args.yz, tt.args.zx, tt.args.zy))
 		})
 	}
 }

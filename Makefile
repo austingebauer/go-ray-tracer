@@ -1,5 +1,5 @@
 # Targets not related to individual files
-.PHONY: all build test cover_func cover_html out clean vet loc
+.PHONY: all build test cover_func cover_html out clean vet loc run
 
 # Build constants
 BUILD_OUT_DIR = bin
@@ -11,6 +11,9 @@ all: out build vet test loc
 
 build: out
 	go build -o $(BUILD_OUT_DIR)/$(BINARY_FILE_NAME) $(MAIN_PROGRAM_FILE)
+
+run:
+	go run $(MAIN_PROGRAM_FILE)
 
 test: out
 	go test ./... -coverprofile=$(BUILD_OUT_DIR)/$(TEST_COVERAGE_PROFILE)
