@@ -1539,7 +1539,7 @@ func TestCheckInBounds(t *testing.T) {
 	}
 }
 
-func TestTranslation(t *testing.T) {
+func TestNewTranslationMatrix(t *testing.T) {
 	type args struct {
 		x float64
 		y float64
@@ -1576,7 +1576,65 @@ func TestTranslation(t *testing.T) {
 	}
 }
 
-func TestScaling(t *testing.T) {
+func TestMatrix_Translate(t *testing.T) {
+	type fields struct {
+		rows uint
+		cols uint
+		data [][]float64
+	}
+	type args struct {
+		x float64
+		y float64
+		z float64
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   *Matrix
+	}{
+		{
+			name: "translate identity matrix with x, y, and z values",
+			fields: fields{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 0},
+					{0, 1, 0, 0},
+					{0, 0, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+			args: args{
+				x: 3,
+				y: 2,
+				z: 1,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 3},
+					{0, 1, 0, 2},
+					{0, 0, 1, 1},
+					{0, 0, 0, 1},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := &Matrix{
+				rows: tt.fields.rows,
+				cols: tt.fields.cols,
+				data: tt.fields.data,
+			}
+			assert.Equal(t, tt.want, m.Translate(tt.args.x, tt.args.y, tt.args.z))
+		})
+	}
+}
+
+func TestNewScalingMatrix(t *testing.T) {
 	type args struct {
 		x float64
 		y float64
@@ -1613,83 +1671,6 @@ func TestScaling(t *testing.T) {
 	}
 }
 
-func TestNewTranslationMatrix(t *testing.T) {
-	type args struct {
-		x float64
-		y float64
-		z float64
-	}
-	tests := []struct {
-		name string
-		args args
-		want *Matrix
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewTranslationMatrix(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewTranslationMatrix() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestMatrix_Translate(t *testing.T) {
-	type fields struct {
-		rows uint
-		cols uint
-		data [][]float64
-	}
-	type args struct {
-		x float64
-		y float64
-		z float64
-	}
-	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   *Matrix
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &Matrix{
-				rows: tt.fields.rows,
-				cols: tt.fields.cols,
-				data: tt.fields.data,
-			}
-			if got := m.Translate(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Matrix.Translate() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestNewScalingMatrix(t *testing.T) {
-	type args struct {
-		x float64
-		y float64
-		z float64
-	}
-	tests := []struct {
-		name string
-		args args
-		want *Matrix
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := NewScalingMatrix(tt.args.x, tt.args.y, tt.args.z); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewScalingMatrix() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestMatrix_Scale(t *testing.T) {
 	type fields struct {
 		rows uint
@@ -1707,7 +1688,34 @@ func TestMatrix_Scale(t *testing.T) {
 		args   args
 		want   *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "scale identity matrix with x, y, and z values",
+			fields: fields{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 0},
+					{0, 1, 0, 0},
+					{0, 0, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+			args: args{
+				x: 3,
+				y: 2,
+				z: 1,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{3, 0, 0, 0},
+					{0, 2, 0, 0},
+					{0, 0, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
