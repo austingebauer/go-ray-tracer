@@ -1,6 +1,7 @@
 package matrix
 
 import (
+	"math"
 	"reflect"
 	"testing"
 
@@ -1740,13 +1741,26 @@ func TestNewXRotationMatrix(t *testing.T) {
 		args args
 		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "x-axis rotation matrix for radians",
+			args: args{
+				radians: math.Pi,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 0, 0, 0},
+					{0, math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0},
+					{0, math.Sin(math.Pi), math.Cos(math.Pi), 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewXRotationMatrix(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewXRotationMatrix() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, NewXRotationMatrix(tt.args.radians))
 		})
 	}
 }
@@ -1791,13 +1805,26 @@ func TestNewYRotationMatrix(t *testing.T) {
 		args args
 		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "y-axis rotation matrix for radians",
+			args: args{
+				radians: math.Pi,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{math.Cos(math.Pi), 0, math.Sin(math.Pi), 0},
+					{0, 1, 0, 0},
+					{-1 * math.Sin(math.Pi), 0, math.Cos(math.Pi), 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewYRotationMatrix(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewYRotationMatrix() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, NewYRotationMatrix(tt.args.radians))
 		})
 	}
 }
@@ -1842,13 +1869,26 @@ func TestNewZRotationMatrix(t *testing.T) {
 		args args
 		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "z-axis rotation matrix for radians",
+			args: args{
+				radians: math.Pi,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0, 0},
+					{math.Sin(math.Pi), math.Cos(math.Pi), 0, 0},
+					{0, 0, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewZRotationMatrix(tt.args.radians); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewZRotationMatrix() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, NewZRotationMatrix(tt.args.radians))
 		})
 	}
 }
@@ -1898,7 +1938,27 @@ func TestNewShearingMatrix(t *testing.T) {
 		args args
 		want *Matrix
 	}{
-		// TODO: Add test cases.
+		{
+			name: "shearing matrix with relevant coordinates",
+			args: args{
+				xy: 1,
+				xz: 2,
+				yx: 3,
+				yz: 4,
+				zx: 5,
+				zy: 6,
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: [][]float64{
+					{1, 1, 2, 0},
+					{3, 1, 4, 0},
+					{5, 6, 1, 0},
+					{0, 0, 0, 1},
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
