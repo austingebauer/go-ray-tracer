@@ -8,7 +8,9 @@ import (
 
 // Ray is a ray, or line, which has an origin and direction.
 type Ray struct {
-	Origin    *point.Point
+	// Origin of the Ray
+	Origin *point.Point
+	// Direction vector of the Ray
 	Direction *vector.Vector
 }
 
@@ -18,4 +20,9 @@ func NewRay(origin *point.Point, direction *vector.Vector) *Ray {
 		Origin:    origin,
 		Direction: direction,
 	}
+}
+
+// Position returns the Point that lies any distance t along the passed ray.
+func Position(ray *Ray, t float64) *point.Point {
+	return ray.Origin.Add(*ray.Direction.Scale(t))
 }
