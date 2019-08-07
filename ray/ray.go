@@ -10,9 +10,7 @@ import (
 
 // Ray is a ray, or line, which has an origin and direction.
 type Ray struct {
-	// Origin of the Ray
 	Origin *point.Point
-	// Direction vector of the Ray
 	Direction *vector.Vector
 }
 
