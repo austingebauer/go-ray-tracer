@@ -1,4 +1,4 @@
-// Sphere represents a sphere object with an origin and radius.
+// Package sphere represents a sphere object with an origin and radius.
 package sphere
 
 import (
