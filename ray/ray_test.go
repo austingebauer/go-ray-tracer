@@ -3,10 +3,10 @@ package ray
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewRay(t *testing.T) {
@@ -81,6 +81,79 @@ func TestPosition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want, Position(tt.args.ray, tt.args.t))
+		})
+	}
+}
+
+func TestIntersect(t *testing.T) {
+	type args struct {
+		sphere *sphere.Sphere
+		ray    *Ray
+	}
+	tests := []struct {
+		name string
+		args args
+		want []float64
+	}{
+		{
+			name: "ray intersects with a sphere at two positive points. sphere is ahead of ray origin.",
+			args: args{
+				sphere: sphere.NewUnitSphere(),
+				ray:    NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
+			},
+			want: []float64{
+				4.0,
+				6.0,
+			},
+		},
+		{
+			name: "ray is tangent to the sphere at one point of t",
+			args: args{
+				sphere: sphere.NewUnitSphere(),
+				ray:    NewRay(point.NewPoint(0, 1, -5), vector.NewVector(0, 0, 1)),
+			},
+			want: []float64{
+				5.0,
+				5.0,
+			},
+		},
+		{
+			name: "ray misses the sphere",
+			args: args{
+				sphere: sphere.NewUnitSphere(),
+				ray:    NewRay(point.NewPoint(0, 2, -5), vector.NewVector(0, 0, 1)),
+			},
+			want: []float64{},
+		},
+		{
+			name: "ray originates inside the sphere",
+			args: args{
+				sphere: sphere.NewUnitSphere(),
+				ray:    NewRay(point.NewPoint(0, 0, 0), vector.NewVector(0, 0, 1)),
+			},
+			want: []float64{
+				-1.0,
+				1.0,
+			},
+		},
+		{
+			name: "ray intersects with a sphere at two negative points. sphere is behind ray origin.",
+			args: args{
+				sphere: sphere.NewUnitSphere(),
+				ray:    NewRay(point.NewPoint(0, 0, 5), vector.NewVector(0, 0, 1)),
+			},
+			want: []float64{
+				-6.0,
+				-4.0,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tVals := Intersect(tt.args.sphere, tt.args.ray)
+
+			assert.Equal(t, tt.want, tVals)
+			assert.Equal(t, len(tt.want), len(tVals))
 		})
 	}
 }

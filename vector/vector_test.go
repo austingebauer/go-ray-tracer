@@ -574,6 +574,22 @@ func TestDotProduct(t *testing.T) {
 			want: 1,
 		},
 		{
+			name: "dot product of two identical vectors",
+			args: args{
+				vec1: Vector{
+					X: 1,
+					Y: 1,
+					Z: 1,
+				},
+				vec2: Vector{
+					X: 1,
+					Y: 1,
+					Z: 1,
+				},
+			},
+			want: 3,
+		},
+		{
 			name: "dot product of two vectors with 90 degree angle",
 			args: args{
 				vec1: Vector{

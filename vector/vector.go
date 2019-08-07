@@ -5,7 +5,7 @@ import (
 	"errors"
 	"math"
 
-	"github.com/austingebauer/go-ray-tracer/math_utils"
+	"github.com/austingebauer/go-ray-tracer/maths"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 )
 
@@ -31,9 +31,9 @@ func NewVector(x, y, z float64) *Vector {
 // Equals returns true if the passed Vector is equal to this Vector.
 // Two Vectors are equal if their X, Y, Z components are equal.
 func (vec *Vector) Equals(vecQ *Vector) bool {
-	return math_utils.Float64Equals(vec.X, vecQ.X, math_utils.Epsilon) &&
-		math_utils.Float64Equals(vec.Y, vecQ.Y, math_utils.Epsilon) &&
-		math_utils.Float64Equals(vec.Z, vecQ.Z, math_utils.Epsilon)
+	return maths.Float64Equals(vec.X, vecQ.X, maths.Epsilon) &&
+		maths.Float64Equals(vec.Y, vecQ.Y, maths.Epsilon) &&
+		maths.Float64Equals(vec.Z, vecQ.Z, maths.Epsilon)
 }
 
 // Magnitude computes and returns the length of this Vector.

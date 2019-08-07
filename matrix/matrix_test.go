@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/austingebauer/go-ray-tracer/math_utils"
+	"github.com/austingebauer/go-ray-tracer/maths"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -1016,8 +1016,8 @@ func TestInverseDetailed(t *testing.T) {
 			assert.Equal(t, -160.0, cf)
 
 			// b[3][2] is -160.0/532.0
-			assert.True(t, math_utils.Float64Equals(-160.0/532.0, b.data[3][2],
-				math_utils.Epsilon))
+			assert.True(t, maths.Float64Equals(-160.0/532.0, b.data[3][2],
+				maths.Epsilon))
 
 			// cofactor of a at 3,2 is 105.0
 			cf, err = Cofactor(tt.args.a, 3, 2)
@@ -1025,8 +1025,8 @@ func TestInverseDetailed(t *testing.T) {
 			assert.Equal(t, 105.0, cf)
 
 			// b[2][3] is 105.0/532.0
-			assert.True(t, math_utils.Float64Equals(105.0/532.0, b.data[2][3],
-				math_utils.Epsilon))
+			assert.True(t, maths.Float64Equals(105.0/532.0, b.data[2][3],
+				maths.Epsilon))
 		})
 	}
 }

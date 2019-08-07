@@ -6,7 +6,7 @@ import (
 	"errors"
 	"math"
 
-	"github.com/austingebauer/go-ray-tracer/math_utils"
+	"github.com/austingebauer/go-ray-tracer/maths"
 )
 
 // Matrix represents an n-dimensional grid of floating point numbers.
@@ -182,7 +182,7 @@ func (m *Matrix) Equals(m1 *Matrix) bool {
 
 	for r := 0; r < int(m.rows); r++ {
 		for c := 0; c < int(m.cols); c++ {
-			if !math_utils.Float64Equals(m.data[r][c], m1.data[r][c], math_utils.Epsilon) {
+			if !maths.Float64Equals(m.data[r][c], m1.data[r][c], maths.Epsilon) {
 				return false
 			}
 		}
