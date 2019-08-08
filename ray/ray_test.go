@@ -1,6 +1,7 @@
 package ray
 
 import (
+	"github.com/austingebauer/go-ray-tracer/intersection"
 	"testing"
 
 	"github.com/austingebauer/go-ray-tracer/point"
@@ -93,67 +94,91 @@ func TestIntersect(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want []float64
+		want []*intersection.Intersection
 	}{
 		{
 			name: "ray intersects with a sphere at two positive points. sphere is ahead of ray origin.",
 			args: args{
-				sphere: sphere.NewUnitSphere(),
+				sphere: sphere.NewUnitSphere("testID"),
 				ray:    NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
 			},
-			want: []float64{
-				4.0,
-				6.0,
+			want: []*intersection.Intersection{
+				{
+					T:      4.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				{
+					T:      6.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
 			},
 		},
 		{
 			name: "ray is tangent to the sphere at one point of t",
 			args: args{
-				sphere: sphere.NewUnitSphere(),
+				sphere: sphere.NewUnitSphere("testID"),
 				ray:    NewRay(point.NewPoint(0, 1, -5), vector.NewVector(0, 0, 1)),
 			},
-			want: []float64{
-				5.0,
-				5.0,
+			want: []*intersection.Intersection{
+				{
+					T:      5.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				{
+					T:      5.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
 			},
 		},
 		{
 			name: "ray misses the sphere",
 			args: args{
-				sphere: sphere.NewUnitSphere(),
+				sphere: sphere.NewUnitSphere("testID"),
 				ray:    NewRay(point.NewPoint(0, 2, -5), vector.NewVector(0, 0, 1)),
 			},
-			want: []float64{},
+			want: []*intersection.Intersection{},
 		},
 		{
 			name: "ray originates inside the sphere",
 			args: args{
-				sphere: sphere.NewUnitSphere(),
+				sphere: sphere.NewUnitSphere("testID"),
 				ray:    NewRay(point.NewPoint(0, 0, 0), vector.NewVector(0, 0, 1)),
 			},
-			want: []float64{
-				-1.0,
-				1.0,
+			want: []*intersection.Intersection{
+				{
+					T:      -1.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				{
+					T:      1.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
 			},
 		},
 		{
 			name: "ray intersects with a sphere at two negative points. sphere is behind ray origin.",
 			args: args{
-				sphere: sphere.NewUnitSphere(),
+				sphere: sphere.NewUnitSphere("testID"),
 				ray:    NewRay(point.NewPoint(0, 0, 5), vector.NewVector(0, 0, 1)),
 			},
-			want: []float64{
-				-6.0,
-				-4.0,
+			want: []*intersection.Intersection{
+				{
+					T:      -6.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				{
+					T:      -4.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tVals := Intersect(tt.args.sphere, tt.args.ray)
+			intersections := Intersect(tt.args.sphere, tt.args.ray)
 
-			assert.Equal(t, tt.want, tVals)
-			assert.Equal(t, len(tt.want), len(tVals))
+			assert.Equal(t, len(tt.want), len(intersections))
+			assert.Equal(t, tt.want, intersections)
 		})
 	}
 }

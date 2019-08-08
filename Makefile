@@ -1,5 +1,5 @@
 # Targets not related to individual files
-.PHONY: all build test cover_func cover_html out clean vet loc run fmt
+.PHONY: all build test cover_func cover_html out clean vet loc run fmt test_v
 
 # Build constants
 BUILD_OUT_DIR = bin
@@ -7,7 +7,7 @@ BINARY_FILE_NAME = go-ray-tracer
 MAIN_PROGRAM_FILE = main.go
 TEST_COVERAGE_PROFILE = coverage.out
 
-all: out fmt vet test loc build
+all: out fmt vet test_v loc build
 
 out:
 	mkdir -p $(BUILD_OUT_DIR)
@@ -19,6 +19,9 @@ vet:
 	go vet ./...
 
 test: out
+	go test -race ./... -coverprofile=$(BUILD_OUT_DIR)/$(TEST_COVERAGE_PROFILE)
+
+test_v: out
 	go test -race -v ./... -coverprofile=$(BUILD_OUT_DIR)/$(TEST_COVERAGE_PROFILE)
 
 loc:

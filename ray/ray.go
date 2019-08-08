@@ -2,6 +2,7 @@
 package ray
 
 import (
+	"github.com/austingebauer/go-ray-tracer/intersection"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
@@ -10,7 +11,7 @@ import (
 
 // Ray is a ray, or line, which has an origin and direction.
 type Ray struct {
-	Origin *point.Point
+	Origin    *point.Point
 	Direction *vector.Vector
 }
 
@@ -35,7 +36,7 @@ func Position(ray *Ray, t float64) *point.Point {
 // If the ray intersects with the sphere at two points, then two different intersection t values are returned.
 // If the ray intersects with the sphere at a single, tangent point, then two equal t values are returned.
 // If the ray does not intersect with the sphere, then an empty slice is returned.
-func Intersect(sphere *sphere.Sphere, ray *Ray) []float64 {
+func Intersect(sphere *sphere.Sphere, ray *Ray) []*intersection.Intersection {
 	// Details on calculation: https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
 
 	// The vector from the sphere origin to the ray origin.
@@ -49,16 +50,22 @@ func Intersect(sphere *sphere.Sphere, ray *Ray) []float64 {
 
 	// If the discriminant is negative, then the ray misses the sphere and no intersections occur.
 	if discriminant < 0 {
-		return []float64{}
+		return []*intersection.Intersection{}
 	}
 
 	// Compute the t values.
 	t1 := ((-1 * b) - math.Sqrt(discriminant)) / (2 * a)
 	t2 := ((-1 * b) + math.Sqrt(discriminant)) / (2 * a)
 
-	// Return the t values in increasing order
-	return []float64{
-		t1,
-		t2,
+	// Return the intersection t values and object in increasing order
+	return []*intersection.Intersection{
+		{
+			T:      t1,
+			Object: sphere,
+		},
+		{
+			T:      t2,
+			Object: sphere,
+		},
 	}
 }

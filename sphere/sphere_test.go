@@ -16,7 +16,7 @@ func TestNewUnitSphere(t *testing.T) {
 		{
 			name: "new unit sphere",
 			want: &Sphere{
-				id:     "testID",
+				Id:     "testID",
 				Origin: point.NewPoint(0, 0, 0),
 				Radius: 1,
 			},
@@ -24,15 +24,14 @@ func TestNewUnitSphere(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewUnitSphere()
-			assert.Equal(t, tt.want.Origin, got.Origin)
-			assert.Equal(t, tt.want.Radius, got.Radius)
+			assert.Equal(t, NewUnitSphere("testID"), tt.want)
 		})
 	}
 }
 
 func TestNewSphere(t *testing.T) {
 	type args struct {
+		id     string
 		origin *point.Point
 		radius float64
 	}
@@ -44,11 +43,12 @@ func TestNewSphere(t *testing.T) {
 		{
 			name: "new sphere with origin and radius",
 			args: args{
+				id:     "testID",
 				origin: point.NewPoint(1, 2, -3),
 				radius: 11,
 			},
 			want: &Sphere{
-				id:     "testID",
+				Id:     "testID",
 				Origin: point.NewPoint(1, 2, -3),
 				Radius: 11,
 			},
@@ -56,9 +56,7 @@ func TestNewSphere(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewSphere(tt.args.origin, tt.args.radius)
-			assert.Equal(t, tt.want.Origin, got.Origin)
-			assert.Equal(t, tt.want.Radius, got.Radius)
+			assert.Equal(t, NewSphere(tt.args.id, tt.args.origin, tt.args.radius), tt.want)
 		})
 	}
 }
