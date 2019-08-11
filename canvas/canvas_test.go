@@ -3,6 +3,7 @@ package canvas
 
 import (
 	"bytes"
+	"io"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -308,10 +309,12 @@ func TestCanvas_ToPPM(t *testing.T) {
 			}
 
 			writer := &bytes.Buffer{}
-			err := tt.c.ToPPM(writer)
 			if tt.wantErr {
+				badTemplate := "{ does not .work template }"
+				err := tt.c.ToPPM(writer, badTemplate)
 				assert.Error(t, err)
 			} else {
+				err := tt.c.ToPPM(writer, PixelMapTemplate)
 				assert.NoError(t, err)
 				str := writer.String()
 				assert.Equal(t, tt.wantWriter, str)
@@ -324,19 +327,31 @@ func TestCanvas_ToPPMError(t *testing.T) {
 	tests := []struct {
 		name       string
 		c          *Canvas
-		wantWriter string
+		writer     io.Writer
+		goTemplate string
 	}{
 		{
-			name: "canvas to portable pixmap (PPM) nil writer",
-			c:    NewCanvas(0, 1),
-			wantWriter: "P3\n" +
-				"0 1\n" +
-				"255\n",
+			name:       "canvas to portable pixmap (PPM) nil writer",
+			c:          NewCanvas(1, 1),
+			writer:     nil,
+			goTemplate: PixelMapTemplate,
+		},
+		{
+			name:       "canvas to portable pixmap (PPM) template parse error",
+			c:          NewCanvas(1, 1),
+			writer:     &bytes.Buffer{},
+			goTemplate: "{{not a . good .template.}",
+		},
+		{
+			name:       "canvas to portable pixmap (PPM) execution error",
+			c:          NewCanvas(1, 1),
+			writer:     &bytes.Buffer{},
+			goTemplate: "{{ .PPMIdentifier }} and not real fields {{ .MadeUpField }}",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.c.ToPPM(nil)
+			err := tt.c.ToPPM(tt.writer, tt.goTemplate)
 			assert.Error(t, err)
 		})
 	}

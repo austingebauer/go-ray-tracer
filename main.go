@@ -166,7 +166,7 @@ func WriteCanvasToFile(c *canvas.Canvas, filePath string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = c.ToPPM(file)
+	err = c.ToPPM(file, canvas.PixelMapTemplate)
 	if err != nil {
 		log.Fatal(err)
 	}

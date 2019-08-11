@@ -11,8 +11,8 @@ import (
 	"github.com/austingebauer/go-ray-tracer/color"
 )
 
-// ppmTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
-const ppmTemplate = `{{ .PPMIdentifier }}
+// PixelMapTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
+const PixelMapTemplate = `{{ .PPMIdentifier }}
 {{ .Width }} {{ .Height }}
 {{ .MaxColorValue }}
 {{ pixels .Pixels }}`
@@ -87,7 +87,7 @@ func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
 }
 
 // ToPPM writes the current canvas to a file in the portable pixmap (PPM) format.
-func (c *Canvas) ToPPM(writer io.Writer) error {
+func (c *Canvas) ToPPM(writer io.Writer, goTemplate string) error {
 	if writer == nil {
 		return errors.New("writer must not be nil")
 	}
@@ -96,7 +96,7 @@ func (c *Canvas) ToPPM(writer io.Writer) error {
 		"pixels": writePPMPixels,
 	}
 
-	tmpl, err := template.New(ppmID).Funcs(funcMap).Parse(ppmTemplate)
+	tmpl, err := template.New(ppmID).Funcs(funcMap).Parse(goTemplate)
 	if err != nil {
 		return err
 	}

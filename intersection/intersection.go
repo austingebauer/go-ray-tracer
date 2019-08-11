@@ -44,7 +44,7 @@ func Hit(intersections []*Intersection) *Intersection {
 		idx++
 	}
 
-	// If the entire slice was searched, then we didn't find a positive T value
+	// If the entire slice was searched, then we didn't find a positive T value.
 	// No hit, return nil.
 	if idx == len(intersections) {
 		return nil
