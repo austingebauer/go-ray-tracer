@@ -843,9 +843,10 @@ func TestDeterminant(t *testing.T) {
 		m *Matrix
 	}
 	tests := []struct {
-		name string
-		args args
-		want float64
+		name    string
+		args    args
+		want    float64
+		wantErr bool
 	}{
 		{
 			name: "determinant of 1x1 matrix",
@@ -858,7 +859,8 @@ func TestDeterminant(t *testing.T) {
 					},
 				},
 			},
-			want: -11,
+			want:    -11,
+			wantErr: false,
 		},
 		{
 			name: "determinant of 2x2 matrix",
@@ -872,7 +874,8 @@ func TestDeterminant(t *testing.T) {
 					},
 				},
 			},
-			want: 5,
+			want:    5,
+			wantErr: false,
 		},
 		{
 			name: "determinant of 3x3 matrix",
@@ -887,7 +890,8 @@ func TestDeterminant(t *testing.T) {
 					},
 				},
 			},
-			want: -196,
+			want:    -196,
+			wantErr: false,
 		},
 		{
 			name: "determinant of 4x4 matrix",
@@ -903,12 +907,51 @@ func TestDeterminant(t *testing.T) {
 					},
 				},
 			},
-			want: -4071,
+			want:    -4071,
+			wantErr: false,
+		},
+		{
+			name: "determinant of 3x4 non-square matrix returns error",
+			args: args{
+				m: &Matrix{
+					rows: 3,
+					cols: 4,
+					data: [][]float64{
+						{-2, -8, 3, 5},
+						{-3, 1, 7, 3},
+						{1, 2, -9, 6},
+					},
+				},
+			},
+			want:    123,
+			wantErr: true,
+		},
+		{
+			name: "determinant of 4x3 non-square matrix returns error",
+			args: args{
+				m: &Matrix{
+					rows: 3,
+					cols: 4,
+					data: [][]float64{
+						{-2, -8, 3},
+						{-3, 1, 7},
+						{1, 2, -9},
+						{1, 2, -9},
+					},
+				},
+			},
+			want:    123,
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, Determinant(tt.args.m))
+			det, err := Determinant(tt.args.m)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.Equal(t, tt.want, det)
+			}
 		})
 	}
 }
@@ -1008,7 +1051,9 @@ func TestInverseDetailed(t *testing.T) {
 			assert.True(t, b.Equals(tt.want))
 
 			// determinant of a is 532.0
-			assert.Equal(t, 532.0, Determinant(tt.args.a))
+			det, err := Determinant(tt.args.a)
+			assert.NoError(t, err)
+			assert.Equal(t, 532.0, det)
 
 			// cofactor of a at 2,3 is -160.0
 			cf, err := Cofactor(tt.args.a, 2, 3)
@@ -1066,6 +1111,26 @@ func TestInverse(t *testing.T) {
 				},
 			},
 			wantErr: true,
+		},
+		{
+			name: "inverse of 1x1 matrix",
+			args: args{
+				a: &Matrix{
+					rows: 1,
+					cols: 1,
+					data: [][]float64{
+						{2},
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 1,
+				cols: 1,
+				data: [][]float64{
+					{0.5},
+				},
+			},
+			wantErr: false,
 		},
 		{
 			name: "inverse of 4x4 matrix 1",

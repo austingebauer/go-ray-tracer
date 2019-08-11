@@ -298,13 +298,22 @@ func Transpose(m Matrix) *Matrix {
 }
 
 // Determinant calculate and returns the determinant of the passed Matrix.
-func Determinant(m *Matrix) float64 {
+// If the passed Matrix is not a square matrix, then an error is returned.
+func Determinant(m *Matrix) (float64, error) {
+	if m.rows != m.cols {
+		return 0, errors.New("m must be a square matrix with equal row and column lengths")
+	}
+
+	if m.rows == 0 && m.cols == 0 {
+		return 1, nil
+	}
+
 	if m.rows == 1 && m.cols == 1 {
-		return m.data[0][0]
+		return m.data[0][0], nil
 	}
 
 	if m.rows == 2 && m.cols == 2 {
-		return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0])
+		return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0]), nil
 	}
 
 	// for each column in the selected row
@@ -315,7 +324,7 @@ func Determinant(m *Matrix) float64 {
 		det = det + (m.data[row][col] * cofactor)
 	}
 
-	return det
+	return det, nil
 }
 
 // Submatrix returns a new Matrix that is the result of removing
@@ -366,7 +375,12 @@ func Minor(m *Matrix, row, col uint) (float64, error) {
 		return 0, err
 	}
 
-	return Determinant(subM), nil
+	det, err := Determinant(subM)
+	if err != nil {
+		return 0, err
+	}
+
+	return det, nil
 }
 
 // Cofactor returns the cofactor of the submatrix.
@@ -391,7 +405,11 @@ func Cofactor(m *Matrix, row, col uint) (float64, error) {
 // IsInvertible returns true if the passed Matrix is invertible.
 // The passed Matrix is invertible if it's determinant is equal to 0.
 func IsInvertible(m *Matrix) bool {
-	return Determinant(m) != 0
+	det, err := Determinant(m)
+	if err != nil {
+		return false
+	}
+	return det != 0
 }
 
 // Inverse returns the inverse of the passed Matrix.
@@ -403,7 +421,7 @@ func Inverse(m *Matrix) (*Matrix, error) {
 	mInverted := NewMatrix(m.rows, m.cols)
 
 	// Calculate the determinant of m
-	determinantM := Determinant(m)
+	determinantM, _ := Determinant(m)
 
 	// Place the cofactor of each element divided by the determinant into a transposition of m.
 	for row := 0; row < int(m.rows); row++ {
