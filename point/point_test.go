@@ -532,18 +532,18 @@ func TestPointReflectionOverAxis(t *testing.T) {
 
 func TestPointRotateXAxis(t *testing.T) {
 	ptM := ToMatrix(NewPoint(0, 1, 0))
-	half_quarter := matrix.NewXRotationMatrix(math.Pi / 4)
-	full_quarter := matrix.NewXRotationMatrix(math.Pi / 2)
+	halfQuarter := matrix.NewXRotationMatrix(math.Pi / 4)
+	fullQuarter := matrix.NewXRotationMatrix(math.Pi / 2)
 
 	// rotate the point around the x axis Pi/4 radians
-	rotM, err := matrix.Multiply(half_quarter, ptM)
+	rotM, err := matrix.Multiply(halfQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := ToPoint(rotM)
 	assert.NoError(t, err)
 	assert.True(t, NewPoint(0, math.Sqrt(2)/2, math.Sqrt(2)/2).Equals(rotMPoint))
 
 	// rotate the point around the x axis Pi/2 radians
-	rotM, err = matrix.Multiply(full_quarter, ptM)
+	rotM, err = matrix.Multiply(fullQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err = ToPoint(rotM)
 	assert.NoError(t, err)
@@ -552,18 +552,18 @@ func TestPointRotateXAxis(t *testing.T) {
 
 func TestPointRotateYAxis(t *testing.T) {
 	ptM := ToMatrix(NewPoint(0, 0, 1))
-	half_quarter := matrix.NewYRotationMatrix(math.Pi / 4)
-	full_quarter := matrix.NewYRotationMatrix(math.Pi / 2)
+	halfQuarter := matrix.NewYRotationMatrix(math.Pi / 4)
+	fullQuarter := matrix.NewYRotationMatrix(math.Pi / 2)
 
 	// rotate the point around the y axis Pi/4 radians
-	rotM, err := matrix.Multiply(half_quarter, ptM)
+	rotM, err := matrix.Multiply(halfQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := ToPoint(rotM)
 	assert.NoError(t, err)
 	assert.True(t, NewPoint(math.Sqrt(2)/2, 0, math.Sqrt(2)/2).Equals(rotMPoint))
 
 	// rotate the point around the y axis Pi/2 radians
-	rotM, err = matrix.Multiply(full_quarter, ptM)
+	rotM, err = matrix.Multiply(fullQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err = ToPoint(rotM)
 	assert.NoError(t, err)
@@ -572,18 +572,18 @@ func TestPointRotateYAxis(t *testing.T) {
 
 func TestPointRotateZAxis(t *testing.T) {
 	ptM := ToMatrix(NewPoint(0, 1, 0))
-	half_quarter := matrix.NewZRotationMatrix(math.Pi / 4)
-	full_quarter := matrix.NewZRotationMatrix(math.Pi / 2)
+	halfQuarter := matrix.NewZRotationMatrix(math.Pi / 4)
+	fullQuarter := matrix.NewZRotationMatrix(math.Pi / 2)
 
 	// rotate the point around the z axis Pi/4 radians
-	rotM, err := matrix.Multiply(half_quarter, ptM)
+	rotM, err := matrix.Multiply(halfQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := ToPoint(rotM)
 	assert.NoError(t, err)
 	assert.True(t, NewPoint(-1*math.Sqrt(2)/2, math.Sqrt(2)/2, 0).Equals(rotMPoint))
 
 	// rotate the point around the z axis Pi/2 radians
-	rotM, err = matrix.Multiply(full_quarter, ptM)
+	rotM, err = matrix.Multiply(fullQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err = ToPoint(rotM)
 	assert.NoError(t, err)

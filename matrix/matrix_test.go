@@ -672,6 +672,23 @@ func TestMinor(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "minor of a non-square matrix for an error",
+			args: args{
+				m: &Matrix{
+					rows: 2,
+					cols: 3,
+					data: [][]float64{
+						{3, 3, 4},
+						{5, 5, 4},
+					},
+				},
+				row: 0,
+				col: 0,
+			},
+			want:    5,
+			wantErr: true,
+		},
+		{
 			name: "minor of a 3x3 matrix with submatrix row out of bounds for an error",
 			args: args{
 				m: &Matrix{
@@ -992,6 +1009,21 @@ func TestIsInvertible(t *testing.T) {
 						{9, 6, 2, 6},
 						{0, -5, 1, -5},
 						{0, 0, 0, 0},
+					},
+				},
+			},
+			want: false,
+		},
+		{
+			name: "3x4 matrix is not invertible bc not a square matrix",
+			args: args{
+				m: &Matrix{
+					rows: 3,
+					cols: 4,
+					data: [][]float64{
+						{-4, 2, -2, -3},
+						{9, 6, 2, 6},
+						{0, -5, 1, -5},
 					},
 				},
 			},

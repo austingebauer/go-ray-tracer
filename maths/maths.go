@@ -4,6 +4,8 @@ package maths
 import "math"
 
 const (
+	// Epsilon is a small quantity that can be used to determine
+	// if two floating point numbers are nearly equal.
 	Epsilon float64 = 0.00001
 )
 

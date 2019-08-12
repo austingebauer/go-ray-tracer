@@ -103,7 +103,7 @@ func RenderClock() {
 	WriteCanvasToFile(c, clockPPMFile)
 }
 
-// Render clock renders a projectile.
+// RenderProjectile renders a projectile.
 func RenderProjectile() {
 	// projectile starts one unit above the origin.
 	start := point.NewPoint(0, 1, 0)
@@ -160,6 +160,7 @@ func tick(env *Environment, proj *Projectile) Projectile {
 	}
 }
 
+// WriteCanvasToFile writes the passed canvas to a file at the passed path.
 func WriteCanvasToFile(c *canvas.Canvas, filePath string) {
 	// Write the canvas to a PPM file
 	file, err := os.Create(filePath)

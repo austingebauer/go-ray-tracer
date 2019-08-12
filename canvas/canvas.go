@@ -74,13 +74,11 @@ func (c *Canvas) PixelAt(x, y uint64) (*color.Color, error) {
 // fit into the pixel bounds of the canvas.
 func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
 	if y > c.Height-1 {
-		return errors.New(fmt.Sprintf(
-			"validate canvas bounds: y value '%v' must be less than '%v'", y, c.Height))
+		return fmt.Errorf("validate canvas bounds: y value '%v' must be less than '%v'", y, c.Height)
 	}
 
 	if x > c.Width-1 {
-		return errors.New(fmt.Sprintf(
-			"validate canvas bounds: x value '%v' must be less than '%v'", x, c.Width))
+		return fmt.Errorf("validate canvas bounds: x value '%v' must be less than '%v'", x, c.Width)
 	}
 
 	return nil

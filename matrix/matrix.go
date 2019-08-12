@@ -317,7 +317,7 @@ func Determinant(m *Matrix) (float64, error) {
 	}
 
 	// for each column in the selected row
-	var det float64 = 0
+	var det float64
 	row := 0
 	for col := 0; col < int(m.cols); col++ {
 		cofactor, _ := Cofactor(m, uint(row), uint(col))
