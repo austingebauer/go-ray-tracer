@@ -498,6 +498,7 @@ func TestToPoint(t *testing.T) {
 				assert.NoError(t, err)
 
 				got, err := ToPoint(tt.args.m)
+				assert.NoError(t, err)
 				assert.NotNil(t, got)
 				assert.Equal(t, tt.want, got)
 			}

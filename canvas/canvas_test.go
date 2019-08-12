@@ -140,7 +140,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 	}
 }
 
-func TestCanvas_PixelAt(t *testing.T) {
+func TestCanvaÎs_PixelAt(t *testing.T) {
 	type fields struct {
 		Width  uint64
 		Height uint64
@@ -227,13 +227,16 @@ func TestCanvas_PixelAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewCanvas(tt.fields.Width, tt.fields.Height)
-			err := c.WritePixel(tt.args.x, tt.args.y, tt.args.color)
-			color, err := c.PixelAt(tt.args.y, tt.args.x)
+			errWrite := c.WritePixel(tt.args.x, tt.args.y, tt.args.color)
+			clr, errPixelAt := c.PixelAt(tt.args.y, tt.args.x)
 			if tt.wantErr {
-				assert.Error(t, err)
+				assert.Error(t, errWrite)
+				assert.Error(t, errPixelAt)
+				assert.Nil(t, clr)
 			} else {
-				assert.NoError(t, err)
-				assert.Equal(t, tt.want, color)
+				assert.NoError(t, errWrite)
+				assert.NoError(t, errPixelAt)
+				assert.Equal(t, tt.want, clr)
 			}
 		})
 	}
