@@ -759,7 +759,7 @@ func TestTransformVector(t *testing.T) {
 
 	// The vector must be the same after a translation happens to it.
 	// Moving a vector around in space does not change the direction it points.
-	mVec, err := ToVector(*prod)
+	mVec, err := ToVector(prod)
 	assert.NoError(t, err)
 	assert.Equal(t, vec, mVec)
 }
@@ -799,7 +799,7 @@ func TestToMatrix(t *testing.T) {
 
 func TestToVector(t *testing.T) {
 	type args struct {
-		m matrix.Matrix
+		m *matrix.Matrix
 	}
 	tests := []struct {
 		name    string
@@ -810,7 +810,7 @@ func TestToVector(t *testing.T) {
 		{
 			name: "matrix to vector conversion",
 			args: args{
-				m: *matrix.NewMatrix(4, 1),
+				m: matrix.NewMatrix(4, 1),
 			},
 			want:    NewVector(1, -2, 3),
 			wantErr: false,
@@ -818,7 +818,7 @@ func TestToVector(t *testing.T) {
 		{
 			name: "matrix to vector conversion error row length",
 			args: args{
-				m: *matrix.NewMatrix(2, 1),
+				m: matrix.NewMatrix(2, 1),
 			},
 			want:    NewVector(1, -2, 3),
 			wantErr: true,
@@ -826,7 +826,7 @@ func TestToVector(t *testing.T) {
 		{
 			name: "matrix to vector conversion error col length",
 			args: args{
-				m: *matrix.NewMatrix(4, 2),
+				m: matrix.NewMatrix(4, 2),
 			},
 			want:    NewVector(1, -2, 3),
 			wantErr: true,
@@ -862,7 +862,7 @@ func TestScalingVector(t *testing.T) {
 	mult, err := matrix.Multiply(transform, ToMatrix(vec))
 	assert.NoError(t, err)
 
-	vecMult, err := ToVector(*mult)
+	vecMult, err := ToVector(mult)
 	assert.NoError(t, err)
 
 	assert.Equal(t, NewVector(-8, 18, 32), vecMult)
@@ -877,7 +877,7 @@ func TestScalingInverseVector(t *testing.T) {
 	mult, err := matrix.Multiply(invM, ToMatrix(vec))
 	assert.NoError(t, err)
 
-	vecMult, err := ToVector(*mult)
+	vecMult, err := ToVector(mult)
 	assert.NoError(t, err)
 
 	assert.Equal(t, NewVector(-2, 2, 2), vecMult)

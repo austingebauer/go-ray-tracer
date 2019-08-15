@@ -1,9 +1,10 @@
 package ray
 
 import (
-	"github.com/austingebauer/go-ray-tracer/intersection"
 	"testing"
 
+	"github.com/austingebauer/go-ray-tracer/intersection"
+	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
@@ -179,6 +180,60 @@ func TestIntersect(t *testing.T) {
 
 			assert.Equal(t, len(tt.want), len(intersections))
 			assert.Equal(t, tt.want, intersections)
+		})
+	}
+}
+
+func TestTransform(t *testing.T) {
+	type args struct {
+		ray *Ray
+		m   *matrix.Matrix
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *Ray
+		wantErr bool
+	}{
+		{
+			name: "transform ray with translation matrix",
+			args: args{
+				ray: NewRay(point.NewPoint(1, 2, 3), vector.NewVector(0, 1, 0)),
+				m:   matrix.NewTranslationMatrix(3, 4, 5),
+			},
+			want:    NewRay(point.NewPoint(4, 6, 8), vector.NewVector(0, 1, 0)),
+			wantErr: false,
+		},
+		{
+			name: "transform ray with matrix not of 4x4 order for error",
+			args: args{
+				ray: NewRay(point.NewPoint(1, 2, 3), vector.NewVector(0, 1, 0)),
+				m:   matrix.NewMatrix(1, 4),
+			},
+			want:    NewRay(point.NewPoint(4, 6, 8), vector.NewVector(0, 1, 0)),
+			wantErr: true,
+		},
+		{
+			name: "transform ray with scaling matrix",
+			args: args{
+				ray: NewRay(point.NewPoint(1, 2, 3), vector.NewVector(0, 1, 0)),
+				m:   matrix.NewScalingMatrix(2, 3, 4),
+			},
+			want:    NewRay(point.NewPoint(2, 6, 12), vector.NewVector(0, 3, 0)),
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := Transform(tt.args.ray, tt.args.m)
+
+			if tt.wantErr {
+				assert.Nil(t, got)
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, got)
+			}
 		})
 	}
 }

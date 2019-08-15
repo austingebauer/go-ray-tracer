@@ -144,7 +144,7 @@ func ToMatrix(vec *Vector) *matrix.Matrix {
 
 // ToVector returns a Point representation of the passed Matrix.
 // An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
-func ToVector(m matrix.Matrix) (*Vector, error) {
+func ToVector(m *matrix.Matrix) (*Vector, error) {
 	if m.GetRows() != 3 && m.GetRows() != 4 {
 		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a vector")
 	}

@@ -2,7 +2,9 @@
 package ray
 
 import (
+	"errors"
 	"github.com/austingebauer/go-ray-tracer/intersection"
+	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
@@ -68,4 +70,22 @@ func Intersect(sphere *sphere.Sphere, ray *Ray) []*intersection.Intersection {
 			Object: sphere,
 		},
 	}
+}
+
+// Transform applies the passed 4x4 transformation Matrix to the passed Ray.
+// Returns a new Ray with the transformed origin and direction.
+func Transform(ray *Ray, m *matrix.Matrix) (*Ray, error) {
+	if m.GetRows() != 4 || m.GetCols() != 4 {
+		return nil, errors.New("order of matrix m must be 4x4")
+	}
+
+	// transform the ray origin
+	originMatrix, _ := matrix.Multiply(m, point.ToMatrix(ray.Origin))
+	transformedOriginPoint, _ := point.ToPoint(originMatrix)
+
+	// transform the ray direction
+	directionMatrix, _ := matrix.Multiply(m, vector.ToMatrix(ray.Direction))
+	transformedDirectionVector, _ := vector.ToVector(directionMatrix)
+
+	return NewRay(transformedOriginPoint, transformedDirectionVector), nil
 }
