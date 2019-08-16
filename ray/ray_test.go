@@ -91,6 +91,7 @@ func TestIntersect(t *testing.T) {
 	type args struct {
 		sphere *sphere.Sphere
 		ray    *Ray
+		transform *matrix.Matrix
 	}
 	tests := []struct {
 		name string
@@ -180,6 +181,50 @@ func TestIntersect(t *testing.T) {
 
 			assert.Equal(t, len(tt.want), len(intersections))
 			assert.Equal(t, tt.want, intersections)
+		})
+	}
+}
+
+func TestIntersectWithSphereTransform(t *testing.T) {
+	type args struct {
+		sphere *sphere.Sphere
+		ray    *Ray
+		transform *matrix.Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want []*intersection.Intersection
+	}{
+		{
+			name: "intersecting a scaled unit sphere with a ray",
+			args: args{
+				sphere: sphere.NewUnitSphere("testID"),
+				ray:    NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
+				transform: matrix.NewScalingMatrix(2,2,2),
+			},
+			want: []*intersection.Intersection{
+				{
+					T:      3.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				{
+					T:      7.0,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.args.sphere.SetTransform(tt.args.transform)
+			intersections := Intersect(tt.args.sphere, tt.args.ray)
+
+			assert.Equal(t, len(tt.want), len(intersections))
+
+			// only check T values of intersections
+			assert.Equal(t, tt.want[0].T, intersections[0].T)
+			assert.Equal(t, tt.want[1].T, intersections[1].T)
 		})
 	}
 }

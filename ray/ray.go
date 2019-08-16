@@ -41,12 +41,15 @@ func Position(ray *Ray, t float64) *point.Point {
 func Intersect(sphere *sphere.Sphere, ray *Ray) []*intersection.Intersection {
 	// Details on calculation: https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
 
+	sphereTransformInverse, _ := matrix.Inverse(sphere.Transform)
+	transformedRay, _ := Transform(ray, sphereTransformInverse)
+
 	// The vector from the sphere origin to the ray origin.
-	sphereToRayVec := point.Subtract(*ray.Origin, *sphere.Origin)
+	sphereToRayVec := point.Subtract(*transformedRay.Origin, *sphere.Origin)
 
 	// Compute the discriminant to tell whether the ray intersects with the sphere at all.
-	a := vector.DotProduct(*ray.Direction, *ray.Direction)
-	b := 2 * vector.DotProduct(*ray.Direction, sphereToRayVec)
+	a := vector.DotProduct(*transformedRay.Direction, *transformedRay.Direction)
+	b := 2 * vector.DotProduct(*transformedRay.Direction, sphereToRayVec)
 	c := vector.DotProduct(sphereToRayVec, sphereToRayVec) - 1
 	discriminant := math.Pow(b, 2) - 4*a*c
 
