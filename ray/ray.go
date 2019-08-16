@@ -41,6 +41,9 @@ func Position(ray *Ray, t float64) *point.Point {
 func Intersect(sphere *sphere.Sphere, ray *Ray) []*intersection.Intersection {
 	// Details on calculation: https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
 
+	// Transform the ray by the inverse of the transformation associated with the sphere
+	// in order to use unit sphere. Moving the ray makes for more simple math and
+	// same results intersection results.
 	sphereTransformInverse, _ := matrix.Inverse(sphere.Transform)
 	transformedRay, _ := Transform(ray, sphereTransformInverse)
 
