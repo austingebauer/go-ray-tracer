@@ -36,6 +36,12 @@ type Environment struct {
 func main() {
 	RenderProjectile()
 	RenderClock()
+	RenderRayTracedCircle()
+}
+
+// RenderRayTracedCircle renders a ray traced circle.
+func RenderRayTracedCircle() {
+	fmt.Print("TODO")
 }
 
 // RenderClock renders a clock.

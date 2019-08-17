@@ -8,9 +8,9 @@ import (
 
 // Sphere is a sphere object with an origin and radius.
 type Sphere struct {
-	Id     string
-	Origin *point.Point
-	Radius float64
+	Id        string
+	Origin    *point.Point
+	Radius    float64
 	Transform *matrix.Matrix
 }
 
@@ -22,9 +22,9 @@ func NewUnitSphere(id string) *Sphere {
 // NewSphere returns a new Sphere with the passed id, origin, and radius.
 func NewSphere(id string, origin *point.Point, radius float64) *Sphere {
 	return &Sphere{
-		Id:     id,
-		Origin: origin,
-		Radius: radius,
+		Id:        id,
+		Origin:    origin,
+		Radius:    radius,
 		Transform: matrix.NewIdentityMatrix(4),
 	}
 }

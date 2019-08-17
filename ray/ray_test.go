@@ -89,8 +89,8 @@ func TestPosition(t *testing.T) {
 
 func TestIntersect(t *testing.T) {
 	type args struct {
-		sphere *sphere.Sphere
-		ray    *Ray
+		sphere    *sphere.Sphere
+		ray       *Ray
 		transform *matrix.Matrix
 	}
 	tests := []struct {
@@ -187,8 +187,8 @@ func TestIntersect(t *testing.T) {
 
 func TestIntersectWithSphereTransform(t *testing.T) {
 	type args struct {
-		sphere *sphere.Sphere
-		ray    *Ray
+		sphere    *sphere.Sphere
+		ray       *Ray
 		transform *matrix.Matrix
 	}
 	tests := []struct {
@@ -199,9 +199,9 @@ func TestIntersectWithSphereTransform(t *testing.T) {
 		{
 			name: "intersecting a scaled unit sphere with a ray",
 			args: args{
-				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
-				transform: matrix.NewScalingMatrix(2,2,2),
+				sphere:    sphere.NewUnitSphere("testID"),
+				ray:       NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
+				transform: matrix.NewScalingMatrix(2, 2, 2),
 			},
 			want: []*intersection.Intersection{
 				{

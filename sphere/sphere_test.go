@@ -17,9 +17,9 @@ func TestNewUnitSphere(t *testing.T) {
 		{
 			name: "new unit sphere",
 			want: &Sphere{
-				Id:     "testID",
-				Origin: point.NewPoint(0, 0, 0),
-				Radius: 1,
+				Id:        "testID",
+				Origin:    point.NewPoint(0, 0, 0),
+				Radius:    1,
 				Transform: matrix.NewIdentityMatrix(4),
 			},
 		},
@@ -50,9 +50,9 @@ func TestNewSphere(t *testing.T) {
 				radius: 11,
 			},
 			want: &Sphere{
-				Id:     "testID",
-				Origin: point.NewPoint(1, 2, -3),
-				Radius: 11,
+				Id:        "testID",
+				Origin:    point.NewPoint(1, 2, -3),
+				Radius:    11,
 				Transform: matrix.NewIdentityMatrix(4),
 			},
 		},
@@ -76,7 +76,7 @@ func TestSphere_SetTransform(t *testing.T) {
 	}{
 		{
 			name: "set sphere transform",
-			s: NewUnitSphere("testID"),
+			s:    NewUnitSphere("testID"),
 			args: args{
 				m: matrix.NewMatrix(4, 4),
 			},
