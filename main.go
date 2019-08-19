@@ -35,42 +35,39 @@ func main() {
 
 // RenderRayTracedCircle renders a ray traced circle.
 func RenderRayTracedCircle() {
-	circlePPMFile := "docs/renderings/circle/circle.ppm"
-	circleCanvasWidth := 100
-	circleCanvasHeight := 100
-
-	// Create a new unit squere
-	shape := sphere.NewUnitSphere("ray-traced-circle")
+	fmt.Println("---------- Rendering : Ray-traced Sphere ----------")
+	circleCanvasWidth := 600
+	circleCanvasHeight := 600
 
 	// Pick an origin for the Ray
 	rayOrigin := point.NewPoint(0, 0, -5)
 
 	// Choose a wall z value
-	wallZ := 10.0
+	wallZ := 8.0
 
 	// Choose the size of the wall based on extrapolating ray origin and sphere
 	wallSize := 7.0
 
-	// Keep half of the wall size when looking directly at the sphere
+	// Half of the wall size when looking directly at the sphere
 	halfWallSize := wallSize / 2.0
 
 	// Divide the wall size by the number of canvas pixels to get
 	// the size of a single pixel in world space units.
-	canvasPixels := 100
-	pixelSize := wallSize / float64(canvasPixels)
+	pixelSize := wallSize / float64(circleCanvasWidth)
 
 	c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
-	clr := color.NewColor(0, 1, 1)
+	clr := color.NewColor(0.5, 0.5, 0.7)
+	shape := sphere.NewUnitSphere("sphere")
 
 	// For each row of pixels in the canvas
-	for y := 0; y < canvasPixels; y++ {
+	for y := 0; y < circleCanvasHeight; y++ {
 
 		// Compute the world y coordinate (top = +half, bottom = -half)
 		// 3.5 - 0.07 * (y = current row)
 		worldY := halfWallSize - pixelSize*float64(y)
 
 		// For each pixel in the row
-		for x := 0; x < int(canvasPixels); x++ {
+		for x := 0; x < circleCanvasWidth; x++ {
 
 			// Compute the world x coordinate (left = -half, right = half)
 			// -3.5 + 0.07 * (x = current pixel in row)
@@ -79,17 +76,19 @@ func RenderRayTracedCircle() {
 			// Describe the point on the wall that the Ray will target
 			position := point.NewPoint(worldX, worldY, wallZ)
 
+			// Create a ray from the ray origin to the position on the wall
 			r := ray.NewRay(rayOrigin, vector.Normalize(*point.Subtract(position, rayOrigin)))
 
 			// Intersect the ray with the sphere
 			xs := ray.Intersect(shape, r)
 
+			// If there was no hit, don't write a pixel
 			hit := intersection.Hit(xs)
 			if hit == nil {
 				continue
 			}
 
-			// Write the hit to the canvas
+			// There was a hit, so write a pixel
 			err := c.WritePixel(x, y, clr)
 			if err != nil {
 				log.Fatal(err)
@@ -97,12 +96,12 @@ func RenderRayTracedCircle() {
 		}
 	}
 
-	WriteCanvasToFile(c, circlePPMFile)
+	WriteCanvasToFile(c, "docs/renderings/circle/circle.ppm")
 }
 
 // RenderClock renders a clock.
 func RenderClock() {
-	clockPPMFile := "docs/renderings/clock/clock.ppm"
+	fmt.Println("---------- Rendering: Clock ----------")
 	clockCanvasWidth := 400
 	clockCanvasHeight := 400
 
@@ -166,12 +165,12 @@ func RenderClock() {
 		}
 	}
 
-	WriteCanvasToFile(c, clockPPMFile)
+	WriteCanvasToFile(c, "docs/renderings/clock/clock.ppm")
 }
 
 // RenderProjectile renders a projectile.
 func RenderProjectile() {
-	projectilePPMFile := "docs/renderings/projectile/projectile.ppm"
+	fmt.Println("---------- Rendering: Projectile ----------")
 	projectileCanvasWidth := 900
 	projectileCanvasHeight := 600
 
@@ -202,8 +201,9 @@ func RenderProjectile() {
 	// run tick repeatedly until the projectile's y position is less than or equal to 0
 	tickCount := 0
 	for proj.Position.Y >= 0 {
-		fmt.Printf("Tick %v: Projectile position <X: %v, Y: %v, Z: %v> \n", tickCount,
-			proj.Position.X, proj.Position.Y, proj.Position.Z)
+		// Uncomment to view projectile x, y, and z values through ticks
+		// fmt.Printf("Tick %v: Projectile position <X: %v, Y: %v, Z: %v> \n", tickCount,
+		// proj.Position.X, proj.Position.Y, proj.Position.Z)
 
 		// write the position of the projectile to the canvas
 		white := color.NewColor(1, 1, 1)
@@ -216,8 +216,7 @@ func RenderProjectile() {
 		tickCount++
 	}
 
-	// Write the canvas to a PPM file
-	WriteCanvasToFile(c, projectilePPMFile)
+	WriteCanvasToFile(c, "docs/renderings/projectile/projectile.ppm")
 }
 
 // tick moves the passed Projectile through the passed Environment.

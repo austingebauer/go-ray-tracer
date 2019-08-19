@@ -115,7 +115,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 	}
 }
 
-func TestCanvaÎs_PixelAt(t *testing.T) {
+func TestCanvas_PixelAt(t *testing.T) {
 	type fields struct {
 		Width  int
 		Height int
@@ -328,11 +328,8 @@ func TestCanvas_ToPPMError(t *testing.T) {
 
 func TestCanvas_ValidateInCanvasBounds(t *testing.T) {
 	type fields struct {
-		Width         int
-		Height        int
-		Pixels        [][]*color.Color
-		PPMIdentifier string
-		MaxColorValue uint8
+		Width  int
+		Height int
 	}
 	type args struct {
 		x int
@@ -344,19 +341,87 @@ func TestCanvas_ValidateInCanvasBounds(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "x and y pixels in bounds of canvas",
+			fields: fields{
+				Width:  100,
+				Height: 100,
+			},
+			args: args{
+				x: 0,
+				y: 0,
+			},
+			wantErr: false,
+		},
+		{
+			name: "x and y pixels in bounds of canvas",
+			fields: fields{
+				Width:  100,
+				Height: 100,
+			},
+			args: args{
+				x: 99,
+				y: 99,
+			},
+			wantErr: false,
+		},
+		{
+			name: "x and y pixels out of bounds of canvas positive width",
+			fields: fields{
+				Width:  100,
+				Height: 100,
+			},
+			args: args{
+				x: 100,
+				y: 0,
+			},
+			wantErr: true,
+		},
+		{
+			name: "x and y pixels out of bounds of canvas positive height",
+			fields: fields{
+				Width:  100,
+				Height: 100,
+			},
+			args: args{
+				x: 0,
+				y: 100,
+			},
+			wantErr: true,
+		},
+		{
+			name: "x and y pixels out of bounds of canvas negative width",
+			fields: fields{
+				Width:  100,
+				Height: 100,
+			},
+			args: args{
+				x: -1,
+				y: 0,
+			},
+			wantErr: true,
+		},
+		{
+			name: "x and y pixels out of bounds of canvas negative height",
+			fields: fields{
+				Width:  100,
+				Height: 100,
+			},
+			args: args{
+				x: 0,
+				y: -1,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			c := &Canvas{
-				Width:         tt.fields.Width,
-				Height:        tt.fields.Height,
-				Pixels:        tt.fields.Pixels,
-				PPMIdentifier: tt.fields.PPMIdentifier,
-				MaxColorValue: tt.fields.MaxColorValue,
-			}
-			if err := c.ValidateInCanvasBounds(tt.args.x, tt.args.y); (err != nil) != tt.wantErr {
-				t.Errorf("Canvas.ValidateInCanvasBounds() error = %v, wantErr %v", err, tt.wantErr)
+			c := NewCanvas(tt.fields.Width, tt.fields.Height)
+
+			if tt.wantErr {
+				assert.Error(t, c.ValidateInCanvasBounds(tt.args.x, tt.args.y))
+			} else {
+				assert.NoError(t, c.ValidateInCanvasBounds(tt.args.x, tt.args.y))
 			}
 		})
 	}
