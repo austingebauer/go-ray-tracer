@@ -6,15 +6,14 @@ import (
 	"io"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/austingebauer/go-ray-tracer/color"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewCanvas(t *testing.T) {
 	type args struct {
-		width  uint64
-		height uint64
+		width  int
+		height int
 	}
 	tests := []struct {
 		name string
@@ -45,12 +44,12 @@ func TestNewCanvas(t *testing.T) {
 
 func TestCanvas_WritePixel(t *testing.T) {
 	type fields struct {
-		Width  uint64
-		Height uint64
+		Width  int
+		Height int
 	}
 	type args struct {
-		x     uint64
-		y     uint64
+		x     int
+		y     int
 		color *color.Color
 	}
 	tests := []struct {
@@ -118,12 +117,12 @@ func TestCanvas_WritePixel(t *testing.T) {
 
 func TestCanvaÎs_PixelAt(t *testing.T) {
 	type fields struct {
-		Width  uint64
-		Height uint64
+		Width  int
+		Height int
 	}
 	type args struct {
-		x     uint64
-		y     uint64
+		x     int
+		y     int
 		color *color.Color
 	}
 	tests := []struct {
@@ -271,8 +270,8 @@ func TestCanvas_ToPPM(t *testing.T) {
 			for i := 0; i < int(tt.c.Height); i++ {
 				for j := 0; j < int(tt.c.Width); j++ {
 					err := tt.c.WritePixel(
-						uint64(j),
-						uint64(i),
+						j,
+						i,
 						color.NewColor(1, 0.8, 0.6))
 					assert.NoError(t, err)
 				}
@@ -323,6 +322,42 @@ func TestCanvas_ToPPMError(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.c.ToPPM(tt.writer, tt.goTemplate)
 			assert.Error(t, err)
+		})
+	}
+}
+
+func TestCanvas_ValidateInCanvasBounds(t *testing.T) {
+	type fields struct {
+		Width         int
+		Height        int
+		Pixels        [][]*color.Color
+		PPMIdentifier string
+		MaxColorValue uint8
+	}
+	type args struct {
+		x int
+		y int
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := &Canvas{
+				Width:         tt.fields.Width,
+				Height:        tt.fields.Height,
+				Pixels:        tt.fields.Pixels,
+				PPMIdentifier: tt.fields.PPMIdentifier,
+				MaxColorValue: tt.fields.MaxColorValue,
+			}
+			if err := c.ValidateInCanvasBounds(tt.args.x, tt.args.y); (err != nil) != tt.wantErr {
+				t.Errorf("Canvas.ValidateInCanvasBounds() error = %v, wantErr %v", err, tt.wantErr)
+			}
 		})
 	}
 }

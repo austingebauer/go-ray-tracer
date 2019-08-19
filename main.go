@@ -15,18 +15,6 @@ import (
 	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
-const (
-	projectilePPMFile      = "docs/renderings/projectile/projectile.ppm"
-	projectileCanvasWidth  = 900
-	projectileCanvasHeight = 600
-	clockPPMFile           = "docs/renderings/clock/clock.ppm"
-	clockCanvasWidth       = 400
-	clockCanvasHeight      = 400
-	circlePPMFile          = "docs/renderings/circle/circle.ppm"
-	circleCanvasWidth      = 100
-	circleCanvasHeight     = 100
-)
-
 // Projectile represents an object with a position and a velocity.
 type Projectile struct {
 	Position *point.Point
@@ -47,6 +35,10 @@ func main() {
 
 // RenderRayTracedCircle renders a ray traced circle.
 func RenderRayTracedCircle() {
+	circlePPMFile := "docs/renderings/circle/circle.ppm"
+	circleCanvasWidth := 100
+	circleCanvasHeight := 100
+
 	// Create a new unit squere
 	shape := sphere.NewUnitSphere("ray-traced-circle")
 
@@ -64,25 +56,25 @@ func RenderRayTracedCircle() {
 
 	// Divide the wall size by the number of canvas pixels to get
 	// the size of a single pixel in world space units.
-	canvasPixels := 100.0
-	pixelSize := wallSize / canvasPixels
+	canvasPixels := 100
+	pixelSize := wallSize / float64(canvasPixels)
 
 	c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
-	red := color.NewColor(1, 0, 0)
+	clr := color.NewColor(0, 1, 1)
 
 	// For each row of pixels in the canvas
-	for y := 0.0; y < canvasPixels; y++ {
+	for y := 0; y < canvasPixels; y++ {
 
 		// Compute the world y coordinate (top = +half, bottom = -half)
 		// 3.5 - 0.07 * (y = current row)
-		worldY := halfWallSize - pixelSize*y
+		worldY := halfWallSize - pixelSize*float64(y)
 
 		// For each pixel in the row
-		for x := 0.0; x < canvasPixels; x++ {
+		for x := 0; x < int(canvasPixels); x++ {
 
 			// Compute the world x coordinate (left = -half, right = half)
 			// -3.5 + 0.07 * (x = current pixel in row)
-			worldX := (-1 * halfWallSize) + pixelSize*x
+			worldX := (-1 * halfWallSize) + pixelSize*float64(x)
 
 			// Describe the point on the wall that the Ray will target
 			position := point.NewPoint(worldX, worldY, wallZ)
@@ -98,7 +90,7 @@ func RenderRayTracedCircle() {
 			}
 
 			// Write the hit to the canvas
-			err := c.WritePixel(uint64(x), uint64(y), red)
+			err := c.WritePixel(x, y, clr)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -110,14 +102,18 @@ func RenderRayTracedCircle() {
 
 // RenderClock renders a clock.
 func RenderClock() {
+	clockPPMFile := "docs/renderings/clock/clock.ppm"
+	clockCanvasWidth := 400
+	clockCanvasHeight := 400
+
 	// Orient the clock about the z-axis, such that the face of the clock
 	// would be in the xy-plane while looking towards negative z-axis.
 
 	// Set up the canvas
 	c := canvas.NewCanvas(clockCanvasWidth, clockCanvasHeight)
-	var canvasRadius float64 = clockCanvasWidth / 4
-	var canvasOriginWidth float64 = clockCanvasWidth / 2
-	var canvasOriginHeight float64 = clockCanvasHeight / 2
+	var canvasRadius = float64(clockCanvasWidth) / 4
+	var canvasOriginWidth = float64(clockCanvasWidth) / 2
+	var canvasOriginHeight = float64(clockCanvasHeight) / 2
 
 	// Set some colors to render for different points
 	white := color.NewColor(1, 1, 1)
@@ -126,8 +122,8 @@ func RenderClock() {
 	// Set the origin
 	origin := point.NewPoint(0, 0, 0)
 	err := c.WritePixel(
-		uint64(origin.X)+uint64(canvasOriginWidth),
-		uint64(origin.Y)+uint64(canvasOriginHeight), white)
+		int(origin.X+canvasOriginWidth),
+		int(origin.Y+canvasOriginHeight), white)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -138,8 +134,8 @@ func RenderClock() {
 		log.Fatal(err)
 	}
 	err = c.WritePixel(
-		uint64(canvasOriginWidth)+(uint64(twelve.X*canvasRadius)),
-		uint64(canvasOriginHeight)-(uint64(twelve.Y*canvasRadius)),
+		int(canvasOriginWidth+(twelve.X*canvasRadius)),
+		int(canvasOriginHeight-(twelve.Y*canvasRadius)),
 		green)
 	if err != nil {
 		log.Fatal(err)
@@ -156,8 +152,8 @@ func RenderClock() {
 
 		// render next hour hand
 		err = c.WritePixel(
-			uint64(canvasOriginWidth)+(uint64(next.X*canvasRadius)),
-			uint64(canvasOriginHeight)-(uint64(next.Y*canvasRadius)),
+			int(canvasOriginWidth+(next.X*canvasRadius)),
+			int(canvasOriginHeight-(next.Y*canvasRadius)),
 			green)
 		if err != nil {
 			log.Fatal(err)
@@ -175,6 +171,10 @@ func RenderClock() {
 
 // RenderProjectile renders a projectile.
 func RenderProjectile() {
+	projectilePPMFile := "docs/renderings/projectile/projectile.ppm"
+	projectileCanvasWidth := 900
+	projectileCanvasHeight := 600
+
 	// projectile starts one unit above the origin.
 	start := point.NewPoint(0, 1, 0)
 
@@ -207,7 +207,7 @@ func RenderProjectile() {
 
 		// write the position of the projectile to the canvas
 		white := color.NewColor(1, 1, 1)
-		err := c.WritePixel(uint64(proj.Position.X), uint64(projectileCanvasHeight-proj.Position.Y), white)
+		err := c.WritePixel(int(proj.Position.X), projectileCanvasHeight-int(proj.Position.Y), white)
 		if err != nil {
 			log.Fatal(err)
 		}

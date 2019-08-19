@@ -25,23 +25,23 @@ const (
 
 // Canvas represents a rectangular grid of Pixels.
 type Canvas struct {
-	Width         uint64
-	Height        uint64
+	Width         int
+	Height        int
 	Pixels        [][]*color.Color
 	PPMIdentifier string
 	MaxColorValue uint8
 }
 
 // NewCanvas returns a new Canvas with the passed Width and Height.
-func NewCanvas(width, height uint64) *Canvas {
+func NewCanvas(width, height int) *Canvas {
 	pixels := make([][]*color.Color, height)
 	for i := range pixels {
 		pixels[i] = make([]*color.Color, width)
 	}
 
 	// Set the canvas default color for each pixel to black
-	for y := 0; y < int(height); y++ {
-		for x := 0; x < int(width); x++ {
+	for y := 0; y < height; y++ {
+		for x := 0; x < width; x++ {
 			pixels[y][x] = color.NewColor(0, 0, 0)
 		}
 	}
@@ -57,7 +57,7 @@ func NewCanvas(width, height uint64) *Canvas {
 
 // WritePixel writes the passed Color to the Canvas at the pixel
 // located at the passed x and y values.
-func (c *Canvas) WritePixel(x uint64, y uint64, color *color.Color) error {
+func (c *Canvas) WritePixel(x, y int, color *color.Color) error {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
 		return err
@@ -68,7 +68,7 @@ func (c *Canvas) WritePixel(x uint64, y uint64, color *color.Color) error {
 }
 
 // PixelAt returns the Color at the pixel located at the passed x and y values.
-func (c *Canvas) PixelAt(x, y uint64) (*color.Color, error) {
+func (c *Canvas) PixelAt(x, y int) (*color.Color, error) {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
 		return nil, err
@@ -79,13 +79,21 @@ func (c *Canvas) PixelAt(x, y uint64) (*color.Color, error) {
 
 // ValidateInCanvasBounds validates that the passed x and y values
 // fit into the pixel bounds of the canvas.
-func (c *Canvas) ValidateInCanvasBounds(x, y uint64) error {
+func (c *Canvas) ValidateInCanvasBounds(x, y int) error {
+	if x < 0 {
+		return fmt.Errorf("x value '%v' must be greater than zero", x)
+	}
+
+	if y < 0 {
+		return fmt.Errorf("y value '%v' must be greater than zero", x)
+	}
+
 	if y > c.Height-1 {
-		return fmt.Errorf("validate canvas bounds: y value '%v' must be less than '%v'", y, c.Height)
+		return fmt.Errorf("y value '%v' must be less than '%v'", y, c.Height)
 	}
 
 	if x > c.Width-1 {
-		return fmt.Errorf("validate canvas bounds: x value '%v' must be less than '%v'", x, c.Width)
+		return fmt.Errorf("x value '%v' must be less than '%v'", x, c.Width)
 	}
 
 	return nil
