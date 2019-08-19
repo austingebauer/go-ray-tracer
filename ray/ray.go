@@ -48,12 +48,12 @@ func Intersect(sphere *sphere.Sphere, ray *Ray) []*intersection.Intersection {
 	transformedRay, _ := Transform(ray, sphereTransformInverse)
 
 	// The vector from the sphere origin to the ray origin.
-	sphereToRayVec := point.Subtract(*transformedRay.Origin, *sphere.Origin)
+	sphereToRayVec := point.Subtract(transformedRay.Origin, sphere.Origin)
 
 	// Compute the discriminant to tell whether the ray intersects with the sphere at all.
 	a := vector.DotProduct(*transformedRay.Direction, *transformedRay.Direction)
-	b := 2 * vector.DotProduct(*transformedRay.Direction, sphereToRayVec)
-	c := vector.DotProduct(sphereToRayVec, sphereToRayVec) - 1
+	b := 2 * vector.DotProduct(*transformedRay.Direction, *sphereToRayVec)
+	c := vector.DotProduct(*sphereToRayVec, *sphereToRayVec) - 1
 	discriminant := math.Pow(b, 2) - 4*a*c
 
 	// If the discriminant is negative, then the ray misses the sphere and no intersections occur.

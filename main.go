@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/austingebauer/go-ray-tracer/intersection"
+	"github.com/austingebauer/go-ray-tracer/ray"
+	"github.com/austingebauer/go-ray-tracer/sphere"
 	"log"
 	"math"
 	"os"
@@ -19,6 +22,9 @@ const (
 	clockPPMFile           = "docs/renderings/clock/clock.ppm"
 	clockCanvasWidth       = 400
 	clockCanvasHeight      = 400
+	circlePPMFile          = "docs/renderings/circle/circle.ppm"
+	circleCanvasWidth      = 100
+	circleCanvasHeight     = 100
 )
 
 // Projectile represents an object with a position and a velocity.
@@ -41,7 +47,65 @@ func main() {
 
 // RenderRayTracedCircle renders a ray traced circle.
 func RenderRayTracedCircle() {
-	fmt.Print("TODO")
+	// Create a new unit squere
+	shape := sphere.NewUnitSphere("ray-traced-circle")
+
+	// Pick an origin for the Ray
+	rayOrigin := point.NewPoint(0, 0, -5)
+
+	// Choose a wall z value
+	wallZ := 10.0
+
+	// Choose the size of the wall based on extrapolating ray origin and sphere
+	wallSize := 7.0
+
+	// Keep half of the wall size when looking directly at the sphere
+	halfWallSize := wallSize / 2.0
+
+	// Divide the wall size by the number of canvas pixels to get
+	// the size of a single pixel in world space units.
+	canvasPixels := 100.0
+	pixelSize := wallSize / canvasPixels
+
+	c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
+	red := color.NewColor(1, 0, 0)
+
+	// For each row of pixels in the canvas
+	for y := 0.0; y < canvasPixels; y++ {
+
+		// Compute the world y coordinate (top = +half, bottom = -half)
+		// 3.5 - 0.07 * (y = current row)
+		worldY := halfWallSize - pixelSize*y
+
+		// For each pixel in the row
+		for x := 0.0; x < canvasPixels; x++ {
+
+			// Compute the world x coordinate (left = -half, right = half)
+			// -3.5 + 0.07 * (x = current pixel in row)
+			worldX := (-1 * halfWallSize) + pixelSize*x
+
+			// Describe the point on the wall that the Ray will target
+			position := point.NewPoint(worldX, worldY, wallZ)
+
+			r := ray.NewRay(rayOrigin, vector.Normalize(*point.Subtract(position, rayOrigin)))
+
+			// Intersect the ray with the sphere
+			xs := ray.Intersect(shape, r)
+
+			hit := intersection.Hit(xs)
+			if hit == nil {
+				continue
+			}
+
+			// Write the hit to the canvas
+			err := c.WritePixel(uint64(x), uint64(y), red)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	WriteCanvasToFile(c, circlePPMFile)
 }
 
 // RenderClock renders a clock.
@@ -63,7 +127,7 @@ func RenderClock() {
 	origin := point.NewPoint(0, 0, 0)
 	err := c.WritePixel(
 		uint64(origin.X)+uint64(canvasOriginWidth),
-		uint64(origin.Y)+uint64(canvasOriginHeight), *white)
+		uint64(origin.Y)+uint64(canvasOriginHeight), white)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -76,7 +140,7 @@ func RenderClock() {
 	err = c.WritePixel(
 		uint64(canvasOriginWidth)+(uint64(twelve.X*canvasRadius)),
 		uint64(canvasOriginHeight)-(uint64(twelve.Y*canvasRadius)),
-		*green)
+		green)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +158,7 @@ func RenderClock() {
 		err = c.WritePixel(
 			uint64(canvasOriginWidth)+(uint64(next.X*canvasRadius)),
 			uint64(canvasOriginHeight)-(uint64(next.Y*canvasRadius)),
-			*green)
+			green)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -143,7 +207,7 @@ func RenderProjectile() {
 
 		// write the position of the projectile to the canvas
 		white := color.NewColor(1, 1, 1)
-		err := c.WritePixel(uint64(proj.Position.X), uint64(projectileCanvasHeight-proj.Position.Y), *white)
+		err := c.WritePixel(uint64(proj.Position.X), uint64(projectileCanvasHeight-proj.Position.Y), white)
 		if err != nil {
 			log.Fatal(err)
 		}

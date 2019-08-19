@@ -67,9 +67,9 @@ func (vec *Vector) Normalize() *Vector {
 }
 
 // Normalize returns a new Vector that is the result of normalizing the passed Vector.
-func Normalize(vec Vector) Vector {
+func Normalize(vec Vector) *Vector {
 	vec.Normalize()
-	return Vector{
+	return &Vector{
 		X: vec.X,
 		Y: vec.Y,
 		Z: vec.Z,

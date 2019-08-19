@@ -38,7 +38,7 @@ func TestNewCanvas(t *testing.T) {
 			canvas := NewCanvas(tt.args.width, tt.args.height)
 			assert.Equal(t, tt.want.Height, canvas.Height)
 			assert.Equal(t, tt.want.Width, canvas.Width)
-			assert.Equal(t, *color.NewColor(0, 0, 0), canvas.Pixels[0][0])
+			assert.Equal(t, color.NewColor(0, 0, 0), canvas.Pixels[0][0])
 		})
 	}
 }
@@ -51,13 +51,13 @@ func TestCanvas_WritePixel(t *testing.T) {
 	type args struct {
 		x     uint64
 		y     uint64
-		color color.Color
+		color *color.Color
 	}
 	tests := []struct {
 		name      string
 		fields    fields
 		args      args
-		want      color.Color
+		want      *color.Color
 		wantError bool
 	}{
 		{
@@ -67,19 +67,11 @@ func TestCanvas_WritePixel(t *testing.T) {
 				Height: 20,
 			},
 			args: args{
-				x: 9,
-				y: 19,
-				color: color.Color{
-					Red:   1,
-					Green: 0,
-					Blue:  0,
-				},
+				x:     9,
+				y:     19,
+				color: color.NewColor(1, 0, 0),
 			},
-			want: color.Color{
-				Red:   1,
-				Green: 0,
-				Blue:  0,
-			},
+			want:      color.NewColor(1, 0, 0),
 			wantError: false,
 		},
 		{
@@ -89,19 +81,11 @@ func TestCanvas_WritePixel(t *testing.T) {
 				Height: 20,
 			},
 			args: args{
-				x: 100,
-				y: 2,
-				color: color.Color{
-					Red:   1,
-					Green: 0,
-					Blue:  0,
-				},
+				x:     100,
+				y:     2,
+				color: color.NewColor(1, 0, 0),
 			},
-			want: color.Color{
-				Red:   1,
-				Green: 0,
-				Blue:  0,
-			},
+			want:      color.NewColor(1, 0, 0),
 			wantError: true,
 		},
 		{
@@ -111,19 +95,11 @@ func TestCanvas_WritePixel(t *testing.T) {
 				Height: 20,
 			},
 			args: args{
-				x: 8,
-				y: 20,
-				color: color.Color{
-					Red:   1,
-					Green: 0,
-					Blue:  0,
-				},
+				x:     8,
+				y:     20,
+				color: color.NewColor(1, 0, 0),
 			},
-			want: color.Color{
-				Red:   1,
-				Green: 0,
-				Blue:  0,
-			},
+			want:      color.NewColor(1, 0, 0),
 			wantError: true,
 		},
 	}
@@ -148,7 +124,7 @@ func TestCanvaÎs_PixelAt(t *testing.T) {
 	type args struct {
 		x     uint64
 		y     uint64
-		color color.Color
+		color *color.Color
 	}
 	tests := []struct {
 		name    string
@@ -164,13 +140,9 @@ func TestCanvaÎs_PixelAt(t *testing.T) {
 				Height: 20,
 			},
 			args: args{
-				x: 2,
-				y: 2,
-				color: color.Color{
-					Red:   1,
-					Green: 0,
-					Blue:  0,
-				},
+				x:     2,
+				y:     2,
+				color: color.NewColor(1, 0, 0),
 			},
 			want: &color.Color{
 				Red:   1,
@@ -186,13 +158,9 @@ func TestCanvaÎs_PixelAt(t *testing.T) {
 				Height: 2,
 			},
 			args: args{
-				x: 20,
-				y: 0,
-				color: color.Color{
-					Red:   1,
-					Green: 0,
-					Blue:  0,
-				},
+				x:     20,
+				y:     0,
+				color: color.NewColor(1, 0, 0),
 			},
 			want: &color.Color{
 				Red:   1,
@@ -208,13 +176,9 @@ func TestCanvaÎs_PixelAt(t *testing.T) {
 				Height: 2,
 			},
 			args: args{
-				x: 0,
-				y: 2,
-				color: color.Color{
-					Red:   1,
-					Green: 0,
-					Blue:  0,
-				},
+				x:     0,
+				y:     2,
+				color: color.NewColor(1, 0, 0),
 			},
 			want: &color.Color{
 				Red:   1,
@@ -306,7 +270,10 @@ func TestCanvas_ToPPM(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			for i := 0; i < int(tt.c.Height); i++ {
 				for j := 0; j < int(tt.c.Width); j++ {
-					err := tt.c.WritePixel(uint64(j), uint64(i), *color.NewColor(1, 0.8, 0.6))
+					err := tt.c.WritePixel(
+						uint64(j),
+						uint64(i),
+						color.NewColor(1, 0.8, 0.6))
 					assert.NoError(t, err)
 				}
 			}

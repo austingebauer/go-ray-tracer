@@ -27,16 +27,23 @@ const (
 type Canvas struct {
 	Width         uint64
 	Height        uint64
-	Pixels        [][]color.Color
+	Pixels        [][]*color.Color
 	PPMIdentifier string
 	MaxColorValue uint8
 }
 
 // NewCanvas returns a new Canvas with the passed Width and Height.
 func NewCanvas(width, height uint64) *Canvas {
-	pixels := make([][]color.Color, height)
+	pixels := make([][]*color.Color, height)
 	for i := range pixels {
-		pixels[i] = make([]color.Color, width)
+		pixels[i] = make([]*color.Color, width)
+	}
+
+	// Set the canvas default color for each pixel to black
+	for y := 0; y < int(height); y++ {
+		for x := 0; x < int(width); x++ {
+			pixels[y][x] = color.NewColor(0, 0, 0)
+		}
 	}
 
 	return &Canvas{
@@ -50,7 +57,7 @@ func NewCanvas(width, height uint64) *Canvas {
 
 // WritePixel writes the passed Color to the Canvas at the pixel
 // located at the passed x and y values.
-func (c *Canvas) WritePixel(x uint64, y uint64, color color.Color) error {
+func (c *Canvas) WritePixel(x uint64, y uint64, color *color.Color) error {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
 		return err
@@ -67,7 +74,7 @@ func (c *Canvas) PixelAt(x, y uint64) (*color.Color, error) {
 		return nil, err
 	}
 
-	return &c.Pixels[y][x], nil
+	return c.Pixels[y][x], nil
 }
 
 // ValidateInCanvasBounds validates that the passed x and y values
@@ -108,14 +115,14 @@ func (c *Canvas) ToPPM(writer io.Writer, goTemplate string) error {
 }
 
 // writePPMPixels returns a string containing rows of pixels with rgb values.
-func writePPMPixels(pixels [][]color.Color) string {
+func writePPMPixels(pixels [][]*color.Color) string {
 	pixelBytes := bytes.Buffer{}
 	for _, row := range pixels {
-		for _, color := range row {
+		for _, colorVal := range row {
 			pixelBytes.WriteString(fmt.Sprintf("%v %v %v%v",
-				color.Red*maxColorValue,
-				color.Green*maxColorValue,
-				color.Blue*maxColorValue,
+				colorVal.Red*maxColorValue,
+				colorVal.Green*maxColorValue,
+				colorVal.Blue*maxColorValue,
 				newLineChar))
 		}
 	}

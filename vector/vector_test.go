@@ -489,7 +489,7 @@ func TestNormalize(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want Vector
+		want *Vector
 	}{
 		{
 			name: "normalize vector function 1",
@@ -500,7 +500,7 @@ func TestNormalize(t *testing.T) {
 					Z: 0,
 				},
 			},
-			want: Vector{
+			want: &Vector{
 				X: 1,
 				Y: 0,
 				Z: 0,
@@ -515,7 +515,7 @@ func TestNormalize(t *testing.T) {
 					Z: 3,
 				},
 			},
-			want: Vector{
+			want: &Vector{
 				X: 1 / math.Sqrt(14),
 				Y: 2 / math.Sqrt(14),
 				Z: 3 / math.Sqrt(14),
