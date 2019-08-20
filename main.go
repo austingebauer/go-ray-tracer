@@ -15,37 +15,25 @@ import (
 	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
-// Projectile represents an object with a position and a velocity.
-type Projectile struct {
-	Position *point.Point
-	Velocity *vector.Vector
-}
-
-// Environment represents a gravity and wind environment for Projectiles.
-type Environment struct {
-	Gravity *vector.Vector
-	Wind    *vector.Vector
-}
-
 func main() {
 	RenderProjectile()
 	RenderClock()
-	RenderRayTracedCircle()
+	RenderRayTracedSphere()
 }
 
-// RenderRayTracedCircle renders a ray traced circle.
-func RenderRayTracedCircle() {
+// RenderRayTracedSphere renders a ray traced sphere.
+func RenderRayTracedSphere() {
 	fmt.Println("---------- Rendering : Ray-traced Sphere ----------")
 	circleCanvasWidth := 600
 	circleCanvasHeight := 600
 
-	// Pick an origin for the Ray
+	// Pick an origin for the ray
 	rayOrigin := point.NewPoint(0, 0, -5)
 
-	// Choose a wall z value
+	// Pick a z value for the wall
 	wallZ := 8.0
 
-	// Choose the size of the wall based on extrapolating ray origin and sphere
+	// Pick the size of the wall based on extrapolating ray origin and sphere
 	wallSize := 7.0
 
 	// Half of the wall size when looking directly at the sphere
@@ -55,6 +43,7 @@ func RenderRayTracedCircle() {
 	// the size of a single pixel in world space units.
 	pixelSize := wallSize / float64(circleCanvasWidth)
 
+	// Create the canvas, intersect color, and sphere
 	c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
 	clr := color.NewColor(0.5, 0.5, 0.7)
 	shape := sphere.NewUnitSphere("sphere")
@@ -96,7 +85,7 @@ func RenderRayTracedCircle() {
 		}
 	}
 
-	WriteCanvasToFile(c, "docs/renderings/circle/circle.ppm")
+	WriteCanvasToFile(c, "docs/renderings/sphere/sphere.ppm")
 }
 
 // RenderClock renders a clock.
@@ -166,6 +155,18 @@ func RenderClock() {
 	}
 
 	WriteCanvasToFile(c, "docs/renderings/clock/clock.ppm")
+}
+
+// Projectile represents an object with a position and a velocity.
+type Projectile struct {
+	Position *point.Point
+	Velocity *vector.Vector
+}
+
+// Environment represents a gravity and wind environment for Projectiles.
+type Environment struct {
+	Gravity *vector.Vector
+	Wind    *vector.Vector
 }
 
 // RenderProjectile renders a projectile.

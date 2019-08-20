@@ -7,20 +7,22 @@ A Go implementation of a 3D renderer using a
 
 I'll be adding images of renderings that I create on my journey to write a 3D renderer below.
 
-### 1. Projectile Rendering
+### 3. Ray Traced Sphere
 
-My very first rendering is a projectile with a starting point, initial velocity, wind, and gravity.
+My third rendering is the first one that is actually ray-traced! It's a circle that was produced by
+casting rays at a sphere and filling in colored pixels where an intersection occurred.
 
-The rendering demonstrates the use of points and vectors.
+The rendering demonstrates the use of a 
+[ray-sphere intersection algorithm](https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection).
 
 To produce the rendering, run:
 ```bash
-git checkout 7c481890
+git checkout 195d9b04
 go run main.go
-open docs/renderings/projectile/projectile.png
+open docs/renderings/sphere/sphere.png
 ```
 
-![Projectile Rendering](docs/renderings/projectile/projectile.png)
+![Sphere Rendering](docs/renderings/sphere/sphere.png)
 
 ### 2. Clock Rendering
 
@@ -36,3 +38,18 @@ open docs/renderings/clock/clock.png
 ```
 
 ![Projectile Rendering](docs/renderings/clock/clock.png)
+
+### 1. Projectile Rendering
+
+My very first rendering is a projectile with a starting point, initial velocity, wind, and gravity.
+
+The rendering demonstrates the use of points and vectors.
+
+To produce the rendering, run:
+```bash
+git checkout 7c481890
+go run main.go
+open docs/renderings/projectile/projectile.png
+```
+
+![Projectile Rendering](docs/renderings/projectile/projectile.png)
