@@ -17,7 +17,7 @@ The rendering demonstrates the use of a
 
 To produce the rendering, run:
 ```bash
-git checkout 195d9b04
+git checkout 0f43b4d8
 go run main.go
 open docs/renderings/sphere/sphere.png
 ```
@@ -29,6 +29,8 @@ open docs/renderings/sphere/sphere.png
 My second rendering is a clock. The clock has a pixel for each hour of 1-12. 
 
 The rendering demonstrates the use of matrix transforms (e.g., translate, rotate) on points.
+
+You may need to squint in order to see the hour locations on the clock!
 
 To produce the rendering, run:
 ```bash
