@@ -300,6 +300,8 @@ func Transpose(m Matrix) *Matrix {
 // Determinant calculate and returns the determinant of the passed Matrix.
 // If the passed Matrix is not a square matrix, then an error is returned.
 func Determinant(m *Matrix) (float64, error) {
+	// TODO: nil checks on matrix input
+
 	if m.rows != m.cols {
 		return 0, errors.New("m must be a square matrix with equal row and column lengths")
 	}

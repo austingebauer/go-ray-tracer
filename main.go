@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/austingebauer/go-ray-tracer/intersection"
+	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"log"
 	"math"
 	"os"
+	"time"
 
 	"github.com/austingebauer/go-ray-tracer/canvas"
 	"github.com/austingebauer/go-ray-tracer/color"
@@ -16,17 +18,48 @@ import (
 )
 
 func main() {
-	RenderProjectile()
-	RenderClock()
 	RenderRayTracedSphere()
+	RenderClock()
+	RenderProjectile()
 }
 
 // RenderRayTracedSphere renders a ray traced sphere.
 func RenderRayTracedSphere() {
-	fmt.Println("---------- Rendering : Ray-traced Sphere ----------")
-	circleCanvasWidth := 600
-	circleCanvasHeight := 600
+	fmt.Println("---------- Render: Ray-traced Sphere ----------")
+	circleCanvasWidth := 500
+	circleCanvasHeight := 500
 
+	// Create some spheres to apply transformations to
+	spheres := []*sphere.Sphere{
+		sphere.NewUnitSphere("sphere"),
+		sphere.NewUnitSphere("sphereScaleX"),
+		sphere.NewUnitSphere("sphereScaleY"),
+		sphere.NewUnitSphere("sphereScaleXRotateZ"),
+		sphere.NewUnitSphere("sphereShearXYScaleX"),
+	}
+
+	// Create some transformations and apply them to the spheres
+	spheres[0].Transform = matrix.NewIdentityMatrix(4)
+	spheres[1].Transform = matrix.NewScalingMatrix(0.5, 1, 1)
+	spheres[2].Transform = matrix.NewScalingMatrix(1, 0.5, 1)
+	scaleXRotateZ, _ := matrix.Multiply(
+		matrix.NewZRotationMatrix(math.Pi/4),
+		matrix.NewScalingMatrix(0.5, 1, 1))
+	spheres[3].Transform = scaleXRotateZ
+	shearXYAndScaleX, _ := matrix.Multiply(
+		matrix.NewShearingMatrix(1, 0, 0, 0, 0, 0),
+		matrix.NewScalingMatrix(0.5, 1, 1))
+	spheres[4].Transform = shearXYAndScaleX
+
+	// Render each sphere
+	for _, s := range spheres {
+		c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
+		renderSphere(c, s)
+	}
+}
+
+// renderSphere renders the passed sphere onto the passed canvas using ray tracing.
+func renderSphere(c *canvas.Canvas, shape *sphere.Sphere) {
 	// Pick an origin for the ray
 	rayOrigin := point.NewPoint(0, 0, -5)
 
@@ -41,22 +74,18 @@ func RenderRayTracedSphere() {
 
 	// Divide the wall size by the number of canvas pixels to get
 	// the size of a single pixel in world space units.
-	pixelSize := wallSize / float64(circleCanvasWidth)
-
-	// Create the canvas, intersect color, and sphere
-	c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
-	clr := color.NewColor(0.5, 0.5, 0.7)
-	shape := sphere.NewUnitSphere("sphere")
+	pixelSize := wallSize / float64(c.Width)
 
 	// For each row of pixels in the canvas
-	for y := 0; y < circleCanvasHeight; y++ {
+	startTime := time.Now()
+	for y := 0; y < c.Height; y++ {
 
 		// Compute the world y coordinate (top = +half, bottom = -half)
 		// 3.5 - 0.07 * (y = current row)
 		worldY := halfWallSize - pixelSize*float64(y)
 
 		// For each pixel in the row
-		for x := 0; x < circleCanvasWidth; x++ {
+		for x := 0; x < c.Width; x++ {
 
 			// Compute the world x coordinate (left = -half, right = half)
 			// -3.5 + 0.07 * (x = current pixel in row)
@@ -78,21 +107,28 @@ func RenderRayTracedSphere() {
 			}
 
 			// There was a hit, so write a pixel
-			err := c.WritePixel(x, y, clr)
+			err := c.WritePixel(x, y, color.NewColor(0.5, 0.5, 0.7))
 			if err != nil {
 				log.Fatal(err)
 			}
 		}
 	}
 
-	WriteCanvasToFile(c, "docs/renderings/sphere/sphere.ppm")
+	// Print the duration for rendering
+	endTime := time.Now()
+	elapsed := endTime.Sub(startTime)
+	printRenderDuration(elapsed)
+
+	// Write pixels to file
+	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere/%v.ppm", shape.Id))
 }
 
 // RenderClock renders a clock.
 func RenderClock() {
-	fmt.Println("---------- Rendering: Clock ----------")
-	clockCanvasWidth := 400
-	clockCanvasHeight := 400
+	fmt.Println("---------- Render: Clock ----------")
+	startTime := time.Now()
+	clockCanvasWidth := 500
+	clockCanvasHeight := 500
 
 	// Orient the clock about the z-axis, such that the face of the clock
 	// would be in the xy-plane while looking towards negative z-axis.
@@ -154,7 +190,13 @@ func RenderClock() {
 		}
 	}
 
-	WriteCanvasToFile(c, "docs/renderings/clock/clock.ppm")
+	// Print the duration for rendering
+	endTime := time.Now()
+	elapsed := endTime.Sub(startTime)
+	printRenderDuration(elapsed)
+
+	// Write pixels to file
+	writeCanvasToFile(c, "docs/renderings/clock/clock.ppm")
 }
 
 // Projectile represents an object with a position and a velocity.
@@ -171,7 +213,8 @@ type Environment struct {
 
 // RenderProjectile renders a projectile.
 func RenderProjectile() {
-	fmt.Println("---------- Rendering: Projectile ----------")
+	fmt.Println("---------- Render: Projectile ----------")
+	startTime := time.Now()
 	projectileCanvasWidth := 900
 	projectileCanvasHeight := 600
 
@@ -203,8 +246,10 @@ func RenderProjectile() {
 	tickCount := 0
 	for proj.Position.Y >= 0 {
 		// Uncomment to view projectile x, y, and z values through ticks
-		// fmt.Printf("Tick %v: Projectile position <X: %v, Y: %v, Z: %v> \n", tickCount,
-		// proj.Position.X, proj.Position.Y, proj.Position.Z)
+		/*
+			fmt.Printf("Tick %v: Projectile position <X: %v, Y: %v, Z: %v> \n", tickCount,
+			proj.Position.X, proj.Position.Y, proj.Position.Z)
+		*/
 
 		// write the position of the projectile to the canvas
 		white := color.NewColor(1, 1, 1)
@@ -217,7 +262,13 @@ func RenderProjectile() {
 		tickCount++
 	}
 
-	WriteCanvasToFile(c, "docs/renderings/projectile/projectile.ppm")
+	// Print the duration for rendering
+	endTime := time.Now()
+	elapsed := endTime.Sub(startTime)
+	printRenderDuration(elapsed)
+
+	// Write pixels to file
+	writeCanvasToFile(c, "docs/renderings/projectile/projectile.ppm")
 }
 
 // tick moves the passed Projectile through the passed Environment.
@@ -230,8 +281,8 @@ func tick(env *Environment, proj *Projectile) Projectile {
 	}
 }
 
-// WriteCanvasToFile writes the passed canvas to a file at the passed path.
-func WriteCanvasToFile(c *canvas.Canvas, filePath string) {
+// writeCanvasToFile writes the passed canvas to a file at the passed path.
+func writeCanvasToFile(c *canvas.Canvas, filePath string) {
 	// Write the canvas to a PPM file
 	file, err := os.Create(filePath)
 	if err != nil {
@@ -242,5 +293,10 @@ func WriteCanvasToFile(c *canvas.Canvas, filePath string) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Wrote ppm rendering to: %v\n", filePath)
+	fmt.Printf("Wrote ppm rendering to: %v\n\n", filePath)
+}
+
+// printRenderDuration prints the passed duration in a common format.
+func printRenderDuration(d time.Duration) {
+	fmt.Printf("Render time: %v seconds\n", d.Seconds())
 }
