@@ -51,7 +51,7 @@ func (pt *Point) Scale(scalar float64) *Point {
 
 // Add modifies each component of this Point by setting each of them
 // to the sum of the components in this Point and the passed Vector.
-func (pt *Point) Add(vec vector.Vector) *Point {
+func (pt *Point) Add(vec *vector.Vector) *Point {
 	pt.X = pt.X + vec.X
 	pt.Y = pt.Y + vec.Y
 	pt.Z = pt.Z + vec.Z
@@ -60,17 +60,13 @@ func (pt *Point) Add(vec vector.Vector) *Point {
 
 // Add returns a new Point with components equal to the sum
 // of the corresponding components in the passed Point and Vector.
-func Add(pt Point, vec vector.Vector) Point {
-	return Point{
-		X: pt.X + vec.X,
-		Y: pt.Y + vec.Y,
-		Z: pt.Z + vec.Z,
-	}
+func Add(pt *Point, vec *vector.Vector) *Point {
+	return NewPoint(pt.X+vec.X, pt.Y+vec.Y, pt.Z+vec.Z)
 }
 
 // Subtract modifies each component of this Point by setting each of them
 // to the difference of the components in this Point and the passed Vector.
-func (pt *Point) Subtract(vec vector.Vector) *Point {
+func (pt *Point) Subtract(vec *vector.Vector) *Point {
 	pt.X = pt.X - vec.X
 	pt.Y = pt.Y - vec.Y
 	pt.Z = pt.Z - vec.Z

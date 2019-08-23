@@ -219,7 +219,7 @@ func TestPoint_Add(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec vector.Vector
+		vec *vector.Vector
 	}
 	tests := []struct {
 		name   string
@@ -235,11 +235,7 @@ func TestPoint_Add(t *testing.T) {
 				1,
 			},
 			args: args{
-				vector.Vector{
-					X: 2,
-					Y: 3,
-					Z: -1,
-				},
+				vec: vector.NewVector(2, 3, -1),
 			},
 			want: &Point{
 				2,
@@ -263,33 +259,21 @@ func TestPoint_Add(t *testing.T) {
 
 func TestAdd(t *testing.T) {
 	type args struct {
-		pt  Point
-		vec vector.Vector
+		pt  *Point
+		vec *vector.Vector
 	}
 	tests := []struct {
 		name string
 		args args
-		want Point
+		want *Point
 	}{
 		{
 			name: "point add vector function",
 			args: args{
-				pt: Point{
-					0,
-					-1,
-					1,
-				},
-				vec: vector.Vector{
-					X: 2,
-					Y: 3,
-					Z: -1,
-				},
+				pt:  NewPoint(0, -1, 1),
+				vec: vector.NewVector(2, 3, -1),
 			},
-			want: Point{
-				2,
-				2,
-				0,
-			},
+			want: NewPoint(2, 2, 0),
 		},
 	}
 	for _, tt := range tests {
@@ -306,7 +290,7 @@ func TestPoint_Subtract(t *testing.T) {
 		Z float64
 	}
 	type args struct {
-		vec vector.Vector
+		vec *vector.Vector
 	}
 	tests := []struct {
 		name   string
@@ -322,11 +306,7 @@ func TestPoint_Subtract(t *testing.T) {
 				1,
 			},
 			args: args{
-				vector.Vector{
-					X: 2,
-					Y: 3,
-					Z: -1,
-				},
+				vec: vector.NewVector(2, 3, -1),
 			},
 			want: &Point{
 				-2,
