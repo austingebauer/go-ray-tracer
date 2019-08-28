@@ -2,10 +2,12 @@
 package sphere
 
 import (
+	"math"
 	"testing"
 
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/vector"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -87,6 +89,110 @@ func TestSphere_SetTransform(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.s.SetTransform(tt.args.m)
 			assert.Equal(t, tt.want, tt.s.Transform)
+		})
+	}
+}
+
+func TestNormalAt(t *testing.T) {
+	type args struct {
+		s *Sphere
+		p *point.Point
+	}
+	tests := []struct {
+		name string
+		args args
+		want *vector.Vector
+	}{
+		{
+			name: "normal on a sphere at a point on the x axis",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(1, 0, 0),
+			},
+			want: vector.NewVector(1, 0, 0),
+		},
+		{
+			name: "normal on a sphere at a point on the y axis",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(0, 1, 0),
+			},
+			want: vector.NewVector(0, 1, 0),
+		},
+		{
+			name: "normal on a sphere at a point on the z axis",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(0, 0, 1),
+			},
+			want: vector.NewVector(0, 0, 1),
+		},
+		{
+			name: "normal on a sphere at a nonaxial point",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3),
+			},
+			want: vector.NewVector(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, NormalAt(tt.args.s, tt.args.p))
+		})
+	}
+}
+
+func TestNormalAtAreNormalized(t *testing.T) {
+	type args struct {
+		s *Sphere
+		p *point.Point
+	}
+	tests := []struct {
+		name string
+		args args
+		want *vector.Vector
+	}{
+		{
+			name: "normal is normalized on a sphere at a point on the x axis",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(1, 0, 0),
+			},
+			want: vector.NewVector(1, 0, 0),
+		},
+		{
+			name: "normal is normalized on a sphere at a point on the y axis",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(0, 1, 0),
+			},
+			want: vector.NewVector(0, 1, 0),
+		},
+		{
+			name: "normal is normalized on a sphere at a point on the z axis",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(0, 0, 1),
+			},
+			want: vector.NewVector(0, 0, 1),
+		},
+		{
+			name: "normal is normalized on a sphere at a nonaxial point",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3),
+			},
+			want: vector.NewVector(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			normalVector := NormalAt(tt.args.s, tt.args.p)
+			normalizedNormal := vector.Normalize(*normalVector)
+			assert.Equal(t, normalVector, normalizedNormal)
+			assert.Equal(t, tt.want, normalVector)
+			assert.Equal(t, tt.want, normalizedNormal)
 		})
 	}
 }

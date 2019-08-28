@@ -4,6 +4,7 @@ package sphere
 import (
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
 // Sphere is a sphere object with an origin and radius.
@@ -32,4 +33,10 @@ func NewSphere(id string, origin *point.Point, radius float64) *Sphere {
 // SetTransform sets the transform of this Sphere.
 func (s *Sphere) SetTransform(m *matrix.Matrix) {
 	s.Transform = m
+}
+
+// NormalAt returns the normal vector on the passed Sphere, at the passed Point.
+// The function assumes that the passed Point will always be on the surface of the sphere.
+func NormalAt(s *Sphere, p *point.Point) *vector.Vector {
+	return point.Subtract(p, s.Origin).Normalize()
 }
