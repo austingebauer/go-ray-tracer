@@ -93,56 +93,6 @@ func TestSphere_SetTransform(t *testing.T) {
 	}
 }
 
-func TestNormalAt(t *testing.T) {
-	type args struct {
-		s *Sphere
-		p *point.Point
-	}
-	tests := []struct {
-		name string
-		args args
-		want *vector.Vector
-	}{
-		{
-			name: "normal on a sphere at a point on the x axis",
-			args: args{
-				s: NewUnitSphere("testID"),
-				p: point.NewPoint(1, 0, 0),
-			},
-			want: vector.NewVector(1, 0, 0),
-		},
-		{
-			name: "normal on a sphere at a point on the y axis",
-			args: args{
-				s: NewUnitSphere("testID"),
-				p: point.NewPoint(0, 1, 0),
-			},
-			want: vector.NewVector(0, 1, 0),
-		},
-		{
-			name: "normal on a sphere at a point on the z axis",
-			args: args{
-				s: NewUnitSphere("testID"),
-				p: point.NewPoint(0, 0, 1),
-			},
-			want: vector.NewVector(0, 0, 1),
-		},
-		{
-			name: "normal on a sphere at a nonaxial point",
-			args: args{
-				s: NewUnitSphere("testID"),
-				p: point.NewPoint(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3),
-			},
-			want: vector.NewVector(math.Sqrt(3)/3, math.Sqrt(3)/3, math.Sqrt(3)/3),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, NormalAt(tt.args.s, tt.args.p))
-		})
-	}
-}
-
 func TestNormalAtAreNormalized(t *testing.T) {
 	type args struct {
 		s *Sphere
@@ -188,11 +138,74 @@ func TestNormalAtAreNormalized(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			normalVector := NormalAt(tt.args.s, tt.args.p)
+			// Normal vector is what we expect
+			normalVector, err := NormalAt(tt.args.s, tt.args.p)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.want, normalVector)
+
+			// Normal vector is normalized
 			normalizedNormal := vector.Normalize(*normalVector)
 			assert.Equal(t, normalVector, normalizedNormal)
-			assert.Equal(t, tt.want, normalVector)
 			assert.Equal(t, tt.want, normalizedNormal)
+		})
+	}
+}
+
+func TestNormalAtOnTransformedSphere(t *testing.T) {
+	type args struct {
+		s *Sphere
+		p *point.Point
+		transforms []*matrix.Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want *vector.Vector
+	}{
+		{
+			name: "normal is normalized on a translated sphere",
+			args: args{
+				s: NewUnitSphere("testID"),
+				p: point.NewPoint(1, 0, 0),
+				transforms: []*matrix.Matrix{
+					matrix.NewTranslationMatrix(0,1,0),
+				},
+			},
+			want: vector.NewVector(0, 0.70711, -0.70711),
+		},
+		//{
+		//	name: "normal is normalized on a transformed sphere",
+		//	args: args{
+		//		s: NewUnitSphere("testID"),
+		//		p: point.NewPoint(1, 0, 0),
+		//		transforms: []*matrix.Matrix{
+		//			matrix.NewScalingMatrix(1,0.5,1),
+		//			matrix.NewZRotationMatrix(math.Pi / 5),
+		//		},
+		//	},
+		//	want: vector.NewVector(0, 0.97014, -0.24254),
+		//},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Set up the transform to apply it to the sphere
+			var err error
+			transform := matrix.NewIdentityMatrix(4)
+			for _, sphereTransform := range tt.args.transforms {
+				transform, err = matrix.Multiply(transform, sphereTransform)
+				assert.NoError(t, err)
+			}
+			tt.args.s.SetTransform(transform)
+
+			// Normal vector is what we expect
+			normalVector, err := NormalAt(tt.args.s, tt.args.p)
+			assert.NoError(t, err)
+			assert.True(t, tt.want.Equals(normalVector))
+
+			// Normal vector is normalized
+			normalizedNormal := vector.Normalize(*normalVector)
+			assert.True(t, normalVector.Equals(normalizedNormal))
+			assert.True(t, tt.want.Equals(normalizedNormal))
 		})
 	}
 }

@@ -37,6 +37,44 @@ func (s *Sphere) SetTransform(m *matrix.Matrix) {
 
 // NormalAt returns the normal vector on the passed Sphere, at the passed Point.
 // The function assumes that the passed Point will always be on the surface of the sphere.
-func NormalAt(s *Sphere, p *point.Point) *vector.Vector {
-	return point.Subtract(p, s.Origin).Normalize()
+func NormalAt(s *Sphere, worldSpacePoint *point.Point) (*vector.Vector, error) {
+	//transformSubM, err := matrix.Submatrix(s.Transform, 3, 3)
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	// Get the inverse of the transform applied to the sphere
+	inverseTransform, err := matrix.Inverse(s.Transform)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert the point from world space into object space
+	objectSpacePointM, err := matrix.Multiply(inverseTransform, point.ToMatrix(worldSpacePoint))
+	if err != nil {
+		return nil, err
+	}
+	objectSpacePoint, err := point.ToPoint(objectSpacePointM)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get the normal vector in object space by subtracting the sphere
+	// origin (always point(0,0,0)) from the object space point.
+	objectSpaceNormal := point.Subtract(objectSpacePoint, s.Origin).Normalize()
+
+	// Convert the object space normal vector back to world space by multiplying by the
+	// transposed, inverse of the transform applied to the sphere.
+	transposedInverseTransform := matrix.Transpose(*inverseTransform)
+	worldSpaceNormalM, err := matrix.Multiply(transposedInverseTransform, vector.ToMatrix(objectSpaceNormal))
+	if err != nil {
+		return nil, err
+	}
+
+	// Normalize and return the world space normal vector
+	worldSpaceNormalVector, err := vector.ToVector(worldSpaceNormalM)
+	if err != nil {
+		return nil, err
+	}
+	return worldSpaceNormalVector.Normalize(), nil
 }
