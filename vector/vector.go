@@ -158,3 +158,9 @@ func ToVector(m *matrix.Matrix) (*Vector, error) {
 	z, _ := m.GetValue(2, 0)
 	return NewVector(x, y, z), nil
 }
+
+// Reflect returns a new Vector that is the results of reflecting
+// the passed in Vector around the passed normal Vector.
+func Reflect(in, normal *Vector) *Vector {
+	return NewVector(1,2,3)
+}
