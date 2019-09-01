@@ -5,10 +5,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/austingebauer/go-ray-tracer/color"
 	"html/template"
 	"io"
-
-	"github.com/austingebauer/go-ray-tracer/color"
+	"math"
 )
 
 // PixelMapTemplate is a template used for rendering a Canvas to a portable pixmap (PPM) file.
@@ -20,6 +20,7 @@ const PixelMapTemplate = `{{ .PPMIdentifier }}
 const (
 	ppmID         = "P3"
 	maxColorValue = 255
+	minColorValue = 0
 	newLineChar   = "\n"
 )
 
@@ -30,6 +31,7 @@ type Canvas struct {
 	Pixels        [][]*color.Color
 	PPMIdentifier string
 	MaxColorValue uint8
+	MinColorValue uint8
 }
 
 // NewCanvas returns a new Canvas with the passed Width and Height.
@@ -52,6 +54,7 @@ func NewCanvas(width, height int) *Canvas {
 		Pixels:        pixels,
 		PPMIdentifier: ppmID,
 		MaxColorValue: maxColorValue,
+		MinColorValue: minColorValue,
 	}
 }
 
@@ -129,9 +132,9 @@ func writePPMPixels(pixels [][]*color.Color) string {
 		for _, colorVal := range row {
 
 			// Convert RGB color values [0-1] to 8 bit integer values [0-255]
-			redEightBit := int(colorVal.Red * maxColorValue)
-			greenEightBit := int(colorVal.Green * maxColorValue)
-			blueEightBit := int(colorVal.Blue * maxColorValue)
+			redEightBit := int(math.Min(math.Max(minColorValue, colorVal.Red*maxColorValue), maxColorValue))
+			greenEightBit := int(math.Min(math.Max(minColorValue, colorVal.Green*maxColorValue), maxColorValue))
+			blueEightBit := int(math.Min(math.Max(minColorValue, colorVal.Blue*maxColorValue), maxColorValue))
 			pixelBytes.WriteString(fmt.Sprintf("%v %v %v%v",
 				redEightBit,
 				greenEightBit,

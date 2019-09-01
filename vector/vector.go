@@ -57,6 +57,11 @@ func (vec *Vector) Scale(scalar float64) *Vector {
 	return vec
 }
 
+// TODO: Scale
+func Scale(vec *Vector, scalar float64) *Vector {
+	return NewVector(vec.X*scalar, vec.Y*scalar, vec.Z*scalar)
+}
+
 // Normalize normalizes this Vector by converting it to a unit vector.
 func (vec *Vector) Normalize() *Vector {
 	mag := vec.Magnitude()
@@ -78,6 +83,9 @@ func Normalize(vec Vector) *Vector {
 
 // DotProduct computes and returns the dot product of passed Vectors.
 func DotProduct(vec1, vec2 Vector) float64 {
+	// The dot product yields the cosine of the angle between the passed Vectors.
+	// If it is equal to 0, the vectors are perpendicular to each other.
+	// If it is equal to 1, the vectors are parallel to each other.
 	return vec1.X*vec2.X +
 		vec1.Y*vec2.Y +
 		vec1.Z*vec2.Z

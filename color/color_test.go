@@ -8,9 +8,9 @@ import (
 
 func TestNewColor(t *testing.T) {
 	type args struct {
-		red   float32
-		green float32
-		blue  float32
+		red   float64
+		green float64
+		blue  float64
 	}
 	tests := []struct {
 		name string
@@ -40,9 +40,9 @@ func TestNewColor(t *testing.T) {
 
 func TestColor_Add(t *testing.T) {
 	type fields struct {
-		Red   float32
-		Green float32
-		Blue  float32
+		Red   float64
+		Green float64
+		Blue  float64
 	}
 	type args struct {
 		c2 Color
@@ -126,9 +126,9 @@ func TestAdd(t *testing.T) {
 
 func TestColor_Subtract(t *testing.T) {
 	type fields struct {
-		Red   float32
-		Green float32
-		Blue  float32
+		Red   float64
+		Green float64
+		Blue  float64
 	}
 	type args struct {
 		c2 Color
@@ -212,12 +212,12 @@ func TestSubtract(t *testing.T) {
 
 func TestColor_Scale(t *testing.T) {
 	type fields struct {
-		Red   float32
-		Green float32
-		Blue  float32
+		Red   float64
+		Green float64
+		Blue  float64
 	}
 	type args struct {
-		scalar float32
+		scalar float64
 	}
 	tests := []struct {
 		name   string
@@ -254,11 +254,37 @@ func TestColor_Scale(t *testing.T) {
 	}
 }
 
+func TestScale(t *testing.T) {
+	type args struct {
+		c      Color
+		scalar float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Color
+	}{
+		{
+			name: "scale color by scalar for new color",
+			args: args{
+				c:      *NewColor(1, 0, -1),
+				scalar: -3,
+			},
+			want: NewColor(-3, 0, 3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Scale(tt.args.c, tt.args.scalar))
+		})
+	}
+}
+
 func TestColor_Multiply(t *testing.T) {
 	type fields struct {
-		Red   float32
-		Green float32
-		Blue  float32
+		Red   float64
+		Green float64
+		Blue  float64
 	}
 	type args struct {
 		c1 Color
@@ -286,7 +312,7 @@ func TestColor_Multiply(t *testing.T) {
 			want: &Color{
 				Red:   0.9,
 				Green: 0.2,
-				Blue:  0.040000003,
+				Blue:  0.04000000000000001,
 			},
 		},
 	}
@@ -329,13 +355,34 @@ func TestMultiply(t *testing.T) {
 			want: &Color{
 				Red:   0.9,
 				Green: 0.2,
-				Blue:  0.040000003,
+				Blue:  0.04000000000000001,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want, Multiply(tt.args.c1, tt.args.c2))
+		})
+	}
+}
+
+func TestEquals(t *testing.T) {
+	type args struct {
+		c1 Color
+		c2 Color
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Equals(tt.args.c1, tt.args.c2); got != tt.want {
+				t.Errorf("Equals() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }

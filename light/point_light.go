@@ -1,4 +1,4 @@
-// Package light represents difference types of light sources.
+// Package light provides difference types of light sources and behavior using light.
 package light
 
 import (
@@ -7,17 +7,17 @@ import (
 )
 
 // PointLight represents a point light source that exists at a single point in 3D space.
-// The point light source has an intensity which describes the color of the light source
+// The point light source has an Intensity which describes the color of the light source
 // and how bright it is.
 type PointLight struct {
-	position  point.Point
-	intensity color.Color
+	Position  point.Point
+	Intensity color.Color
 }
 
-// NewPointLight returns a new PointLight having the passed position and intensity.
+// NewPointLight returns a new PointLight having the passed Position and Intensity.
 func NewPointLight(position point.Point, intensity color.Color) *PointLight {
 	return &PointLight{
-		position:  position,
-		intensity: intensity,
+		Position:  position,
+		Intensity: intensity,
 	}
 }

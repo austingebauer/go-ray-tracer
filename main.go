@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/austingebauer/go-ray-tracer/intersection"
+	"github.com/austingebauer/go-ray-tracer/light"
+	"github.com/austingebauer/go-ray-tracer/material"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
@@ -18,14 +20,137 @@ import (
 )
 
 func main() {
-	RenderRayTracedSphere()
+	RenderRayTracedSphere3D()
+	RenderRayTracedSphere2D()
 	RenderClock()
 	RenderProjectile()
 }
 
-// RenderRayTracedSphere renders a ray traced sphere.
-func RenderRayTracedSphere() {
-	fmt.Println("---------- Render: Ray-traced Sphere ----------")
+// RenderRayTracedSphere2D renders a 3D ray traced sphere.
+func RenderRayTracedSphere3D() {
+	fmt.Println("---------- Render: 3D Ray-traced Sphere ----------")
+	circleCanvasWidth := 500
+	circleCanvasHeight := 500
+
+	// Create a light source
+	lightPosition := point.NewPoint(-10, 10, -10)
+	lightColor := color.NewColor(1, 1, 1)
+	l := light.NewPointLight(*lightPosition, *lightColor)
+
+	// Create a material to apply to the sphere
+	mat := material.NewMaterial()
+	mat.Color = *color.NewColor(1, 0.2, 1)
+
+	// Create some spheres to apply transformations to
+	spheres := []*sphere.Sphere{
+		sphere.NewUnitSphere("sphere"),
+		sphere.NewUnitSphere("sphereScaleX"),
+		sphere.NewUnitSphere("sphereScaleY"),
+		sphere.NewUnitSphere("sphereScaleXRotateZ"),
+		sphere.NewUnitSphere("sphereShearXYScaleX"),
+	}
+
+	// Create some transformations and apply them to the spheres
+	spheres[0].Transform = matrix.NewIdentityMatrix(4)
+	spheres[1].Transform = matrix.NewScalingMatrix(0.5, 1, 1)
+	spheres[2].Transform = matrix.NewScalingMatrix(1, 0.5, 1)
+	scaleXRotateZ, _ := matrix.Multiply(
+		matrix.NewZRotationMatrix(math.Pi/4),
+		matrix.NewScalingMatrix(0.5, 1, 1))
+	spheres[3].Transform = scaleXRotateZ
+	shearXYAndScaleX, _ := matrix.Multiply(
+		matrix.NewShearingMatrix(1, 0, 0, 0, 0, 0),
+		matrix.NewScalingMatrix(0.5, 1, 1))
+	spheres[4].Transform = shearXYAndScaleX
+
+	// Render each sphere
+	for _, s := range spheres {
+		// Set the material on each sphere
+		s.Material = mat
+
+		// Render the sphere to the canvas
+		c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
+		renderSphere3D(c, s, l)
+	}
+}
+
+// renderSphere3D renders the passed sphere onto the passed canvas using ray tracing.
+func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight) {
+	// Pick an origin for the ray
+	rayOrigin := point.NewPoint(0, 0, -5)
+
+	// Pick a z value for the wall
+	wallZ := 8.0
+
+	// Pick the size of the wall based on extrapolating ray origin and sphere
+	wallSize := 7.0
+
+	// Half of the wall size when looking directly at the sphere
+	halfWallSize := wallSize / 2.0
+
+	// Divide the wall size by the number of canvas pixels to get
+	// the size of a single pixel in world space units.
+	pixelSize := wallSize / float64(c.Width)
+
+	// For each row of pixels in the canvas
+	startTime := time.Now()
+	for y := 0; y < c.Height; y++ {
+
+		// Compute the world y coordinate (top = +half, bottom = -half)
+		// 3.5 - 0.07 * (y = current row)
+		worldY := halfWallSize - pixelSize*float64(y)
+
+		// For each pixel in the row
+		for x := 0; x < c.Width; x++ {
+
+			// Compute the world x coordinate (left = -half, right = half)
+			// -3.5 + 0.07 * (x = current pixel in row)
+			worldX := (-1 * halfWallSize) + pixelSize*float64(x)
+
+			// Describe the point on the wall that the Ray will target
+			position := point.NewPoint(worldX, worldY, wallZ)
+
+			// Create a ray from the ray origin to the position on the wall
+			r := ray.NewRay(*rayOrigin, *vector.Normalize(*point.Subtract(*position, *rayOrigin)))
+
+			// Intersect the ray with the sphere
+			xs := ray.Intersect(shape, r)
+
+			// If there was no hit, don't write a pixel
+			hit := intersection.Hit(xs)
+			if hit == nil {
+				continue
+			}
+
+			// Calculate the color at the surface using the lighting
+			pt := ray.Position(r, hit.T)
+			normal, err := sphere.NormalAt(hit.Object, pt)
+			if err != nil {
+				log.Fatal(err)
+			}
+			eye := vector.Scale(r.Direction, -1)
+			surfaceColor := light.Lighting(hit.Object.Material, l, pt, eye, normal)
+
+			// There was a hit, so write a pixel
+			err = c.WritePixel(x, y, surfaceColor)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	// Print the duration for rendering
+	endTime := time.Now()
+	elapsed := endTime.Sub(startTime)
+	printRenderDuration(elapsed)
+
+	// Write pixels to file
+	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_3d/%v.ppm", shape.Id))
+}
+
+// RenderRayTracedSphere2D renders a 2D ray traced sphere.
+func RenderRayTracedSphere2D() {
+	fmt.Println("---------- Render: 2D Ray-traced Sphere ----------")
 	circleCanvasWidth := 500
 	circleCanvasHeight := 500
 
@@ -54,12 +179,12 @@ func RenderRayTracedSphere() {
 	// Render each sphere
 	for _, s := range spheres {
 		c := canvas.NewCanvas(circleCanvasWidth, circleCanvasHeight)
-		renderSphere(c, s)
+		renderSphere2D(c, s)
 	}
 }
 
-// renderSphere renders the passed sphere onto the passed canvas using ray tracing.
-func renderSphere(c *canvas.Canvas, shape *sphere.Sphere) {
+// renderSphere2D renders the passed sphere onto the passed canvas using ray tracing.
+func renderSphere2D(c *canvas.Canvas, shape *sphere.Sphere) {
 	// Pick an origin for the ray
 	rayOrigin := point.NewPoint(0, 0, -5)
 
@@ -120,7 +245,7 @@ func renderSphere(c *canvas.Canvas, shape *sphere.Sphere) {
 	printRenderDuration(elapsed)
 
 	// Write pixels to file
-	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere/%v.ppm", shape.Id))
+	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_2d/%v.ppm", shape.Id))
 }
 
 // RenderClock renders a clock.

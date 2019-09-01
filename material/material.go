@@ -4,26 +4,27 @@ package material
 import "github.com/austingebauer/go-ray-tracer/color"
 
 // Material represents a material on the surface of an object.
+// It uses the Phong reflection model to simulate the reflection of light.
 type Material struct {
-	// The color of the material. Default: white
-	color *color.Color
-	// The ambient reflection of the material. Default: 0.1
-	ambient float64
-	// The diffuse reflection of the material. Default: 0.9
-	diffuse float64
-	// The specular reflection of the material. Default: 0.9
-	specular float64
-	// The shininess of the material. Default: 200.0
-	shininess float64
+	// The Color of the material. Default: white
+	Color color.Color
+	// The Ambient reflection of the material. Range is [0, 1]. Default is 0.1.
+	Ambient float64
+	// The Diffuse reflection of the material. Range is [0, 1]. Default is 0.9
+	Diffuse float64
+	// The Specular reflection of the material. Range is [0, 1]. Default is 0.9
+	Specular float64
+	// The Shininess of the material. Range is [10, 200]. Default is 200.0
+	Shininess float64
 }
 
 // NewMaterial returns a new Material with default values.
 func NewMaterial() *Material {
 	return &Material{
-		color:     color.NewColor(1, 1, 1),
-		ambient:   0.1,
-		diffuse:   0.9,
-		specular:  0.9,
-		shininess: 200.0,
+		Color:     *color.NewColor(1, 1, 1),
+		Ambient:   0.1,
+		Diffuse:   0.9,
+		Specular:  0.9,
+		Shininess: 200.0,
 	}
 }

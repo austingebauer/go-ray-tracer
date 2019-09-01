@@ -15,11 +15,11 @@ func TestNewMaterial(t *testing.T) {
 		{
 			name: "default material has values",
 			want: &Material{
-				color:     color.NewColor(1, 1, 1),
-				ambient:   0.1,
-				diffuse:   0.9,
-				specular:  0.9,
-				shininess: 200.0,
+				Color:     *color.NewColor(1, 1, 1),
+				Ambient:   0.1,
+				Diffuse:   0.9,
+				Specular:  0.9,
+				Shininess: 200.0,
 			},
 		},
 	}

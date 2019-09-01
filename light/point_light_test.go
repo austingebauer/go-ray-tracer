@@ -20,7 +20,7 @@ func TestNewPointLight(t *testing.T) {
 		want *PointLight
 	}{
 		{
-			name: "point light has a position and intensity",
+			name: "point light has a Position and Intensity",
 			args: args{
 				position:  *point.NewPoint(0, 0, 0),
 				intensity: *color.NewColor(1, 1, 1),
