@@ -719,7 +719,7 @@ func TestSubtract(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want Vector
+		want *Vector
 	}{
 		{
 			name: "vector subtract vector function",
@@ -735,7 +735,7 @@ func TestSubtract(t *testing.T) {
 					0,
 				},
 			},
-			want: Vector{
+			want: &Vector{
 				-2,
 				-4,
 				1,
@@ -884,8 +884,8 @@ func TestScalingInverseVector(t *testing.T) {
 
 func TestReflect(t *testing.T) {
 	type args struct {
-		in     *Vector
-		normal *Vector
+		in     Vector
+		normal Vector
 	}
 	tests := []struct {
 		name string
@@ -895,23 +895,29 @@ func TestReflect(t *testing.T) {
 		{
 			name: "reflecting a vector approaching at 45 degrees",
 			args: args{
-				in: NewVector(1, -1, 0),
-				normal: NewVector(0,1,0),
+				in:     *NewVector(1, -1, 0),
+				normal: *NewVector(0, 1, 0),
 			},
-			want: NewVector(1,1,0),
+			want: NewVector(1, 1, 0),
 		},
 		{
 			name: "reflecting a vector off of a slanted surface",
 			args: args{
-				in: NewVector(0, -1, 0),
-				normal: NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0),
+				in:     *NewVector(0, -1, 0),
+				normal: *NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0),
 			},
-			want: NewVector(1,0,0),
+			want: NewVector(1, 0, 0),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, Reflect(tt.args.in, tt.args.normal), tt.want)
+			reflectionVec := Reflect(tt.args.in, tt.args.normal)
+			vectorsEqual := reflectionVec.Equals(tt.want)
+
+			// If the vectors are not equal, log the difference
+			if !vectorsEqual {
+				assert.Equal(t, tt.want, reflectionVec)
+			}
 		})
 	}
 }

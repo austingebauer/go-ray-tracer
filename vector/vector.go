@@ -123,12 +123,8 @@ func (vec *Vector) Subtract(vec2 Vector) *Vector {
 
 // Subtract returns a new Vector with components equal to the difference
 // of the corresponding components in the passed Vectors.
-func Subtract(vec1, vec2 Vector) Vector {
-	return Vector{
-		X: vec1.X - vec2.X,
-		Y: vec1.Y - vec2.Y,
-		Z: vec1.Z - vec2.Z,
-	}
+func Subtract(vec1, vec2 Vector) *Vector {
+	return NewVector(vec1.X-vec2.X, vec1.Y-vec2.Y, vec1.Z-vec2.Z)
 }
 
 // ToMatrix returns a 4x1 Matrix that represents the passed Vector.
@@ -161,6 +157,8 @@ func ToVector(m *matrix.Matrix) (*Vector, error) {
 
 // Reflect returns a new Vector that is the results of reflecting
 // the passed in Vector around the passed normal Vector.
-func Reflect(in, normal *Vector) *Vector {
-	return NewVector(1,2,3)
+func Reflect(in, normal Vector) *Vector {
+	dp := DotProduct(in, normal)
+	nScaled := normal.Scale(2).Scale(dp)
+	return Subtract(in, *nScaled)
 }
