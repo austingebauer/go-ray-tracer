@@ -24,7 +24,7 @@ func TestNewUnitSphere(t *testing.T) {
 				Origin:    point.NewPoint(0, 0, 0),
 				Radius:    1,
 				Transform: matrix.NewIdentityMatrix(4),
-				Material: material.NewMaterial(),
+				Material:  material.NewMaterial(),
 			},
 		},
 	}
@@ -58,7 +58,7 @@ func TestNewSphere(t *testing.T) {
 				Origin:    point.NewPoint(1, 2, -3),
 				Radius:    11,
 				Transform: matrix.NewIdentityMatrix(4),
-				Material: material.NewMaterial(),
+				Material:  material.NewMaterial(),
 			},
 		},
 	}

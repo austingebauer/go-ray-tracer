@@ -29,7 +29,7 @@ func NewSphere(id string, origin point.Point, radius float64) *Sphere {
 		Origin:    &origin,
 		Radius:    radius,
 		Transform: matrix.NewIdentityMatrix(4),
-		Material: material.NewMaterial(),
+		Material:  material.NewMaterial(),
 	}
 }
 
