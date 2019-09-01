@@ -36,7 +36,7 @@ func TestNewUnitSphere(t *testing.T) {
 func TestNewSphere(t *testing.T) {
 	type args struct {
 		id     string
-		origin *point.Point
+		origin point.Point
 		radius float64
 	}
 	tests := []struct {
@@ -48,7 +48,7 @@ func TestNewSphere(t *testing.T) {
 			name: "new sphere with origin and radius",
 			args: args{
 				id:     "testID",
-				origin: point.NewPoint(1, 2, -3),
+				origin: *point.NewPoint(1, 2, -3),
 				radius: 11,
 			},
 			want: &Sphere{

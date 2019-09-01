@@ -17,14 +17,14 @@ type Sphere struct {
 
 // NewUnitSphere returns a new Sphere with id, origin (0,0,0), and a radius of 1.
 func NewUnitSphere(id string) *Sphere {
-	return NewSphere(id, point.NewPoint(0, 0, 0), 1.0)
+	return NewSphere(id, *point.NewPoint(0, 0, 0), 1.0)
 }
 
 // NewSphere returns a new Sphere with the passed id, origin, and radius.
-func NewSphere(id string, origin *point.Point, radius float64) *Sphere {
+func NewSphere(id string, origin point.Point, radius float64) *Sphere {
 	return &Sphere{
 		Id:        id,
-		Origin:    origin,
+		Origin:    &origin,
 		Radius:    radius,
 		Transform: matrix.NewIdentityMatrix(4),
 	}
@@ -56,7 +56,7 @@ func NormalAt(s *Sphere, worldSpacePoint *point.Point) (*vector.Vector, error) {
 
 	// Get the normal vector in object space by subtracting the sphere
 	// origin (always point(0,0,0)) from the object space point.
-	objectSpaceNormal := point.Subtract(objectSpacePoint, s.Origin).Normalize()
+	objectSpaceNormal := point.Subtract(*objectSpacePoint, *s.Origin).Normalize()
 
 	// Convert the object space normal vector back to world space by multiplying
 	// by the transposed, inverse of the transform applied to the sphere.

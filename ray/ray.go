@@ -18,10 +18,10 @@ type Ray struct {
 }
 
 // NewRay returns a new Ray having the passed origin and direction.
-func NewRay(origin *point.Point, direction *vector.Vector) *Ray {
+func NewRay(origin point.Point, direction vector.Vector) *Ray {
 	return &Ray{
-		Origin:    origin,
-		Direction: direction,
+		Origin:    &origin,
+		Direction: &direction,
 	}
 }
 
@@ -48,7 +48,7 @@ func Intersect(sphere *sphere.Sphere, ray *Ray) []*intersection.Intersection {
 	transformedRay, _ := Transform(ray, sphereTransformInverse)
 
 	// The vector from the sphere origin to the ray origin.
-	sphereToRayVec := point.Subtract(transformedRay.Origin, sphere.Origin)
+	sphereToRayVec := point.Subtract(*transformedRay.Origin, *sphere.Origin)
 
 	// Compute the discriminant to tell whether the ray intersects with the sphere at all.
 	a := vector.DotProduct(*transformedRay.Direction, *transformedRay.Direction)
@@ -93,5 +93,5 @@ func Transform(ray *Ray, m *matrix.Matrix) (*Ray, error) {
 	directionMatrix, _ := matrix.Multiply(m, vector.ToMatrix(ray.Direction))
 	transformedDirectionVector, _ := vector.ToVector(directionMatrix)
 
-	return NewRay(transformedOriginPoint, transformedDirectionVector), nil
+	return NewRay(*transformedOriginPoint, *transformedDirectionVector), nil
 }

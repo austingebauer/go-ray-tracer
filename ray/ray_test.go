@@ -30,7 +30,7 @@ func TestNewRay(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := NewRay(tt.args.origin, tt.args.direction)
+			r := NewRay(*tt.args.origin, *tt.args.direction)
 			assert.Equal(t, tt.args.origin, r.Origin)
 			assert.Equal(t, tt.args.direction, r.Direction)
 		})
@@ -50,7 +50,7 @@ func TestPosition(t *testing.T) {
 		{
 			name: "compute point that lies distance t along the ray 1",
 			args: args{
-				ray: NewRay(point.NewPoint(2, 3, 4), vector.NewVector(1, 0, 0)),
+				ray: NewRay(*point.NewPoint(2, 3, 4), *vector.NewVector(1, 0, 0)),
 				t:   0,
 			},
 			want: point.NewPoint(2, 3, 4),
@@ -58,7 +58,7 @@ func TestPosition(t *testing.T) {
 		{
 			name: "compute point that lies distance t along the ray 2",
 			args: args{
-				ray: NewRay(point.NewPoint(2, 3, 4), vector.NewVector(1, 0, 0)),
+				ray: NewRay(*point.NewPoint(2, 3, 4), *vector.NewVector(1, 0, 0)),
 				t:   1,
 			},
 			want: point.NewPoint(3, 3, 4),
@@ -66,7 +66,7 @@ func TestPosition(t *testing.T) {
 		{
 			name: "compute point that lies distance t along the ray 3",
 			args: args{
-				ray: NewRay(point.NewPoint(2, 3, 4), vector.NewVector(1, 0, 0)),
+				ray: NewRay(*point.NewPoint(2, 3, 4), *vector.NewVector(1, 0, 0)),
 				t:   -1,
 			},
 			want: point.NewPoint(1, 3, 4),
@@ -74,7 +74,7 @@ func TestPosition(t *testing.T) {
 		{
 			name: "compute point that lies distance t along the ray 4",
 			args: args{
-				ray: NewRay(point.NewPoint(2, 3, 4), vector.NewVector(1, 0, 0)),
+				ray: NewRay(*point.NewPoint(2, 3, 4), *vector.NewVector(1, 0, 0)),
 				t:   2.5,
 			},
 			want: point.NewPoint(4.5, 3, 4),
@@ -102,7 +102,7 @@ func TestIntersect(t *testing.T) {
 			name: "ray intersects with a sphere at two positive points. sphere is ahead of ray origin.",
 			args: args{
 				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
+				ray:    NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
 			},
 			want: []*intersection.Intersection{
 				{
@@ -119,7 +119,7 @@ func TestIntersect(t *testing.T) {
 			name: "ray is tangent to the sphere at one point of t",
 			args: args{
 				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(point.NewPoint(0, 1, -5), vector.NewVector(0, 0, 1)),
+				ray:    NewRay(*point.NewPoint(0, 1, -5), *vector.NewVector(0, 0, 1)),
 			},
 			want: []*intersection.Intersection{
 				{
@@ -136,7 +136,7 @@ func TestIntersect(t *testing.T) {
 			name: "ray misses the sphere",
 			args: args{
 				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(point.NewPoint(0, 2, -5), vector.NewVector(0, 0, 1)),
+				ray:    NewRay(*point.NewPoint(0, 2, -5), *vector.NewVector(0, 0, 1)),
 			},
 			want: []*intersection.Intersection{},
 		},
@@ -144,7 +144,7 @@ func TestIntersect(t *testing.T) {
 			name: "ray originates inside the sphere",
 			args: args{
 				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(point.NewPoint(0, 0, 0), vector.NewVector(0, 0, 1)),
+				ray:    NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(0, 0, 1)),
 			},
 			want: []*intersection.Intersection{
 				{
@@ -161,7 +161,7 @@ func TestIntersect(t *testing.T) {
 			name: "ray intersects with a sphere at two negative points. sphere is behind ray origin.",
 			args: args{
 				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(point.NewPoint(0, 0, 5), vector.NewVector(0, 0, 1)),
+				ray:    NewRay(*point.NewPoint(0, 0, 5), *vector.NewVector(0, 0, 1)),
 			},
 			want: []*intersection.Intersection{
 				{
@@ -200,7 +200,7 @@ func TestIntersectWithSphereTransform(t *testing.T) {
 			name: "intersecting a scaled unit sphere with a ray",
 			args: args{
 				sphere:    sphere.NewUnitSphere("testID"),
-				ray:       NewRay(point.NewPoint(0, 0, -5), vector.NewVector(0, 0, 1)),
+				ray:       NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
 				transform: matrix.NewScalingMatrix(2, 2, 2),
 			},
 			want: []*intersection.Intersection{
@@ -243,28 +243,28 @@ func TestTransform(t *testing.T) {
 		{
 			name: "transform ray with translation matrix",
 			args: args{
-				ray: NewRay(point.NewPoint(1, 2, 3), vector.NewVector(0, 1, 0)),
+				ray: NewRay(*point.NewPoint(1, 2, 3), *vector.NewVector(0, 1, 0)),
 				m:   matrix.NewTranslationMatrix(3, 4, 5),
 			},
-			want:    NewRay(point.NewPoint(4, 6, 8), vector.NewVector(0, 1, 0)),
+			want:    NewRay(*point.NewPoint(4, 6, 8), *vector.NewVector(0, 1, 0)),
 			wantErr: false,
 		},
 		{
 			name: "transform ray with matrix not of 4x4 order for error",
 			args: args{
-				ray: NewRay(point.NewPoint(1, 2, 3), vector.NewVector(0, 1, 0)),
+				ray: NewRay(*point.NewPoint(1, 2, 3), *vector.NewVector(0, 1, 0)),
 				m:   matrix.NewMatrix(1, 4),
 			},
-			want:    NewRay(point.NewPoint(4, 6, 8), vector.NewVector(0, 1, 0)),
+			want:    NewRay(*point.NewPoint(4, 6, 8), *vector.NewVector(0, 1, 0)),
 			wantErr: true,
 		},
 		{
 			name: "transform ray with scaling matrix",
 			args: args{
-				ray: NewRay(point.NewPoint(1, 2, 3), vector.NewVector(0, 1, 0)),
+				ray: NewRay(*point.NewPoint(1, 2, 3), *vector.NewVector(0, 1, 0)),
 				m:   matrix.NewScalingMatrix(2, 3, 4),
 			},
-			want:    NewRay(point.NewPoint(2, 6, 12), vector.NewVector(0, 3, 0)),
+			want:    NewRay(*point.NewPoint(2, 6, 12), *vector.NewVector(0, 3, 0)),
 			wantErr: false,
 		},
 	}

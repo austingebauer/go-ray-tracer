@@ -11,7 +11,7 @@ import (
 func TestNewIntersection(t *testing.T) {
 	type args struct {
 		t      float64
-		object *sphere.Sphere
+		object sphere.Sphere
 	}
 	tests := []struct {
 		name string
@@ -22,7 +22,7 @@ func TestNewIntersection(t *testing.T) {
 			name: "intersection encapsulates t and an object",
 			args: args{
 				t:      -5,
-				object: sphere.NewUnitSphere("testID"),
+				object: *sphere.NewUnitSphere("testID"),
 			},
 			want: &Intersection{
 				T:      -5,
@@ -50,13 +50,13 @@ func TestIntersections(t *testing.T) {
 			name: "aggregating intersections",
 			args: args{
 				intersections: []*Intersection{
-					NewIntersection(1, sphere.NewUnitSphere("testID")),
-					NewIntersection(2, sphere.NewUnitSphere("testID")),
+					NewIntersection(1, *sphere.NewUnitSphere("testID")),
+					NewIntersection(2, *sphere.NewUnitSphere("testID")),
 				},
 			},
 			want: []*Intersection{
-				NewIntersection(1, sphere.NewUnitSphere("testID")),
-				NewIntersection(2, sphere.NewUnitSphere("testID")),
+				NewIntersection(1, *sphere.NewUnitSphere("testID")),
+				NewIntersection(2, *sphere.NewUnitSphere("testID")),
 			},
 		},
 	}
@@ -87,41 +87,41 @@ func TestHit(t *testing.T) {
 			name: "hit when all intersections have positive t",
 			args: args{
 				intersections: Intersections(
-					NewIntersection(1, sphere.NewUnitSphere("testID")),
-					NewIntersection(2, sphere.NewUnitSphere("testID")),
+					NewIntersection(1, *sphere.NewUnitSphere("testID")),
+					NewIntersection(2, *sphere.NewUnitSphere("testID")),
 				),
 			},
-			want: NewIntersection(1, sphere.NewUnitSphere("testID")),
+			want: NewIntersection(1, *sphere.NewUnitSphere("testID")),
 		},
 		{
 			name: "hit when some intersections have negative t",
 			args: args{
 				intersections: Intersections(
-					NewIntersection(-1, sphere.NewUnitSphere("testID")),
-					NewIntersection(1, sphere.NewUnitSphere("testID")),
+					NewIntersection(-1, *sphere.NewUnitSphere("testID")),
+					NewIntersection(1, *sphere.NewUnitSphere("testID")),
 				),
 			},
-			want: NewIntersection(1, sphere.NewUnitSphere("testID")),
+			want: NewIntersection(1, *sphere.NewUnitSphere("testID")),
 		},
 		{
 			name: "hit when some intersections have negative t and a zero T",
 			args: args{
 				intersections: Intersections(
-					NewIntersection(-1, sphere.NewUnitSphere("testID")),
-					NewIntersection(-9, sphere.NewUnitSphere("testID")),
-					NewIntersection(0, sphere.NewUnitSphere("testID")),
-					NewIntersection(10, sphere.NewUnitSphere("testID")),
+					NewIntersection(-1, *sphere.NewUnitSphere("testID")),
+					NewIntersection(-9, *sphere.NewUnitSphere("testID")),
+					NewIntersection(0, *sphere.NewUnitSphere("testID")),
+					NewIntersection(10, *sphere.NewUnitSphere("testID")),
 				),
 			},
-			want: NewIntersection(0, sphere.NewUnitSphere("testID")),
+			want: NewIntersection(0, *sphere.NewUnitSphere("testID")),
 		},
 		{
 			name: "hit when all intersections have negative t",
 			args: args{
 				intersections: Intersections(
-					NewIntersection(-7, sphere.NewUnitSphere("testID")),
-					NewIntersection(-3, sphere.NewUnitSphere("testID")),
-					NewIntersection(-2, sphere.NewUnitSphere("testID")),
+					NewIntersection(-7, *sphere.NewUnitSphere("testID")),
+					NewIntersection(-3, *sphere.NewUnitSphere("testID")),
+					NewIntersection(-2, *sphere.NewUnitSphere("testID")),
 				),
 			},
 			want: nil,
@@ -130,13 +130,13 @@ func TestHit(t *testing.T) {
 			name: "hit is always the lowest non-negative intersection",
 			args: args{
 				intersections: Intersections(
-					NewIntersection(5, sphere.NewUnitSphere("testID")),
-					NewIntersection(7, sphere.NewUnitSphere("testID")),
-					NewIntersection(-3, sphere.NewUnitSphere("testID")),
-					NewIntersection(2, sphere.NewUnitSphere("testID")),
+					NewIntersection(5, *sphere.NewUnitSphere("testID")),
+					NewIntersection(7, *sphere.NewUnitSphere("testID")),
+					NewIntersection(-3, *sphere.NewUnitSphere("testID")),
+					NewIntersection(2, *sphere.NewUnitSphere("testID")),
 				),
 			},
-			want: NewIntersection(2, sphere.NewUnitSphere("testID")),
+			want: NewIntersection(2, *sphere.NewUnitSphere("testID")),
 		},
 	}
 	for _, tt := range tests {

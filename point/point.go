@@ -75,7 +75,7 @@ func (pt *Point) Subtract(vec *vector.Vector) *Point {
 
 // Subtract returns a new Vector with components equal to the
 // difference of the corresponding components in the passed Points.
-func Subtract(pt1 *Point, pt2 *Point) *vector.Vector {
+func Subtract(pt1 Point, pt2 Point) *vector.Vector {
 	return &vector.Vector{
 		X: pt1.X - pt2.X,
 		Y: pt1.Y - pt2.Y,

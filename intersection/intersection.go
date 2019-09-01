@@ -15,10 +15,10 @@ type Intersection struct {
 }
 
 // NewIntersection returns a new Intersection with the passed t value and object.
-func NewIntersection(t float64, object *sphere.Sphere) *Intersection {
+func NewIntersection(t float64, object sphere.Sphere) *Intersection {
 	return &Intersection{
 		T:      t,
-		Object: object,
+		Object: &object,
 	}
 }
 

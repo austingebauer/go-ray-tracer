@@ -95,7 +95,7 @@ func renderSphere(c *canvas.Canvas, shape *sphere.Sphere) {
 			position := point.NewPoint(worldX, worldY, wallZ)
 
 			// Create a ray from the ray origin to the position on the wall
-			r := ray.NewRay(rayOrigin, vector.Normalize(*point.Subtract(position, rayOrigin)))
+			r := ray.NewRay(*rayOrigin, *vector.Normalize(*point.Subtract(*position, *rayOrigin)))
 
 			// Intersect the ray with the sphere
 			xs := ray.Intersect(shape, r)
