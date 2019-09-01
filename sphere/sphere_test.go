@@ -2,6 +2,7 @@
 package sphere
 
 import (
+	"github.com/austingebauer/go-ray-tracer/material"
 	"math"
 	"testing"
 
@@ -17,12 +18,13 @@ func TestNewUnitSphere(t *testing.T) {
 		want *Sphere
 	}{
 		{
-			name: "new unit sphere",
+			name: "new unit sphere with default material",
 			want: &Sphere{
 				Id:        "testID",
 				Origin:    point.NewPoint(0, 0, 0),
 				Radius:    1,
 				Transform: matrix.NewIdentityMatrix(4),
+				Material: material.NewMaterial(),
 			},
 		},
 	}
@@ -56,6 +58,7 @@ func TestNewSphere(t *testing.T) {
 				Origin:    point.NewPoint(1, 2, -3),
 				Radius:    11,
 				Transform: matrix.NewIdentityMatrix(4),
+				Material: material.NewMaterial(),
 			},
 		},
 	}

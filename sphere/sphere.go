@@ -2,6 +2,7 @@
 package sphere
 
 import (
+	"github.com/austingebauer/go-ray-tracer/material"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/vector"
@@ -13,6 +14,7 @@ type Sphere struct {
 	Origin    *point.Point
 	Radius    float64
 	Transform *matrix.Matrix
+	Material  *material.Material
 }
 
 // NewUnitSphere returns a new Sphere with id, origin (0,0,0), and a radius of 1.
@@ -27,6 +29,7 @@ func NewSphere(id string, origin point.Point, radius float64) *Sphere {
 		Origin:    &origin,
 		Radius:    radius,
 		Transform: matrix.NewIdentityMatrix(4),
+		Material: material.NewMaterial(),
 	}
 }
 
