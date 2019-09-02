@@ -131,11 +131,15 @@ func writePPMPixels(pixels [][]*color.Color) string {
 	for _, row := range pixels {
 		for _, colorVal := range row {
 
-			// Convert RGB color values [0-1] to 8 bit integer values [0-255]
-			redEightBit := int(math.Min(math.Max(minColorValue, colorVal.Red*maxColorValue), maxColorValue))
-			greenEightBit := int(math.Min(math.Max(minColorValue, colorVal.Green*maxColorValue), maxColorValue))
-			blueEightBit := int(math.Min(math.Max(minColorValue, colorVal.Blue*maxColorValue), maxColorValue))
-			pixelBytes.WriteString(fmt.Sprintf("%v %v %v%v",
+			// Convert RGB color values to 8 bit integer values [0-255]
+			redEightBit := int(math.Min(math.Max(minColorValue, colorVal.Red*maxColorValue),
+				maxColorValue))
+			greenEightBit := int(math.Min(math.Max(minColorValue, colorVal.Green*maxColorValue),
+				maxColorValue))
+			blueEightBit := int(math.Min(math.Max(minColorValue, colorVal.Blue*maxColorValue),
+				maxColorValue))
+
+			pixelBytes.WriteString(fmt.Sprintf("%d %d %d%s",
 				redEightBit,
 				greenEightBit,
 				blueEightBit,

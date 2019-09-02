@@ -21,9 +21,9 @@ import (
 
 func main() {
 	RenderRayTracedSphere3D()
-	RenderRayTracedSphere2D()
-	RenderClock()
-	RenderProjectile()
+	//RenderRayTracedSphere2D()
+	//RenderClock()
+	//RenderProjectile()
 }
 
 // RenderRayTracedSphere2D renders a 3D ray traced sphere.
@@ -32,36 +32,19 @@ func RenderRayTracedSphere3D() {
 	circleCanvasWidth := 500
 	circleCanvasHeight := 500
 
+	// Create a material to apply to the sphere
+	mat := material.NewMaterial()
+	mat.Color = *color.NewColor(0.2, 1, 1)
+
 	// Create a light source
 	lightPosition := point.NewPoint(-10, 10, -10)
 	lightColor := color.NewColor(1, 1, 1)
 	l := light.NewPointLight(*lightPosition, *lightColor)
 
-	// Create a material to apply to the sphere
-	mat := material.NewMaterial()
-	mat.Color = *color.NewColor(1, 0.2, 1)
-
 	// Create some spheres to apply transformations to
 	spheres := []*sphere.Sphere{
 		sphere.NewUnitSphere("sphere"),
-		sphere.NewUnitSphere("sphereScaleX"),
-		sphere.NewUnitSphere("sphereScaleY"),
-		sphere.NewUnitSphere("sphereScaleXRotateZ"),
-		sphere.NewUnitSphere("sphereShearXYScaleX"),
 	}
-
-	// Create some transformations and apply them to the spheres
-	spheres[0].Transform = matrix.NewIdentityMatrix(4)
-	spheres[1].Transform = matrix.NewScalingMatrix(0.5, 1, 1)
-	spheres[2].Transform = matrix.NewScalingMatrix(1, 0.5, 1)
-	scaleXRotateZ, _ := matrix.Multiply(
-		matrix.NewZRotationMatrix(math.Pi/4),
-		matrix.NewScalingMatrix(0.5, 1, 1))
-	spheres[3].Transform = scaleXRotateZ
-	shearXYAndScaleX, _ := matrix.Multiply(
-		matrix.NewShearingMatrix(1, 0, 0, 0, 0, 0),
-		matrix.NewScalingMatrix(0.5, 1, 1))
-	spheres[4].Transform = shearXYAndScaleX
 
 	// Render each sphere
 	for _, s := range spheres {
@@ -80,7 +63,7 @@ func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight)
 	rayOrigin := point.NewPoint(0, 0, -5)
 
 	// Pick a z value for the wall
-	wallZ := 8.0
+	wallZ := 10.0
 
 	// Pick the size of the wall based on extrapolating ray origin and sphere
 	wallSize := 7.0
@@ -116,25 +99,22 @@ func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight)
 			// Intersect the ray with the sphere
 			xs := ray.Intersect(shape, r)
 
-			// If there was no hit, don't write a pixel
+			// If there was a hit, write a pixel to the canvas
 			hit := intersection.Hit(xs)
-			if hit == nil {
-				continue
-			}
+			if hit != nil {
+				// Calculate the color at the surface using the shading function
+				pt := ray.Position(r, hit.T)
+				normal, err := sphere.NormalAt(hit.Object, pt)
+				if err != nil {
+					log.Fatal(err)
+				}
+				eye := vector.Scale(r.Direction, -1)
+				surfaceColor := light.Lighting(hit.Object.Material, l, pt, eye, normal)
 
-			// Calculate the color at the surface using the lighting
-			pt := ray.Position(r, hit.T)
-			normal, err := sphere.NormalAt(hit.Object, pt)
-			if err != nil {
-				log.Fatal(err)
-			}
-			eye := vector.Scale(r.Direction, -1)
-			surfaceColor := light.Lighting(hit.Object.Material, l, pt, eye, normal)
-
-			// There was a hit, so write a pixel
-			err = c.WritePixel(x, y, surfaceColor)
-			if err != nil {
-				log.Fatal(err)
+				err = c.WritePixel(x, y, surfaceColor)
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
 		}
 	}

@@ -27,7 +27,12 @@ func NewRay(origin point.Point, direction vector.Vector) *Ray {
 
 // Position returns the Point that lies any distance t along the passed ray.
 func Position(ray *Ray, t float64) *point.Point {
-	return ray.Origin.Add(ray.Direction.Scale(t))
+	// Scale the direction vector by t
+	scaledDirectionVec := vector.Scale(ray.Direction, t)
+
+	// Add the scaled vector to the origin and return the point position on the ray
+	return point.Add(ray.Origin, scaledDirectionVec)
+	//return ray.Origin.Add(ray.Direction.Scale(t))
 }
 
 // Intersect intersects the passed ray with the passed sphere.
