@@ -921,3 +921,29 @@ func TestReflect(t *testing.T) {
 		})
 	}
 }
+
+func TestScale(t *testing.T) {
+	type args struct {
+		vec    *Vector
+		scalar float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Vector
+	}{
+		{
+			name: "scaling a vector returns new scaled vector",
+			args: args{
+				vec:    NewVector(1, 0, -1),
+				scalar: 3,
+			},
+			want: NewVector(3, 0, -3),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Scale(tt.args.vec, tt.args.scalar))
+		})
+	}
+}

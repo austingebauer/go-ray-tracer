@@ -32,7 +32,6 @@ func Position(ray *Ray, t float64) *point.Point {
 
 	// Add the scaled vector to the origin and return the point position on the ray
 	return point.Add(ray.Origin, scaledDirectionVec)
-	//return ray.Origin.Add(ray.Direction.Scale(t))
 }
 
 // Intersect intersects the passed ray with the passed sphere.

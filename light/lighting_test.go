@@ -74,6 +74,22 @@ func TestLighting(t *testing.T) {
 			want: color.NewColor(0.7364, 0.7364, 0.7364),
 		},
 		{
+			name: "lighting with eye and light offset 45 degrees for zero specular reflection",
+			args: args{
+				eyeVec: vector.NewVector(0, 1, 1),
+				l: NewPointLight(
+					*point.NewPoint(0, 10, -10),
+					*color.NewColor(1, 1, 1),
+				),
+
+				// material, normal, and point illuminated constant for this test table
+				normalVec: vector.NewVector(0, 0, -1),
+				m:         material.NewMaterial(),
+				pt:        point.NewPoint(0, 0, 0),
+			},
+			want: color.NewColor(0.73639, 0.73639, 0.73639),
+		},
+		{
 			name: "lighting with eye in the path of the reflection vector",
 			args: args{
 				eyeVec: vector.NewVector(0, -1*math.Sqrt(2)/2, -1*math.Sqrt(2)/2),

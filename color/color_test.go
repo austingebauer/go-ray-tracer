@@ -376,13 +376,42 @@ func TestEquals(t *testing.T) {
 		args args
 		want bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "colors are equal",
+			args: args{
+				c1: *NewColor(0.5, 0.5, 0.5),
+				c2: *NewColor(0.5, 0.5, 0.5),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Equals(tt.args.c1, tt.args.c2); got != tt.want {
-				t.Errorf("Equals() = %v, want %v", got, tt.want)
-			}
+			assert.True(t, Equals(tt.args.c1, tt.args.c2))
+		})
+	}
+}
+
+func TestNotEquals(t *testing.T) {
+	type args struct {
+		c1 Color
+		c2 Color
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "colors are not equal",
+			args: args{
+				c1: *NewColor(0.99998, 1, 1),
+				c2: *NewColor(1, 1, 1),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.False(t, Equals(tt.args.c1, tt.args.c2))
 		})
 	}
 }

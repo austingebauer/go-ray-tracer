@@ -57,9 +57,7 @@ func TestFloat64Equals(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Float64Equals(tt.args.a, tt.args.b, tt.args.c); got != tt.want {
-				t.Errorf("Float64Equals() = %v, want %v", got, tt.want)
-			}
+			assert.Equal(t, tt.want, Float64Equals(tt.args.a, tt.args.b, tt.args.c))
 		})
 	}
 }
