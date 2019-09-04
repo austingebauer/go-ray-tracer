@@ -11,6 +11,7 @@ import (
 	"log"
 	"math"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/austingebauer/go-ray-tracer/canvas"
@@ -20,21 +21,41 @@ import (
 )
 
 func main() {
-	RenderRayTracedSphere3D()
-	//RenderRayTracedSphere2D()
-	//RenderClock()
-	//RenderProjectile()
+	renderings := []func(){
+		RenderRayTracedSphere3D,
+		RenderRayTracedSphere2D,
+		RenderClock,
+		RenderProjectile,
+	}
+
+	// Add all renderings to the wait group
+	var wg sync.WaitGroup
+	wg.Add(len(renderings))
+
+	// Start all renderings
+	startTime := time.Now()
+	for _, rendering := range renderings {
+		go (func(r func()) {
+			defer wg.Done()
+			r()
+		})(rendering)
+	}
+
+	// Wait for all renderings to complete
+	wg.Wait()
+
+	// Log the elapsed time
+	fmt.Printf("Final render time: %v seconds\n\n", time.Now().Sub(startTime).Seconds())
 }
 
 // RenderRayTracedSphere2D renders a 3D ray traced sphere.
 func RenderRayTracedSphere3D() {
-	fmt.Println("---------- Render: 3D Ray-traced Sphere ----------")
 	circleCanvasWidth := 500
 	circleCanvasHeight := 500
 
 	// Create a material to apply to the sphere
 	mat := material.NewMaterial()
-	mat.Color = *color.NewColor(0.2, 1, 1)
+	mat.Color = *color.NewColor(0.5, 0.5, 0.7)
 
 	// Create a light source
 	lightPosition := point.NewPoint(-10, 10, -10)
@@ -43,8 +64,25 @@ func RenderRayTracedSphere3D() {
 
 	// Create some spheres to apply transformations to
 	spheres := []*sphere.Sphere{
-		sphere.NewUnitSphere("sphere"),
+		sphere.NewUnitSphere("sphere_3d"),
+		sphere.NewUnitSphere("sphereScale_3dX"),
+		sphere.NewUnitSphere("sphereScale_3dY"),
+		sphere.NewUnitSphere("sphereScaleXRotateZ_3d"),
+		sphere.NewUnitSphere("sphereShearXYScaleX_3d"),
 	}
+
+	// Create some transformations and apply them to the spheres
+	spheres[0].Transform = matrix.NewIdentityMatrix(4)
+	spheres[1].Transform = matrix.NewScalingMatrix(0.5, 1, 1)
+	spheres[2].Transform = matrix.NewScalingMatrix(1, 0.5, 1)
+	scaleXRotateZ, _ := matrix.Multiply(
+		matrix.NewZRotationMatrix(math.Pi/4),
+		matrix.NewScalingMatrix(0.5, 1, 1))
+	spheres[3].Transform = scaleXRotateZ
+	shearXYAndScaleX, _ := matrix.Multiply(
+		matrix.NewShearingMatrix(1, 0, 0, 0, 0, 0),
+		matrix.NewScalingMatrix(0.5, 1, 1))
+	spheres[4].Transform = shearXYAndScaleX
 
 	// Render each sphere
 	for _, s := range spheres {
@@ -76,7 +114,6 @@ func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight)
 	pixelSize := wallSize / float64(c.Width)
 
 	// For each row of pixels in the canvas
-	startTime := time.Now()
 	for y := 0; y < c.Height; y++ {
 
 		// Compute the world y coordinate (top = +half, bottom = -half)
@@ -119,28 +156,22 @@ func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight)
 		}
 	}
 
-	// Print the duration for rendering
-	endTime := time.Now()
-	elapsed := endTime.Sub(startTime)
-	printRenderDuration(elapsed)
-
 	// Write pixels to file
 	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_3d/%v.ppm", shape.Id))
 }
 
 // RenderRayTracedSphere2D renders a 2D ray traced sphere.
 func RenderRayTracedSphere2D() {
-	fmt.Println("---------- Render: 2D Ray-traced Sphere ----------")
 	circleCanvasWidth := 500
 	circleCanvasHeight := 500
 
 	// Create some spheres to apply transformations to
 	spheres := []*sphere.Sphere{
-		sphere.NewUnitSphere("sphere"),
-		sphere.NewUnitSphere("sphereScaleX"),
-		sphere.NewUnitSphere("sphereScaleY"),
-		sphere.NewUnitSphere("sphereScaleXRotateZ"),
-		sphere.NewUnitSphere("sphereShearXYScaleX"),
+		sphere.NewUnitSphere("sphere_2d"),
+		sphere.NewUnitSphere("sphereScaleX_2d"),
+		sphere.NewUnitSphere("sphereScaleY_2d"),
+		sphere.NewUnitSphere("sphereScaleXRotateZ_2d"),
+		sphere.NewUnitSphere("sphereShearXYScaleX_2d"),
 	}
 
 	// Create some transformations and apply them to the spheres
@@ -182,7 +213,6 @@ func renderSphere2D(c *canvas.Canvas, shape *sphere.Sphere) {
 	pixelSize := wallSize / float64(c.Width)
 
 	// For each row of pixels in the canvas
-	startTime := time.Now()
 	for y := 0; y < c.Height; y++ {
 
 		// Compute the world y coordinate (top = +half, bottom = -half)
@@ -219,19 +249,12 @@ func renderSphere2D(c *canvas.Canvas, shape *sphere.Sphere) {
 		}
 	}
 
-	// Print the duration for rendering
-	endTime := time.Now()
-	elapsed := endTime.Sub(startTime)
-	printRenderDuration(elapsed)
-
 	// Write pixels to file
 	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_2d/%v.ppm", shape.Id))
 }
 
 // RenderClock renders a clock.
 func RenderClock() {
-	fmt.Println("---------- Render: Clock ----------")
-	startTime := time.Now()
 	clockCanvasWidth := 500
 	clockCanvasHeight := 500
 
@@ -295,11 +318,6 @@ func RenderClock() {
 		}
 	}
 
-	// Print the duration for rendering
-	endTime := time.Now()
-	elapsed := endTime.Sub(startTime)
-	printRenderDuration(elapsed)
-
 	// Write pixels to file
 	writeCanvasToFile(c, "docs/renderings/clock/clock.ppm")
 }
@@ -318,8 +336,6 @@ type Environment struct {
 
 // RenderProjectile renders a projectile.
 func RenderProjectile() {
-	fmt.Println("---------- Render: Projectile ----------")
-	startTime := time.Now()
 	projectileCanvasWidth := 900
 	projectileCanvasHeight := 600
 
@@ -367,11 +383,6 @@ func RenderProjectile() {
 		tickCount++
 	}
 
-	// Print the duration for rendering
-	endTime := time.Now()
-	elapsed := endTime.Sub(startTime)
-	printRenderDuration(elapsed)
-
 	// Write pixels to file
 	writeCanvasToFile(c, "docs/renderings/projectile/projectile.ppm")
 }
@@ -399,9 +410,4 @@ func writeCanvasToFile(c *canvas.Canvas, filePath string) {
 	}
 
 	fmt.Printf("Wrote ppm rendering to: %v\n\n", filePath)
-}
-
-// printRenderDuration prints the passed duration in a common format.
-func printRenderDuration(d time.Duration) {
-	fmt.Printf("Render time: %v seconds\n", d.Seconds())
 }
