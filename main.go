@@ -55,8 +55,7 @@ func RenderRayTracedSphere3D() {
 
 	// Create a material to apply to the sphere
 	mat := material.NewMaterial()
-	mat.Color = *color.NewColor(0.5, 0.5, 0.7)
-
+	mat.Color = *color.NewColor(0.7, 1, 1)
 	// Create a light source
 	lightPosition := point.NewPoint(-10, 10, -10)
 	lightColor := color.NewColor(1, 1, 1)
@@ -65,8 +64,8 @@ func RenderRayTracedSphere3D() {
 	// Create some spheres to apply transformations to
 	spheres := []*sphere.Sphere{
 		sphere.NewUnitSphere("sphere_3d"),
-		sphere.NewUnitSphere("sphereScale_3dX"),
-		sphere.NewUnitSphere("sphereScale_3dY"),
+		sphere.NewUnitSphere("sphereScaleX_3d"),
+		sphere.NewUnitSphere("sphereScaleY_3d"),
 		sphere.NewUnitSphere("sphereScaleXRotateZ_3d"),
 		sphere.NewUnitSphere("sphereShearXYScaleX_3d"),
 	}
@@ -101,7 +100,7 @@ func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight)
 	rayOrigin := point.NewPoint(0, 0, -5)
 
 	// Pick a z value for the wall
-	wallZ := 10.0
+	wallZ := 8.0
 
 	// Pick the size of the wall based on extrapolating ray origin and sphere
 	wallSize := 7.0
@@ -242,7 +241,7 @@ func renderSphere2D(c *canvas.Canvas, shape *sphere.Sphere) {
 			}
 
 			// There was a hit, so write a pixel
-			err := c.WritePixel(x, y, color.NewColor(0.5, 0.5, 0.7))
+			err := c.WritePixel(x, y, color.NewColor(0.7, 1, 1))
 			if err != nil {
 				log.Fatal(err)
 			}

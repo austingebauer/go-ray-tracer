@@ -7,7 +7,15 @@ A Go implementation of a 3D renderer using a
 
 I'll be adding images of renderings that I create on my journey to write a 3D renderer below.
 
-### 3. Ray Traced Spheres
+### 4. Ray Traced Spheres in 3D
+
+![Sphere Rendering](docs/renderings/sphere_3d/sphere_3d.png)
+![Sphere Rendering](docs/renderings/sphere_3d/sphereScaleX_3d.png)
+![Sphere Rendering](docs/renderings/sphere_3d/sphereScaleY_3d.png)
+![Sphere Rendering](docs/renderings/sphere_3d/sphereScaleXRotateZ_3d.png)
+![Sphere Rendering](docs/renderings/sphere_3d/sphereShearXYScaleX_3d.png)
+
+### 3. Ray Traced Spheres in 2D
 
 My third rendering is the first one that is actually ray-traced! It's a circle that was produced by
 casting rays at a sphere and filling in colored pixels where an intersection occurred.
@@ -20,18 +28,18 @@ To produce the renderings, run:
 ```bash
 git checkout 0f43b4d8
 go run main.go
-open docs/renderings/sphere/sphere.png
-open docs/renderings/sphere/sphereScaleX.png
-open docs/renderings/sphere/sphereScaleY.png
-open docs/renderings/sphere/sphereScaleXRotateZ.png
-open docs/renderings/sphere/sphereShearXYScaleX.png
+open docs/renderings/sphere_2d/sphere_2d.png
+open docs/renderings/sphere_2d/sphereScaleX_2d.png
+open docs/renderings/sphere_2d/sphereScaleY_2d.png
+open docs/renderings/sphere_2d/sphereScaleXRotateZ_2d.png
+open docs/renderings/sphere_2d/sphereShearXYScaleX_2d.png
 ```
 
-![Sphere Rendering](docs/renderings/sphere/sphere.png)
-![Sphere Rendering](docs/renderings/sphere/sphereScaleX.png)
-![Sphere Rendering](docs/renderings/sphere/sphereScaleY.png)
-![Sphere Rendering](docs/renderings/sphere/sphereScaleXRotateZ.png)
-![Sphere Rendering](docs/renderings/sphere/sphereShearXYScaleX.png)
+![Sphere Rendering](docs/renderings/sphere_2d/sphere_2d.ppm)
+![Sphere Rendering](docs/renderings/sphere_2d/sphereScaleX_2d.png)
+![Sphere Rendering](docs/renderings/sphere_2d/sphereScaleY_2d.png)
+![Sphere Rendering](docs/renderings/sphere_2d/sphereScaleXRotateZ_2d.png)
+![Sphere Rendering](docs/renderings/sphere_2d/sphereShearXYScaleX_2d.png)
 
 ### 2. Clock Rendering
 
