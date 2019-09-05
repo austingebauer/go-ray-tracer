@@ -1,4 +1,27 @@
 package main
 
-// TODO: Write benchmarks for all renderings to track times
-//       https://golang.org/pkg/testing/#hdr-Benchmarks
+import "testing"
+
+func BenchmarkRenderRayTracedSphere3D(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		RenderRayTracedSphere3D()
+	}
+}
+
+func BenchmarkRenderRayTracedSphere2D(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		RenderRayTracedSphere2D()
+	}
+}
+
+func BenchmarkRenderClock(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		RenderClock()
+	}
+}
+
+func BenchmarkRenderProjectile(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		RenderProjectile()
+	}
+}

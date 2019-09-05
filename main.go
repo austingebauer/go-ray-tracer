@@ -156,7 +156,7 @@ func renderSphere3D(c *canvas.Canvas, shape *sphere.Sphere, l *light.PointLight)
 	}
 
 	// Write pixels to file
-	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_3d/%v.ppm", shape.Id))
+	// writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_3d/%v.ppm", shape.Id))
 }
 
 // RenderRayTracedSphere2D renders a 2D ray traced sphere.
@@ -249,7 +249,7 @@ func renderSphere2D(c *canvas.Canvas, shape *sphere.Sphere) {
 	}
 
 	// Write pixels to file
-	writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_2d/%v.ppm", shape.Id))
+	// writeCanvasToFile(c, fmt.Sprintf("docs/renderings/sphere_2d/%v.ppm", shape.Id))
 }
 
 // RenderClock renders a clock.
@@ -318,7 +318,7 @@ func RenderClock() {
 	}
 
 	// Write pixels to file
-	writeCanvasToFile(c, "docs/renderings/clock/clock.ppm")
+	//writeCanvasToFile(c, "docs/renderings/clock/clock.ppm")
 }
 
 // Projectile represents an object with a position and a velocity.
@@ -383,7 +383,7 @@ func RenderProjectile() {
 	}
 
 	// Write pixels to file
-	writeCanvasToFile(c, "docs/renderings/projectile/projectile.ppm")
+	//writeCanvasToFile(c, "docs/renderings/projectile/projectile.ppm")
 }
 
 // tick moves the passed Projectile through the passed Environment.

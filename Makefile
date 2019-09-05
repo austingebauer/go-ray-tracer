@@ -24,6 +24,9 @@ test: out
 test_v: out
 	go test -race -v ./... -coverprofile=$(BUILD_OUT_DIR)/$(TEST_COVERAGE_PROFILE)
 
+bench:
+	go test -bench=.
+
 loc:
 	find . -type f -not -path "./vendor/*" -name "*.go" | xargs wc -l
 
