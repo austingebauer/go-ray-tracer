@@ -1,5 +1,5 @@
 # Targets not related to individual files
-.PHONY: all build test cover_func cover_html out clean vet loc run fmt test_v
+.PHONY: all build test cover_func cover_html out clean vet loc run fmt test_v bench
 
 # Build constants
 BUILD_OUT_DIR = bin

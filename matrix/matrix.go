@@ -12,7 +12,7 @@ import (
 // Matrix represents an n-dimensional grid of floating point numbers.
 type Matrix struct {
 	rows, cols uint
-	data       [][]float64
+	data       []float64
 }
 
 // NewMatrix returns a new Matrix having the passed row and column lengths.
@@ -20,13 +20,8 @@ func NewMatrix(rows, cols uint) *Matrix {
 	m := Matrix{
 		rows: rows,
 		cols: cols,
+		data: make([]float64, rows*cols),
 	}
-
-	d := make([][]float64, m.rows)
-	for row := range d {
-		d[row] = make([]float64, m.cols)
-	}
-	m.data = d
 
 	return &m
 }
@@ -35,8 +30,8 @@ func NewMatrix(rows, cols uint) *Matrix {
 // row and column length equal to the passed size.
 func NewIdentityMatrix(size uint) *Matrix {
 	m := NewMatrix(size, size)
-	for i := 0; i < int(m.rows); i++ {
-		m.data[i][i] = 1
+	for i := uint(0); i < m.rows; i++ {
+		m.setValue(i, i, 1)
 	}
 
 	return m
@@ -51,9 +46,9 @@ func NewIdentityMatrix(size uint) *Matrix {
 //   | 0 0 0 1 |
 func NewTranslationMatrix(x, y, z float64) *Matrix {
 	m := NewIdentityMatrix(4)
-	m.data[0][3] = x
-	m.data[1][3] = y
-	m.data[2][3] = z
+	m.setValue(0, 3, x)
+	m.setValue(1, 3, y)
+	m.setValue(2, 3, z)
 	return m
 }
 
@@ -66,9 +61,9 @@ func NewTranslationMatrix(x, y, z float64) *Matrix {
 //   | 0 0 0 1 |
 func NewScalingMatrix(x, y, z float64) *Matrix {
 	m := NewIdentityMatrix(4)
-	m.data[0][0] = x
-	m.data[1][1] = y
-	m.data[2][2] = z
+	m.setValue(0, 0, x)
+	m.setValue(1, 1, y)
+	m.setValue(2, 2, z)
 	return m
 }
 
@@ -82,10 +77,10 @@ func NewScalingMatrix(x, y, z float64) *Matrix {
 //   | 0 0      0       1 |
 func NewXRotationMatrix(radians float64) *Matrix {
 	m := NewIdentityMatrix(4)
-	m.data[1][1] = math.Cos(radians)
-	m.data[1][2] = -1 * math.Sin(radians)
-	m.data[2][1] = math.Sin(radians)
-	m.data[2][2] = math.Cos(radians)
+	m.setValue(1, 1, math.Cos(radians))
+	m.setValue(1, 2, -1*math.Sin(radians))
+	m.setValue(2, 1, math.Sin(radians))
+	m.setValue(2, 2, math.Cos(radians))
 	return m
 }
 
@@ -99,10 +94,10 @@ func NewXRotationMatrix(radians float64) *Matrix {
 //   | 0       0 0      1 |
 func NewYRotationMatrix(radians float64) *Matrix {
 	m := NewIdentityMatrix(4)
-	m.data[0][0] = math.Cos(radians)
-	m.data[0][2] = math.Sin(radians)
-	m.data[2][0] = -1 * math.Sin(radians)
-	m.data[2][2] = math.Cos(radians)
+	m.setValue(0, 0, math.Cos(radians))
+	m.setValue(0, 2, math.Sin(radians))
+	m.setValue(2, 0, -1*math.Sin(radians))
+	m.setValue(2, 2, math.Cos(radians))
 	return m
 }
 
@@ -116,10 +111,10 @@ func NewYRotationMatrix(radians float64) *Matrix {
 //   | 0      0       0 1 |
 func NewZRotationMatrix(radians float64) *Matrix {
 	m := NewIdentityMatrix(4)
-	m.data[0][0] = math.Cos(radians)
-	m.data[0][1] = -1 * math.Sin(radians)
-	m.data[1][0] = math.Sin(radians)
-	m.data[1][1] = math.Cos(radians)
+	m.setValue(0, 0, math.Cos(radians))
+	m.setValue(0, 1, -1*math.Sin(radians))
+	m.setValue(1, 0, math.Sin(radians))
+	m.setValue(1, 1, math.Cos(radians))
 	return m
 }
 
@@ -133,12 +128,12 @@ func NewZRotationMatrix(radians float64) *Matrix {
 //   | 0  0  0  1 |
 func NewShearingMatrix(xy, xz, yx, yz, zx, zy float64) *Matrix {
 	m := NewIdentityMatrix(4)
-	m.data[0][1] = xy
-	m.data[0][2] = xz
-	m.data[1][0] = yx
-	m.data[1][2] = yz
-	m.data[2][0] = zx
-	m.data[2][1] = zy
+	m.setValue(0, 1, xy)
+	m.setValue(0, 2, xz)
+	m.setValue(1, 0, yx)
+	m.setValue(1, 2, yz)
+	m.setValue(2, 0, zx)
+	m.setValue(2, 1, zy)
 	return m
 }
 
@@ -159,8 +154,14 @@ func (m *Matrix) SetValue(row, col uint, val float64) error {
 		return err
 	}
 
-	m.data[row][col] = val
+	m.setValue(row, col, val)
 	return nil
+}
+
+// setValue sets the passed value at the passed row and column in the Matrix
+// without checking for the values being out-of-bounds.
+func (m *Matrix) setValue(row, col uint, val float64) {
+	m.data[row*m.cols + col] = val
 }
 
 // GetValue sets the passed value at the passed row and column in the Matrix.
@@ -170,7 +171,13 @@ func (m *Matrix) GetValue(row, col uint) (float64, error) {
 		return 0, err
 	}
 
-	return m.data[row][col], nil
+	return m.getValue(row, col), nil
+}
+
+// setValue sets the passed value at the passed row and column in the Matrix
+// without checking for the values being out-of-bounds.
+func (m *Matrix) getValue(row, col uint) float64 {
+	return m.data[row*m.cols + col]
 }
 
 // Equals returns true if this Matrix has identical rows, columns,
@@ -180,9 +187,9 @@ func (m *Matrix) Equals(m1 *Matrix) bool {
 		return false
 	}
 
-	for r := 0; r < int(m.rows); r++ {
-		for c := 0; c < int(m.cols); c++ {
-			if !maths.Float64Equals(m.data[r][c], m1.data[r][c], maths.Epsilon) {
+	for r := uint(0); r < m.rows; r++ {
+		for c := uint(0); c < m.cols; c++ {
+			if !maths.Float64Equals(m.getValue(r, c), m1.getValue(r, c), maths.Epsilon) {
 				return false
 			}
 		}
@@ -267,17 +274,17 @@ func Multiply(m1, m2 *Matrix) (*Matrix, error) {
 	multM := NewMatrix(m1.rows, m2.cols)
 
 	// Multiply the two matrices
-	for m := 0; m < int(multM.rows); m++ {
-		for p := 0; p < int(multM.cols); p++ {
+	for m := uint(0); m < multM.rows; m++ {
+		for p := uint(0); p < multM.cols; p++ {
 
 			// Compute the dot product over m1 columns and m2 rows for range 0 < n
 			var dotProduct float64
-			for n := 0; n < int(m1.cols); n++ {
-				dotProduct += m1.data[m][n] * m2.data[n][p]
+			for n := uint(0); n < m1.cols; n++ {
+				dotProduct += m1.getValue(m, n) * m2.getValue(n, p)
 			}
 
 			// Store dot product in m and p
-			multM.data[m][p] = dotProduct
+			multM.setValue(m, p, dotProduct)
 		}
 	}
 	return multM, nil
@@ -288,9 +295,9 @@ func Multiply(m1, m2 *Matrix) (*Matrix, error) {
 func Transpose(m Matrix) *Matrix {
 	transM := NewMatrix(m.cols, m.rows)
 
-	for r := 0; r < int(m.rows); r++ {
-		for c := 0; c < int(m.cols); c++ {
-			transM.data[c][r] = m.data[r][c]
+	for r := uint(0); r < m.rows; r++ {
+		for c := uint(0); c < m.cols; c++ {
+			transM.setValue(c, r, m.getValue(r, c))
 		}
 	}
 
@@ -309,19 +316,20 @@ func Determinant(m *Matrix) (float64, error) {
 	}
 
 	if m.rows == 1 && m.cols == 1 {
-		return m.data[0][0], nil
+		return m.getValue(0, 0), nil
 	}
 
 	if m.rows == 2 && m.cols == 2 {
-		return (m.data[0][0] * m.data[1][1]) - (m.data[0][1] * m.data[1][0]), nil
+		return (m.getValue(0, 0) * m.getValue(1, 1)) -
+			(m.getValue(0, 1) * m.getValue(1, 0)), nil
 	}
 
 	// for each column in the selected row
 	var det float64
-	row := 0
-	for col := 0; col < int(m.cols); col++ {
+	row := uint(0)
+	for col := uint(0); col < m.cols; col++ {
 		cofactor, _ := Cofactor(m, uint(row), uint(col))
-		det = det + (m.data[row][col] * cofactor)
+		det = det + (m.getValue(row, col) * cofactor)
 	}
 
 	return det, nil
@@ -338,9 +346,9 @@ func Submatrix(m *Matrix, row, col uint) (*Matrix, error) {
 	}
 
 	subM := NewMatrix(m.rows-1, m.cols-1)
-	for r := 0; r < int(m.rows); r++ {
-		for c := 0; c < int(m.cols); c++ {
-			if r == int(row) || c == int(col) {
+	for r := uint(0); r < m.rows; r++ {
+		for c := uint(0); c < m.cols; c++ {
+			if r == row || c == col {
 				continue
 			}
 
@@ -351,15 +359,15 @@ func Submatrix(m *Matrix, row, col uint) (*Matrix, error) {
 			// if current row or col are beyond the passed row and col to remove,
 			// then their placement in the submatrix will be minus one of their
 			// current location.
-			if rowPlacement > int(row) {
+			if rowPlacement > row {
 				rowPlacement--
 			}
 
-			if colPlacement > int(col) {
+			if colPlacement > col {
 				colPlacement--
 			}
 
-			subM.data[rowPlacement][colPlacement] = m.data[r][c]
+			subM.setValue(rowPlacement, colPlacement, m.getValue(r, c))
 		}
 	}
 
@@ -424,15 +432,15 @@ func Inverse(m *Matrix) (*Matrix, error) {
 	determinantM, _ := Determinant(m)
 
 	// Place the cofactor of each element divided by the determinant into a transposition of m.
-	for row := 0; row < int(m.rows); row++ {
-		for col := 0; col < int(m.cols); col++ {
+	for row := uint(0); row < m.rows; row++ {
+		for col := uint(0); col < m.cols; col++ {
 			c, err := Cofactor(m, uint(row), uint(col))
 			if err != nil {
 				return nil, err
 			}
 
 			// Note that col and row are reversed in the placement to accomplish transposing
-			mInverted.data[col][row] = c / determinantM
+			mInverted.setValue(col, row, c/determinantM)
 		}
 	}
 
