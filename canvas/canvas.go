@@ -28,7 +28,7 @@ const (
 type Canvas struct {
 	Width         int
 	Height        int
-	Pixels        [][]*color.Color
+	Pixels        [][]color.Color
 	PPMIdentifier string
 	MaxColorValue uint8
 	MinColorValue uint8
@@ -36,15 +36,15 @@ type Canvas struct {
 
 // NewCanvas returns a new Canvas with the passed Width and Height.
 func NewCanvas(width, height int) *Canvas {
-	pixels := make([][]*color.Color, height)
+	pixels := make([][]color.Color, height)
 	for i := range pixels {
-		pixels[i] = make([]*color.Color, width)
+		pixels[i] = make([]color.Color, width)
 	}
 
 	// Set the canvas default color for each pixel to black
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			pixels[y][x] = color.NewColor(0, 0, 0)
+			pixels[y][x] = *color.NewColor(0, 0, 0)
 		}
 	}
 
@@ -60,7 +60,7 @@ func NewCanvas(width, height int) *Canvas {
 
 // WritePixel writes the passed Color to the Canvas at the pixel
 // located at the passed x and y values.
-func (c *Canvas) WritePixel(x, y int, color *color.Color) error {
+func (c *Canvas) WritePixel(x, y int, color color.Color) error {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
 		return err
@@ -71,10 +71,10 @@ func (c *Canvas) WritePixel(x, y int, color *color.Color) error {
 }
 
 // PixelAt returns the Color at the pixel located at the passed x and y values.
-func (c *Canvas) PixelAt(x, y int) (*color.Color, error) {
+func (c *Canvas) PixelAt(x, y int) (color.Color, error) {
 	err := c.ValidateInCanvasBounds(x, y)
 	if err != nil {
-		return nil, err
+		return *color.NewColor(0, 0, 0), err
 	}
 
 	return c.Pixels[y][x], nil
@@ -126,7 +126,7 @@ func (c *Canvas) ToPPM(writer io.Writer, goTemplate string) error {
 }
 
 // writePPMPixels returns a string containing rows of pixels with rgb values.
-func writePPMPixels(pixels [][]*color.Color) string {
+func writePPMPixels(pixels [][]color.Color) string {
 	pixelBytes := bytes.Buffer{}
 	for _, row := range pixels {
 		for _, colorVal := range row {

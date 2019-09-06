@@ -37,7 +37,7 @@ func TestNewCanvas(t *testing.T) {
 			canvas := NewCanvas(tt.args.width, tt.args.height)
 			assert.Equal(t, tt.want.Height, canvas.Height)
 			assert.Equal(t, tt.want.Width, canvas.Width)
-			assert.Equal(t, color.NewColor(0, 0, 0), canvas.Pixels[0][0])
+			assert.Equal(t, *color.NewColor(0, 0, 0), canvas.Pixels[0][0])
 		})
 	}
 }
@@ -56,7 +56,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 		name      string
 		fields    fields
 		args      args
-		want      *color.Color
+		want      color.Color
 		wantError bool
 	}{
 		{
@@ -70,7 +70,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 				y:     19,
 				color: color.NewColor(1, 0, 0),
 			},
-			want:      color.NewColor(1, 0, 0),
+			want:      *color.NewColor(1, 0, 0),
 			wantError: false,
 		},
 		{
@@ -84,7 +84,7 @@ func TestCanvas_WritePixel(t *testing.T) {
 				y:     2,
 				color: color.NewColor(1, 0, 0),
 			},
-			want:      color.NewColor(1, 0, 0),
+			want:      *color.NewColor(1, 0, 0),
 			wantError: true,
 		},
 		{
@@ -98,14 +98,14 @@ func TestCanvas_WritePixel(t *testing.T) {
 				y:     20,
 				color: color.NewColor(1, 0, 0),
 			},
-			want:      color.NewColor(1, 0, 0),
+			want:      *color.NewColor(1, 0, 0),
 			wantError: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewCanvas(tt.fields.Width, tt.fields.Height)
-			err := c.WritePixel(tt.args.x, tt.args.y, tt.args.color)
+			err := c.WritePixel(tt.args.x, tt.args.y, *tt.args.color)
 			if tt.wantError {
 				assert.Error(t, err)
 			} else {
@@ -129,7 +129,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 		name    string
 		fields  fields
 		args    args
-		want    *color.Color
+		want    color.Color
 		wantErr bool
 	}{
 		{
@@ -143,7 +143,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 				y:     2,
 				color: color.NewColor(1, 0, 0),
 			},
-			want: &color.Color{
+			want: color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -161,7 +161,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 				y:     0,
 				color: color.NewColor(1, 0, 0),
 			},
-			want: &color.Color{
+			want: color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -179,7 +179,7 @@ func TestCanvas_PixelAt(t *testing.T) {
 				y:     2,
 				color: color.NewColor(1, 0, 0),
 			},
-			want: &color.Color{
+			want: color.Color{
 				Red:   1,
 				Green: 0,
 				Blue:  0,
@@ -190,12 +190,11 @@ func TestCanvas_PixelAt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			c := NewCanvas(tt.fields.Width, tt.fields.Height)
-			errWrite := c.WritePixel(tt.args.x, tt.args.y, tt.args.color)
+			errWrite := c.WritePixel(tt.args.x, tt.args.y, *tt.args.color)
 			clr, errPixelAt := c.PixelAt(tt.args.y, tt.args.x)
 			if tt.wantErr {
 				assert.Error(t, errWrite)
 				assert.Error(t, errPixelAt)
-				assert.Nil(t, clr)
 			} else {
 				assert.NoError(t, errWrite)
 				assert.NoError(t, errPixelAt)
@@ -272,7 +271,7 @@ func TestCanvas_ToPPM(t *testing.T) {
 					err := tt.c.WritePixel(
 						j,
 						i,
-						color.NewColor(1, 0.8, 0.6))
+						*color.NewColor(1, 0.8, 0.6))
 					assert.NoError(t, err)
 				}
 			}
