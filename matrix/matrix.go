@@ -161,7 +161,7 @@ func (m *Matrix) SetValue(row, col uint, val float64) error {
 // setValue sets the passed value at the passed row and column in the Matrix
 // without checking for the values being out-of-bounds.
 func (m *Matrix) setValue(row, col uint, val float64) {
-	m.data[row*m.cols + col] = val
+	m.data[row*m.cols+col] = val
 }
 
 // GetValue sets the passed value at the passed row and column in the Matrix.
@@ -177,7 +177,7 @@ func (m *Matrix) GetValue(row, col uint) (float64, error) {
 // setValue sets the passed value at the passed row and column in the Matrix
 // without checking for the values being out-of-bounds.
 func (m *Matrix) getValue(row, col uint) float64 {
-	return m.data[row*m.cols + col]
+	return m.data[row*m.cols+col]
 }
 
 // Equals returns true if this Matrix has identical rows, columns,
