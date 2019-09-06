@@ -174,7 +174,7 @@ func (m *Matrix) GetValue(row, col uint) (float64, error) {
 	return m.getValue(row, col), nil
 }
 
-// setValue sets the passed value at the passed row and column in the Matrix
+// getValue gets the value at the passed row and column in the Matrix
 // without checking for the values being out-of-bounds.
 func (m *Matrix) getValue(row, col uint) float64 {
 	return m.data[row*m.cols+col]

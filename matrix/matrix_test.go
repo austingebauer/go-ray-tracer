@@ -28,9 +28,9 @@ func TestNewMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{0.0, 0.0},
-					{0.0, 0.0},
+				data: []float64{
+					0.0, 0.0,
+					0.0, 0.0,
 				},
 			},
 		},
@@ -43,7 +43,7 @@ func TestNewMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 0,
 				cols: 0,
-				data: [][]float64{},
+				data: []float64{},
 			},
 		},
 		{
@@ -55,9 +55,7 @@ func TestNewMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 1,
 				cols: 0,
-				data: [][]float64{
-					{},
-				},
+				data: []float64{},
 			},
 		},
 		{
@@ -69,7 +67,7 @@ func TestNewMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 0,
 				cols: 1,
-				data: [][]float64{},
+				data: []float64{},
 			},
 		},
 	}
@@ -84,7 +82,7 @@ func TestMatrix_Equals(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	type args struct {
 		m1 *Matrix
@@ -100,18 +98,18 @@ func TestMatrix_Equals(t *testing.T) {
 			fields: fields{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{1.0, 2.0},
-					{3.0, -4.0},
+				data: []float64{
+					1.0, 2.0,
+					3.0, -4.0,
 				},
 			},
 			args: args{
 				m1: &Matrix{
 					rows: 2,
 					cols: 2,
-					data: [][]float64{
-						{1.0, 2.0},
-						{3.0, -4.0},
+					data: []float64{
+						1.0, 2.0,
+						3.0, -4.0,
 					},
 				},
 			},
@@ -122,18 +120,18 @@ func TestMatrix_Equals(t *testing.T) {
 			fields: fields{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{1.0, 2.0},
-					{3.0, -4.0},
+				data: []float64{
+					1.0, 2.0,
+					3.0, -4.0,
 				},
 			},
 			args: args{
 				m1: &Matrix{
 					rows: 2,
 					cols: 2,
-					data: [][]float64{
-						{-1.0, 2.0},
-						{3.0, 4.0},
+					data: []float64{
+						-1.0, 2.0,
+						3.0, 4.0,
 					},
 				},
 			},
@@ -144,17 +142,17 @@ func TestMatrix_Equals(t *testing.T) {
 			fields: fields{
 				rows: 2,
 				cols: 3,
-				data: [][]float64{
-					{1.0, 2.0, 3.0},
-					{3.0, -4.0, -1.3},
+				data: []float64{
+					1.0, 2.0, 3.0,
+					3.0, -4.0, -1.3,
 				},
 			},
 			args: args{
 				m1: &Matrix{
 					rows: 1,
 					cols: 1,
-					data: [][]float64{
-						{-1.0},
+					data: []float64{
+						-1.0,
 					},
 				},
 			},
@@ -190,32 +188,32 @@ func TestMultiply(t *testing.T) {
 				m1: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{1, 2, 3, 4},
-						{5, 6, 7, 8},
-						{9, 8, 7, 6},
-						{5, 4, 3, 2},
+					data: []float64{
+						1, 2, 3, 4,
+						5, 6, 7, 8,
+						9, 8, 7, 6,
+						5, 4, 3, 2,
 					},
 				},
 				m2: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-2, 1, 2, 3},
-						{3, 2, 1, -1},
-						{4, 3, 6, 5},
-						{1, 2, 7, 8},
+					data: []float64{
+						-2, 1, 2, 3,
+						3, 2, 1, -1,
+						4, 3, 6, 5,
+						1, 2, 7, 8,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{20, 22, 50, 48},
-					{44, 54, 114, 108},
-					{40, 58, 110, 102},
-					{16, 26, 46, 42},
+				data: []float64{
+					20, 22, 50, 48,
+					44, 54, 114, 108,
+					40, 58, 110, 102,
+					16, 26, 46, 42,
 				},
 			},
 			wantError: false,
@@ -226,25 +224,25 @@ func TestMultiply(t *testing.T) {
 				m1: &Matrix{
 					rows: 1,
 					cols: 3,
-					data: [][]float64{
-						{1, 2, 3},
+					data: []float64{
+						1, 2, 3,
 					},
 				},
 				m2: &Matrix{
 					rows: 3,
 					cols: 2,
-					data: [][]float64{
-						{4, 3},
-						{2, 4},
-						{1, 5},
+					data: []float64{
+						4, 3,
+						2, 4,
+						1, 5,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 1,
 				cols: 2,
-				data: [][]float64{
-					{11, 26},
+				data: []float64{
+					11, 26,
 				},
 			},
 			wantError: false,
@@ -255,27 +253,27 @@ func TestMultiply(t *testing.T) {
 				m1: &Matrix{
 					rows: 2,
 					cols: 3,
-					data: [][]float64{
-						{1, 2, 3},
-						{3, 2, 1},
+					data: []float64{
+						1, 2, 3,
+						3, 2, 1,
 					},
 				},
 				m2: &Matrix{
 					rows: 3,
 					cols: 2,
-					data: [][]float64{
-						{1, 2},
-						{2, 1},
-						{1, 2},
+					data: []float64{
+						1, 2,
+						2, 1,
+						1, 2,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{8, 10},
-					{8, 10},
+				data: []float64{
+					8, 10,
+					8, 10,
 				},
 			},
 		},
@@ -285,23 +283,23 @@ func TestMultiply(t *testing.T) {
 				m1: &Matrix{
 					rows: 1,
 					cols: 1,
-					data: [][]float64{
-						{1},
+					data: []float64{
+						1,
 					},
 				},
 				m2: &Matrix{
 					rows: 1,
 					cols: 1,
-					data: [][]float64{
-						{4},
+					data: []float64{
+						4,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 1,
 				cols: 1,
-				data: [][]float64{
-					{4},
+				data: []float64{
+					4,
 				},
 			},
 			wantError: false,
@@ -312,19 +310,19 @@ func TestMultiply(t *testing.T) {
 				m1: &Matrix{
 					rows: 2,
 					cols: 2,
-					data: [][]float64{
-						{1, 1},
-						{1, 1},
+					data: []float64{
+						1, 1,
+						1, 1,
 					},
 				},
 				m2: &Matrix{
 					rows: 4,
 					cols: 2,
-					data: [][]float64{
-						{1, 1},
-						{1, 1},
-						{1, 1},
-						{1, 1},
+					data: []float64{
+						1, 1,
+						1, 1,
+						1, 1,
+						1, 1,
 					},
 				},
 			},
@@ -337,11 +335,11 @@ func TestMultiply(t *testing.T) {
 				m1: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{1, 2, 3, 4},
-						{5, 6, 7, 8},
-						{9, 8, 7, 6},
-						{5, 4, 3, 2},
+					data: []float64{
+						1, 2, 3, 4,
+						5, 6, 7, 8,
+						9, 8, 7, 6,
+						5, 4, 3, 2,
 					},
 				},
 				m2: NewIdentityMatrix(4),
@@ -349,11 +347,11 @@ func TestMultiply(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 2, 3, 4},
-					{5, 6, 7, 8},
-					{9, 8, 7, 6},
-					{5, 4, 3, 2},
+				data: []float64{
+					1, 2, 3, 4,
+					5, 6, 7, 8,
+					9, 8, 7, 6,
+					5, 4, 3, 2,
 				},
 			},
 			wantError: false,
@@ -365,22 +363,22 @@ func TestMultiply(t *testing.T) {
 				m2: &Matrix{
 					rows: 4,
 					cols: 1,
-					data: [][]float64{
-						{1},
-						{5},
-						{9},
-						{5},
+					data: []float64{
+						1,
+						5,
+						9,
+						5,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 1,
-				data: [][]float64{
-					{1},
-					{5},
-					{9},
-					{5},
+				data: []float64{
+					1,
+					5,
+					9,
+					5,
 				},
 			},
 			wantError: false,
@@ -416,22 +414,22 @@ func TestTranspose(t *testing.T) {
 				m1: Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{0, 9, 3, 0},
-						{9, 8, 0, 8},
-						{1, 8, 5, 3},
-						{0, 0, 5, 8},
+					data: []float64{
+						0, 9, 3, 0,
+						9, 8, 0, 8,
+						1, 8, 5, 3,
+						0, 0, 5, 8,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{0, 9, 1, 0},
-					{9, 8, 8, 0},
-					{3, 0, 5, 5},
-					{0, 8, 3, 8},
+				data: []float64{
+					0, 9, 1, 0,
+					9, 8, 8, 0,
+					3, 0, 5, 5,
+					0, 8, 3, 8,
 				},
 			},
 		},
@@ -441,18 +439,18 @@ func TestTranspose(t *testing.T) {
 				m1: Matrix{
 					rows: 2,
 					cols: 2,
-					data: [][]float64{
-						{1, 2},
-						{3, 4},
+					data: []float64{
+						1, 2,
+						3, 4,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{1, 3},
-					{2, 4},
+				data: []float64{
+					1, 3,
+					2, 4,
 				},
 			},
 		},
@@ -462,19 +460,19 @@ func TestTranspose(t *testing.T) {
 				m1: Matrix{
 					rows: 2,
 					cols: 3,
-					data: [][]float64{
-						{1, 2, 3},
-						{4, 5, 6},
+					data: []float64{
+						1, 2, 3,
+						4, 5, 6,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 3,
 				cols: 2,
-				data: [][]float64{
-					{1, 4},
-					{2, 5},
-					{3, 6},
+				data: []float64{
+					1, 4,
+					2, 5,
+					3, 6,
 				},
 			},
 		},
@@ -511,10 +509,10 @@ func TestSubmatrix(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{1, 5, 0},
-						{-3, 2, 7},
-						{0, 6, -3},
+					data: []float64{
+						1, 5, 0,
+						-3, 2, 7,
+						0, 6, -3,
 					},
 				},
 				row: 0,
@@ -523,9 +521,9 @@ func TestSubmatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{-3, 2},
-					{0, 6},
+				data: []float64{
+					-3, 2,
+					0, 6,
 				},
 			},
 			wantErr: false,
@@ -536,11 +534,11 @@ func TestSubmatrix(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-6, 1, 1, 6},
-						{-8, 5, 8, 6},
-						{-1, 0, 8, 2},
-						{-7, 1, -1, 1},
+					data: []float64{
+						-6, 1, 1, 6,
+						-8, 5, 8, 6,
+						-1, 0, 8, 2,
+						-7, 1, -1, 1,
 					},
 				},
 				row: 2,
@@ -549,10 +547,10 @@ func TestSubmatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 3,
 				cols: 3,
-				data: [][]float64{
-					{-6, 1, 6},
-					{-8, 8, 6},
-					{-7, -1, 1},
+				data: []float64{
+					-6, 1, 6,
+					-8, 8, 6,
+					-7, -1, 1,
 				},
 			},
 			wantErr: false,
@@ -563,11 +561,11 @@ func TestSubmatrix(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-6, 1, 1, 6},
-						{-8, 5, 8, 6},
-						{-1, 0, 8, 2},
-						{-7, 1, -1, 1},
+					data: []float64{
+						-6, 1, 1, 6,
+						-8, 5, 8, 6,
+						-1, 0, 8, 2,
+						-7, 1, -1, 1,
 					},
 				},
 				row: 4,
@@ -576,10 +574,10 @@ func TestSubmatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 3,
 				cols: 3,
-				data: [][]float64{
-					{-6, 1, 6},
-					{-8, 8, 6},
-					{-7, -1, 1},
+				data: []float64{
+					-6, 1, 6,
+					-8, 8, 6,
+					-7, -1, 1,
 				},
 			},
 			wantErr: true,
@@ -590,11 +588,11 @@ func TestSubmatrix(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-6, 1, 1, 6},
-						{-8, 5, 8, 6},
-						{-1, 0, 8, 2},
-						{-7, 1, -1, 1},
+					data: []float64{
+						-6, 1, 1, 6,
+						-8, 5, 8, 6,
+						-1, 0, 8, 2,
+						-7, 1, -1, 1,
 					},
 				},
 				row: 0,
@@ -603,10 +601,10 @@ func TestSubmatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 3,
 				cols: 3,
-				data: [][]float64{
-					{-6, 1, 6},
-					{-8, 8, 6},
-					{-7, -1, 1},
+				data: []float64{
+					-6, 1, 6,
+					-8, 8, 6,
+					-7, -1, 1,
 				},
 			},
 			wantErr: true,
@@ -642,10 +640,10 @@ func TestMinor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 1,
@@ -660,9 +658,9 @@ func TestMinor(t *testing.T) {
 				m: &Matrix{
 					rows: 2,
 					cols: 2,
-					data: [][]float64{
-						{3, 3},
-						{5, 5},
+					data: []float64{
+						3, 3,
+						5, 5,
 					},
 				},
 				row: 0,
@@ -677,9 +675,9 @@ func TestMinor(t *testing.T) {
 				m: &Matrix{
 					rows: 2,
 					cols: 3,
-					data: [][]float64{
-						{3, 3, 4},
-						{5, 5, 4},
+					data: []float64{
+						3, 3, 4,
+						5, 5, 4,
 					},
 				},
 				row: 0,
@@ -694,10 +692,10 @@ func TestMinor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 5,
@@ -712,10 +710,10 @@ func TestMinor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 1,
@@ -756,10 +754,10 @@ func TestCofactor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 0,
@@ -774,10 +772,10 @@ func TestCofactor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 1,
@@ -792,11 +790,11 @@ func TestCofactor(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-5, 2, 6, -8},
-						{1, -5, 1, 8},
-						{7, 7, -6, -7},
-						{1, -3, 7, 4},
+					data: []float64{
+						-5, 2, 6, -8,
+						1, -5, 1, 8,
+						7, 7, -6, -7,
+						1, -3, 7, 4,
 					},
 				},
 				row: 0,
@@ -811,10 +809,10 @@ func TestCofactor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 5,
@@ -829,10 +827,10 @@ func TestCofactor(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{3, 5, 0},
-						{2, -1, -7},
-						{6, -1, 5},
+					data: []float64{
+						3, 5, 0,
+						2, -1, -7,
+						6, -1, 5,
 					},
 				},
 				row: 1,
@@ -871,8 +869,8 @@ func TestDeterminant(t *testing.T) {
 				m: &Matrix{
 					rows: 1,
 					cols: 1,
-					data: [][]float64{
-						{-11},
+					data: []float64{
+						-11,
 					},
 				},
 			},
@@ -885,9 +883,9 @@ func TestDeterminant(t *testing.T) {
 				m: &Matrix{
 					rows: 2,
 					cols: 2,
-					data: [][]float64{
-						{1, -2},
-						{1, 3},
+					data: []float64{
+						1, -2,
+						1, 3,
 					},
 				},
 			},
@@ -900,10 +898,10 @@ func TestDeterminant(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 3,
-					data: [][]float64{
-						{1, 2, 6},
-						{-5, 8, -4},
-						{2, 6, 4},
+					data: []float64{
+						1, 2, 6,
+						-5, 8, -4,
+						2, 6, 4,
 					},
 				},
 			},
@@ -916,11 +914,11 @@ func TestDeterminant(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-2, -8, 3, 5},
-						{-3, 1, 7, 3},
-						{1, 2, -9, 6},
-						{-6, 7, 7, -9},
+					data: []float64{
+						-2, -8, 3, 5,
+						-3, 1, 7, 3,
+						1, 2, -9, 6,
+						-6, 7, 7, -9,
 					},
 				},
 			},
@@ -933,10 +931,10 @@ func TestDeterminant(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 4,
-					data: [][]float64{
-						{-2, -8, 3, 5},
-						{-3, 1, 7, 3},
-						{1, 2, -9, 6},
+					data: []float64{
+						-2, -8, 3, 5,
+						-3, 1, 7, 3,
+						1, 2, -9, 6,
 					},
 				},
 			},
@@ -949,11 +947,11 @@ func TestDeterminant(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 4,
-					data: [][]float64{
-						{-2, -8, 3},
-						{-3, 1, 7},
-						{1, 2, -9},
-						{1, 2, -9},
+					data: []float64{
+						-2, -8, 3,
+						-3, 1, 7,
+						1, 2, -9,
+						1, 2, -9,
 					},
 				},
 			},
@@ -988,11 +986,11 @@ func TestIsInvertible(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{6, 4, 4, 4},
-						{5, 5, 7, 6},
-						{4, -9, 3, -7},
-						{9, 1, 7, -6},
+					data: []float64{
+						6, 4, 4, 4,
+						5, 5, 7, 6,
+						4, -9, 3, -7,
+						9, 1, 7, -6,
 					},
 				},
 			},
@@ -1004,11 +1002,11 @@ func TestIsInvertible(t *testing.T) {
 				m: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-4, 2, -2, -3},
-						{9, 6, 2, 6},
-						{0, -5, 1, -5},
-						{0, 0, 0, 0},
+					data: []float64{
+						-4, 2, -2, -3,
+						9, 6, 2, 6,
+						0, -5, 1, -5,
+						0, 0, 0, 0,
 					},
 				},
 			},
@@ -1020,10 +1018,10 @@ func TestIsInvertible(t *testing.T) {
 				m: &Matrix{
 					rows: 3,
 					cols: 4,
-					data: [][]float64{
-						{-4, 2, -2, -3},
-						{9, 6, 2, 6},
-						{0, -5, 1, -5},
+					data: []float64{
+						-4, 2, -2, -3,
+						9, 6, 2, 6,
+						0, -5, 1, -5,
 					},
 				},
 			},
@@ -1053,22 +1051,22 @@ func TestInverseDetailed(t *testing.T) {
 				a: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-5, 2, 6, -8},
-						{1, -5, 1, 8},
-						{7, 7, -6, -7},
-						{1, -3, 7, 4},
+					data: []float64{
+						-5, 2, 6, -8,
+						1, -5, 1, 8,
+						7, 7, -6, -7,
+						1, -3, 7, 4,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{0.21805, 0.45113, 0.24060, -0.04511},
-					{-0.80827, -1.45677, -0.44361, 0.52068},
-					{-0.07895, -0.22368, -0.05263, 0.19737},
-					{-0.52256, -0.81391, -0.30075, 0.30639},
+				data: []float64{
+					0.21805, 0.45113, 0.24060, -0.04511,
+					-0.80827, -1.45677, -0.44361, 0.52068,
+					-0.07895, -0.22368, -0.05263, 0.19737,
+					-0.52256, -0.81391, -0.30075, 0.30639,
 				},
 			},
 		},
@@ -1093,7 +1091,7 @@ func TestInverseDetailed(t *testing.T) {
 			assert.Equal(t, -160.0, cf)
 
 			// b[3][2] is -160.0/532.0
-			assert.True(t, maths.Float64Equals(-160.0/532.0, b.data[3][2],
+			assert.True(t, maths.Float64Equals(-160.0/532.0, b.getValue(3, 2),
 				maths.Epsilon))
 
 			// cofactor of a at 3,2 is 105.0
@@ -1102,7 +1100,7 @@ func TestInverseDetailed(t *testing.T) {
 			assert.Equal(t, 105.0, cf)
 
 			// b[2][3] is 105.0/532.0
-			assert.True(t, maths.Float64Equals(105.0/532.0, b.data[2][3],
+			assert.True(t, maths.Float64Equals(105.0/532.0, b.getValue(2, 3),
 				maths.Epsilon))
 		})
 	}
@@ -1124,22 +1122,22 @@ func TestInverse(t *testing.T) {
 				a: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{-4, 2, -2, -3},
-						{9, 6, 2, 6},
-						{0, -5, 1, -5},
-						{0, 0, 0, 0},
+					data: []float64{
+						-4, 2, -2, -3,
+						9, 6, 2, 6,
+						0, -5, 1, -5,
+						0, 0, 0, 0,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{0.21805, 0.45113, 0.24060, -0.04511},
-					{-0.80827, -1.45677, -0.44361, 0.52068},
-					{-0.07895, -0.22368, -0.05263, 0.19737},
-					{-0.52256, -0.81391, -0.30075, 0.30639},
+				data: []float64{
+					0.21805, 0.45113, 0.24060, -0.04511,
+					-0.80827, -1.45677, -0.44361, 0.52068,
+					-0.07895, -0.22368, -0.05263, 0.19737,
+					-0.52256, -0.81391, -0.30075, 0.30639,
 				},
 			},
 			wantErr: true,
@@ -1150,16 +1148,16 @@ func TestInverse(t *testing.T) {
 				a: &Matrix{
 					rows: 1,
 					cols: 1,
-					data: [][]float64{
-						{2},
+					data: []float64{
+						2,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 1,
 				cols: 1,
-				data: [][]float64{
-					{0.5},
+				data: []float64{
+					0.5,
 				},
 			},
 			wantErr: false,
@@ -1170,22 +1168,22 @@ func TestInverse(t *testing.T) {
 				a: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{8, -5, 9, 2},
-						{7, 5, 6, 1},
-						{-6, 0, 9, 6},
-						{-3, 0, -9, -4},
+					data: []float64{
+						8, -5, 9, 2,
+						7, 5, 6, 1,
+						-6, 0, 9, 6,
+						-3, 0, -9, -4,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{-0.15385, -0.15385, -0.28205, -0.53846},
-					{-0.07692, 0.12308, 0.02564, 0.03077},
-					{0.35897, 0.35897, 0.43590, 0.92308},
-					{-0.69231, -0.69231, -0.76923, -1.92308},
+				data: []float64{
+					-0.15385, -0.15385, -0.28205, -0.53846,
+					-0.07692, 0.12308, 0.02564, 0.03077,
+					0.35897, 0.35897, 0.43590, 0.92308,
+					-0.69231, -0.69231, -0.76923, -1.92308,
 				},
 			},
 			wantErr: false,
@@ -1196,22 +1194,22 @@ func TestInverse(t *testing.T) {
 				a: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{9, 3, 0, 9},
-						{-5, -2, -6, -3},
-						{-4, 9, 6, 4},
-						{-7, 6, 6, 2},
+					data: []float64{
+						9, 3, 0, 9,
+						-5, -2, -6, -3,
+						-4, 9, 6, 4,
+						-7, 6, 6, 2,
 					},
 				},
 			},
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{-0.04074, -0.07778, 0.14444, -0.22222},
-					{-0.07778, 0.03333, 0.36667, -0.33333},
-					{-0.02901, -0.14630, -0.10926, 0.12963},
-					{0.17778, 0.06667, -0.26667, 0.33333},
+				data: []float64{
+					-0.04074, -0.07778, 0.14444, -0.22222,
+					-0.07778, 0.03333, 0.36667, -0.33333,
+					-0.02901, -0.14630, -0.10926, 0.12963,
+					0.17778, 0.06667, -0.26667, 0.33333,
 				},
 			},
 			wantErr: false,
@@ -1248,21 +1246,21 @@ func TestMultiplyProductByInverse(t *testing.T) {
 				a: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{3, -9, 7, 3},
-						{3, -8, 2, -9},
-						{-4, 4, 4, 1},
-						{-6, 5, -1, 1},
+					data: []float64{
+						3, -9, 7, 3,
+						3, -8, 2, -9,
+						-4, 4, 4, 1,
+						-6, 5, -1, 1,
 					},
 				},
 				b: &Matrix{
 					rows: 4,
 					cols: 4,
-					data: [][]float64{
-						{8, 2, 2, 2},
-						{3, -1, 7, 0},
-						{7, 0, 5, 4},
-						{6, -2, 0, 5},
+					data: []float64{
+						8, 2, 2, 2,
+						3, -1, 7, 0,
+						7, 0, 5, 4,
+						6, -2, 0, 5,
 					},
 				},
 			},
@@ -1306,7 +1304,7 @@ func TestMatrix_GetRows(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	tests := []struct {
 		name   string
@@ -1318,9 +1316,9 @@ func TestMatrix_GetRows(t *testing.T) {
 			fields: fields{
 				rows: 2,
 				cols: 3,
-				data: [][]float64{
-					{0, 0},
-					{0, 0},
+				data: []float64{
+					0, 0,
+					0, 0,
 				},
 			},
 			want: 2,
@@ -1343,7 +1341,7 @@ func TestMatrix_GetCols(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	tests := []struct {
 		name   string
@@ -1355,9 +1353,9 @@ func TestMatrix_GetCols(t *testing.T) {
 			fields: fields{
 				rows: 2,
 				cols: 3,
-				data: [][]float64{
-					{0, 0},
-					{0, 0},
+				data: []float64{
+					0, 0,
+					0, 0,
 				},
 			},
 			want: 3,
@@ -1380,7 +1378,7 @@ func TestMatrix_SetValue(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	type args struct {
 		row uint
@@ -1397,10 +1395,10 @@ func TestMatrix_SetValue(t *testing.T) {
 			name: "set value in the row and column of the matrix",
 			fields: fields{
 				rows: 2,
-				cols: 3,
-				data: [][]float64{
-					{0, 0},
-					{0, 0},
+				cols: 2,
+				data: []float64{
+					0, 0,
+					0, 0,
 				},
 			},
 			args: args{
@@ -1414,10 +1412,10 @@ func TestMatrix_SetValue(t *testing.T) {
 			name: "set value in the row and column of the matrix out of bounds",
 			fields: fields{
 				rows: 2,
-				cols: 3,
-				data: [][]float64{
-					{0, 0},
-					{0, 0},
+				cols: 2,
+				data: []float64{
+					0, 0,
+					0, 0,
 				},
 			},
 			args: args{
@@ -1441,7 +1439,7 @@ func TestMatrix_SetValue(t *testing.T) {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, m.data[tt.args.row][tt.args.col], tt.args.val)
+				assert.Equal(t, m.getValue(tt.args.row, tt.args.col), tt.args.val)
 			}
 		})
 	}
@@ -1451,7 +1449,7 @@ func TestMatrix_GetValue(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	type args struct {
 		row uint
@@ -1468,10 +1466,10 @@ func TestMatrix_GetValue(t *testing.T) {
 			name: "get value in the row and column of the matrix",
 			fields: fields{
 				rows: 2,
-				cols: 3,
-				data: [][]float64{
-					{0, 0},
-					{0, -99},
+				cols: 2,
+				data: []float64{
+					0, 0,
+					0, -99,
 				},
 			},
 			args: args{
@@ -1485,10 +1483,10 @@ func TestMatrix_GetValue(t *testing.T) {
 			name: "get value in the row and column of the matrix out of bounds",
 			fields: fields{
 				rows: 2,
-				cols: 3,
-				data: [][]float64{
-					{0, 0},
-					{0, 0},
+				cols: 2,
+				data: []float64{
+					0, 0,
+					0, 0,
 				},
 			},
 			args: args{
@@ -1534,8 +1532,8 @@ func TestNewIdentityMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 1,
 				cols: 1,
-				data: [][]float64{
-					{1},
+				data: []float64{
+					1,
 				},
 			},
 		},
@@ -1547,9 +1545,9 @@ func TestNewIdentityMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 2,
 				cols: 2,
-				data: [][]float64{
-					{1, 0},
-					{0, 1},
+				data: []float64{
+					1, 0,
+					0, 1,
 				},
 			},
 		},
@@ -1561,11 +1559,11 @@ func TestNewIdentityMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 0},
-					{0, 1, 0, 0},
-					{0, 0, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1658,11 +1656,11 @@ func TestNewTranslationMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 5},
-					{0, 1, 0, -3},
-					{0, 0, 1, 2},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 5,
+					0, 1, 0, -3,
+					0, 0, 1, 2,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1678,7 +1676,7 @@ func TestMatrix_Translate(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	type args struct {
 		x float64
@@ -1696,11 +1694,11 @@ func TestMatrix_Translate(t *testing.T) {
 			fields: fields{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 0},
-					{0, 1, 0, 0},
-					{0, 0, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 			args: args{
@@ -1711,11 +1709,11 @@ func TestMatrix_Translate(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 3},
-					{0, 1, 0, 2},
-					{0, 0, 1, 1},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 3,
+					0, 1, 0, 2,
+					0, 0, 1, 1,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1753,11 +1751,11 @@ func TestNewScalingMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{5, 0, 0, 0},
-					{0, -3, 0, 0},
-					{0, 0, 2, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					5, 0, 0, 0,
+					0, -3, 0, 0,
+					0, 0, 2, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1773,7 +1771,7 @@ func TestMatrix_Scale(t *testing.T) {
 	type fields struct {
 		rows uint
 		cols uint
-		data [][]float64
+		data []float64
 	}
 	type args struct {
 		x float64
@@ -1791,11 +1789,11 @@ func TestMatrix_Scale(t *testing.T) {
 			fields: fields{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 0},
-					{0, 1, 0, 0},
-					{0, 0, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 			args: args{
@@ -1806,11 +1804,11 @@ func TestMatrix_Scale(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{3, 0, 0, 0},
-					{0, 2, 0, 0},
-					{0, 0, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					3, 0, 0, 0,
+					0, 2, 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1846,11 +1844,11 @@ func TestNewXRotationMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 0},
-					{0, math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0},
-					{0, math.Sin(math.Pi), math.Cos(math.Pi), 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 0,
+					0, math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0,
+					0, math.Sin(math.Pi), math.Cos(math.Pi), 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1881,11 +1879,11 @@ func TestMatrix_RotateX(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 0, 0, 0},
-					{0, math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0},
-					{0, math.Sin(math.Pi), math.Cos(math.Pi), 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 0, 0, 0,
+					0, math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0,
+					0, math.Sin(math.Pi), math.Cos(math.Pi), 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1914,11 +1912,11 @@ func TestNewYRotationMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{math.Cos(math.Pi), 0, math.Sin(math.Pi), 0},
-					{0, 1, 0, 0},
-					{-1 * math.Sin(math.Pi), 0, math.Cos(math.Pi), 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					math.Cos(math.Pi), 0, math.Sin(math.Pi), 0,
+					0, 1, 0, 0,
+					-1 * math.Sin(math.Pi), 0, math.Cos(math.Pi), 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1949,11 +1947,11 @@ func TestMatrix_RotateY(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{math.Cos(math.Pi), 0, math.Sin(math.Pi), 0},
-					{0, 1, 0, 0},
-					{-1 * math.Sin(math.Pi), 0, math.Cos(math.Pi), 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					math.Cos(math.Pi), 0, math.Sin(math.Pi), 0,
+					0, 1, 0, 0,
+					-1 * math.Sin(math.Pi), 0, math.Cos(math.Pi), 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -1982,11 +1980,11 @@ func TestNewZRotationMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0, 0},
-					{math.Sin(math.Pi), math.Cos(math.Pi), 0, 0},
-					{0, 0, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0, 0,
+					math.Sin(math.Pi), math.Cos(math.Pi), 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -2017,11 +2015,11 @@ func TestMatrix_RotateZ(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0, 0},
-					{math.Sin(math.Pi), math.Cos(math.Pi), 0, 0},
-					{0, 0, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					math.Cos(math.Pi), -1 * math.Sin(math.Pi), 0, 0,
+					math.Sin(math.Pi), math.Cos(math.Pi), 0, 0,
+					0, 0, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -2060,11 +2058,11 @@ func TestNewShearingMatrix(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 1, 2, 0},
-					{3, 1, 4, 0},
-					{5, 6, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 1, 2, 0,
+					3, 1, 4, 0,
+					5, 6, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
@@ -2107,11 +2105,11 @@ func TestMatrix_Shear(t *testing.T) {
 			want: &Matrix{
 				rows: 4,
 				cols: 4,
-				data: [][]float64{
-					{1, 1, 2, 0},
-					{3, 1, 4, 0},
-					{5, 6, 1, 0},
-					{0, 0, 0, 1},
+				data: []float64{
+					1, 1, 2, 0,
+					3, 1, 4, 0,
+					5, 6, 1, 0,
+					0, 0, 0, 1,
 				},
 			},
 		},
