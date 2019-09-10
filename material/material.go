@@ -3,6 +3,13 @@ package material
 
 import "github.com/austingebauer/go-ray-tracer/color"
 
+const (
+	DefaultAmbient   = 0.1
+	DefaultDiffuse   = 0.9
+	DefaultSpecular  = 0.9
+	DefaultShininess = 200.0
+)
+
 // Material represents a material on the surface of an object.
 // It uses the Phong reflection model to simulate the reflection of light.
 type Material struct {
@@ -18,13 +25,19 @@ type Material struct {
 	Shininess float64
 }
 
-// NewMaterial returns a new Material with default values.
-func NewMaterial() *Material {
+// NewDefaultMaterial returns a new Material with default values.
+func NewDefaultMaterial() *Material {
+	return NewMaterial(*color.NewColor(1, 1, 1),
+		DefaultAmbient, DefaultDiffuse, DefaultSpecular, DefaultShininess)
+}
+
+// NewDefaultMaterial returns a new Material with default values.
+func NewMaterial(c color.Color, ambient, diffuse, specular, shininess float64) *Material {
 	return &Material{
-		Color:     *color.NewColor(1, 1, 1),
-		Ambient:   0.1,
-		Diffuse:   0.9,
-		Specular:  0.9,
-		Shininess: 200.0,
+		Color:     c,
+		Ambient:   ambient,
+		Diffuse:   diffuse,
+		Specular:  specular,
+		Shininess: shininess,
 	}
 }

@@ -73,7 +73,7 @@ func RenderRayTracedSphere3D() *canvas.Canvas {
 
 	// Create a sphere and material for it
 	s := sphere.NewUnitSphere("sphere_3d")
-	mat := material.NewMaterial()
+	mat := material.NewDefaultMaterial()
 	mat.Color = *color.NewColor(0.7, 1, 1)
 	s.Material = mat
 
@@ -84,7 +84,7 @@ func RenderRayTracedSphere3D() *canvas.Canvas {
 func RenderRayTracedSphere2D() *canvas.Canvas {
 	// Create a sphere and material for it
 	s := sphere.NewUnitSphere("sphere_2d")
-	mat := material.NewMaterial()
+	mat := material.NewDefaultMaterial()
 	mat.Color = *color.NewColor(0.7, 1, 1)
 	s.Material = mat
 

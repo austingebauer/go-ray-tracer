@@ -36,7 +36,7 @@ func TestLighting(t *testing.T) {
 				),
 
 				// material and point illuminated constant for this test table
-				m:  material.NewMaterial(),
+				m:  material.NewDefaultMaterial(),
 				pt: point.NewPoint(0, 0, 0),
 			},
 			want: color.NewColor(1.9, 1.9, 1.9),
@@ -52,7 +52,7 @@ func TestLighting(t *testing.T) {
 
 				// material, normal, and point illuminated constant for this test table
 				normalVec: vector.NewVector(0, 0, -1),
-				m:         material.NewMaterial(),
+				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
 			},
 			want: color.NewColor(1.0, 1.0, 1.0),
@@ -68,7 +68,7 @@ func TestLighting(t *testing.T) {
 
 				// material, normal, and point illuminated constant for this test table
 				normalVec: vector.NewVector(0, 0, -1),
-				m:         material.NewMaterial(),
+				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
 			},
 			want: color.NewColor(0.7364, 0.7364, 0.7364),
@@ -84,7 +84,7 @@ func TestLighting(t *testing.T) {
 
 				// material, normal, and point illuminated constant for this test table
 				normalVec: vector.NewVector(0, 0, -1),
-				m:         material.NewMaterial(),
+				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
 			},
 			want: color.NewColor(0.73639, 0.73639, 0.73639),
@@ -100,7 +100,7 @@ func TestLighting(t *testing.T) {
 
 				// material, normal, and point illuminated constant for this test table
 				normalVec: vector.NewVector(0, 0, -1),
-				m:         material.NewMaterial(),
+				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
 			},
 			want: color.NewColor(1.6364, 1.6364, 1.6364),
@@ -116,7 +116,7 @@ func TestLighting(t *testing.T) {
 
 				// material, normal, and point illuminated constant for this test table
 				normalVec: vector.NewVector(0, 0, -1),
-				m:         material.NewMaterial(),
+				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
 			},
 			want: color.NewColor(0.1, 0.1, 0.1),
