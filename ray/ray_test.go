@@ -3,10 +3,8 @@ package ray
 import (
 	"testing"
 
-	"github.com/austingebauer/go-ray-tracer/intersection"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
-	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
 	"github.com/stretchr/testify/assert"
 )
@@ -83,148 +81,6 @@ func TestPosition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want, Position(tt.args.ray, tt.args.t))
-		})
-	}
-}
-
-func TestIntersect(t *testing.T) {
-	type args struct {
-		sphere    *sphere.Sphere
-		ray       *Ray
-		transform *matrix.Matrix
-	}
-	tests := []struct {
-		name string
-		args args
-		want []*intersection.Intersection
-	}{
-		{
-			name: "ray intersects with a sphere at two positive points. sphere is ahead of ray origin.",
-			args: args{
-				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
-			},
-			want: []*intersection.Intersection{
-				{
-					T:      4.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-				{
-					T:      6.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-			},
-		},
-		{
-			name: "ray is tangent to the sphere at one point of t",
-			args: args{
-				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(*point.NewPoint(0, 1, -5), *vector.NewVector(0, 0, 1)),
-			},
-			want: []*intersection.Intersection{
-				{
-					T:      5.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-				{
-					T:      5.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-			},
-		},
-		{
-			name: "ray misses the sphere",
-			args: args{
-				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(*point.NewPoint(0, 2, -5), *vector.NewVector(0, 0, 1)),
-			},
-			want: []*intersection.Intersection{},
-		},
-		{
-			name: "ray originates inside the sphere",
-			args: args{
-				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(0, 0, 1)),
-			},
-			want: []*intersection.Intersection{
-				{
-					T:      -1.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-				{
-					T:      1.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-			},
-		},
-		{
-			name: "ray intersects with a sphere at two negative points. sphere is behind ray origin.",
-			args: args{
-				sphere: sphere.NewUnitSphere("testID"),
-				ray:    NewRay(*point.NewPoint(0, 0, 5), *vector.NewVector(0, 0, 1)),
-			},
-			want: []*intersection.Intersection{
-				{
-					T:      -6.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-				{
-					T:      -4.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			intersections := Intersect(tt.args.sphere, tt.args.ray)
-
-			assert.Equal(t, len(tt.want), len(intersections))
-			assert.Equal(t, tt.want, intersections)
-		})
-	}
-}
-
-func TestIntersectWithSphereTransform(t *testing.T) {
-	type args struct {
-		sphere    *sphere.Sphere
-		ray       *Ray
-		transform *matrix.Matrix
-	}
-	tests := []struct {
-		name string
-		args args
-		want []*intersection.Intersection
-	}{
-		{
-			name: "intersecting a scaled unit sphere with a ray",
-			args: args{
-				sphere:    sphere.NewUnitSphere("testID"),
-				ray:       NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
-				transform: matrix.NewScalingMatrix(2, 2, 2),
-			},
-			want: []*intersection.Intersection{
-				{
-					T:      3.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-				{
-					T:      7.0,
-					Object: sphere.NewUnitSphere("testID"),
-				},
-			},
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.args.sphere.SetTransform(tt.args.transform)
-			intersections := Intersect(tt.args.sphere, tt.args.ray)
-
-			assert.Equal(t, len(tt.want), len(intersections))
-
-			// only check T values of intersections
-			assert.Equal(t, tt.want[0].T, intersections[0].T)
-			assert.Equal(t, tt.want[1].T, intersections[1].T)
 		})
 	}
 }

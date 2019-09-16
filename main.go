@@ -131,8 +131,8 @@ func renderSphere(shape *sphere.Sphere, l *light.PointLight, render3D bool) *can
 			// Create a ray from the ray origin to the position on the wall
 			r := ray.NewRay(*rayOrigin, *vector.Normalize(*point.Subtract(*position, *rayOrigin)))
 
-			// Intersect the ray with the sphere
-			xs := ray.Intersect(shape, r)
+			// RaySphereIntersect the ray with the sphere
+			xs := intersection.RaySphereIntersect(r, shape)
 
 			// If there was a hit, write a pixel to the canvas
 			hit := intersection.Hit(xs)
