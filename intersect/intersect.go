@@ -7,6 +7,7 @@ import (
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/austingebauer/go-ray-tracer/world"
 	"math"
 	"sort"
 )
@@ -105,4 +106,9 @@ func RaySphereIntersect(r *ray.Ray, s *sphere.Sphere) []*Intersection {
 			Object: s,
 		},
 	}
+}
+
+// RayWorldIntersect intersects the passed ray with the passed world.
+func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
+	return []*Intersection{}
 }
