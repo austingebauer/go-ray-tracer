@@ -1,5 +1,5 @@
-// Package intersection encapsulates an intersection of a ray with an object.
-package intersection
+// Package intersect encapsulates an intersection of a ray with an object.
+package intersect
 
 import (
 	"github.com/austingebauer/go-ray-tracer/matrix"

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/austingebauer/go-ray-tracer/intersection"
+	"github.com/austingebauer/go-ray-tracer/intersect"
 	"github.com/austingebauer/go-ray-tracer/light"
 	"github.com/austingebauer/go-ray-tracer/material"
 	"github.com/austingebauer/go-ray-tracer/ray"
@@ -132,10 +132,10 @@ func renderSphere(shape *sphere.Sphere, l *light.PointLight, render3D bool) *can
 			r := ray.NewRay(*rayOrigin, *vector.Normalize(*point.Subtract(*position, *rayOrigin)))
 
 			// RaySphereIntersect the ray with the sphere
-			xs := intersection.RaySphereIntersect(r, shape)
+			xs := intersect.RaySphereIntersect(r, shape)
 
 			// If there was a hit, write a pixel to the canvas
-			hit := intersection.Hit(xs)
+			hit := intersect.Hit(xs)
 			if hit != nil {
 				surfaceColor := hit.Object.Material.Color
 

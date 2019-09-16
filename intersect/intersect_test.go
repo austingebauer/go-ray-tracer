@@ -1,5 +1,5 @@
-// Package intersection encapsulates an intersection of a ray with an object.
-package intersection
+// Package intersect encapsulates an intersect of a ray with an object.
+package intersect
 
 import (
 	"github.com/austingebauer/go-ray-tracer/matrix"
@@ -23,7 +23,7 @@ func TestNewIntersection(t *testing.T) {
 		want *Intersection
 	}{
 		{
-			name: "intersection encapsulates t and an object",
+			name: "intersect encapsulates t and an object",
 			args: args{
 				t:      -5,
 				object: *sphere.NewUnitSphere("testID"),
@@ -131,7 +131,7 @@ func TestHit(t *testing.T) {
 			want: nil,
 		},
 		{
-			name: "hit is always the lowest non-negative intersection",
+			name: "hit is always the lowest non-negative intersect",
 			args: args{
 				intersections: Intersections(
 					NewIntersection(5, *sphere.NewUnitSphere("testID")),
