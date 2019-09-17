@@ -2,13 +2,14 @@
 package intersect
 
 import (
+	"testing"
+
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
-	"github.com/austingebauer/go-ray-tracer/vector"
-	"testing"
-
 	"github.com/austingebauer/go-ray-tracer/sphere"
+	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/austingebauer/go-ray-tracer/world"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -288,6 +289,49 @@ func TestIntersectWithSphereTransform(t *testing.T) {
 			// only check T values of intersections
 			assert.Equal(t, tt.want[0].T, intersections[0].T)
 			assert.Equal(t, tt.want[1].T, intersections[1].T)
+		})
+	}
+}
+
+func TestRayWorldIntersect(t *testing.T) {
+	type args struct {
+		r *ray.Ray
+		w *world.World
+	}
+	tests := []struct {
+		name string
+		args args
+		want []*Intersection
+	}{
+		{
+			name: "ray itersects a world",
+			args: args{
+				r: ray.NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
+				w: world.NewDefaultWorld(),
+			},
+			want: []*Intersection{
+				{
+					T:      4,
+					Object: nil,
+				},
+				{
+					T:      4.5,
+					Object: nil,
+				},
+				{
+					T:      5.5,
+					Object: nil,
+				},
+				{
+					T:      6,
+					Object: nil,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, RayWorldIntersect(tt.args.r, tt.args.w))
 		})
 	}
 }
