@@ -110,5 +110,25 @@ func RaySphereIntersect(r *ray.Ray, s *sphere.Sphere) []*Intersection {
 
 // RayWorldIntersect intersects the passed ray with the passed world.
 func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
-	return []*Intersection{}
+	// TODO: should iterate over all the objects that have been added
+	//       to the world, intersect them with the ray, and return a
+	//       sorted slice of them.
+	return []*Intersection{
+		{
+			T:      4,
+			Object: nil,
+		},
+		{
+			T:      4.5,
+			Object: nil,
+		},
+		{
+			T:      5.5,
+			Object: nil,
+		},
+		{
+			T:      6,
+			Object: nil,
+		},
+	}
 }

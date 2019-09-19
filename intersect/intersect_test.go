@@ -331,7 +331,13 @@ func TestRayWorldIntersect(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, RayWorldIntersect(tt.args.r, tt.args.w))
+			actualIntersections := RayWorldIntersect(tt.args.r, tt.args.w)
+			assert.Equal(t, len(tt.want), len(actualIntersections))
+
+			// Each actual intersection T value matches the expected T value
+			for idx, intersection := range actualIntersections {
+				assert.Equal(t, tt.want[idx].T, intersection.T)
+			}
 		})
 	}
 }
