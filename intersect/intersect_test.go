@@ -304,7 +304,7 @@ func TestRayWorldIntersect(t *testing.T) {
 		want []*Intersection
 	}{
 		{
-			name: "ray itersects a world",
+			name: "ray intersects a world",
 			args: args{
 				r: ray.NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
 				w: world.NewDefaultWorld(),
