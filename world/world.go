@@ -27,18 +27,27 @@ func NewWorld() *World {
 // NewDefaultWorld returns a new default world, which contains
 // two spheres and a point light source.
 func NewDefaultWorld() *World {
+	// Create a default light source
 	defaultLight := light.NewPointLight(
 		*point.NewPoint(-10, 10, -10),
 		*color.NewColor(1, 1, 1))
 
+	// Create a default sphere number 1
 	s1 := sphere.NewUnitSphere("s1")
 	s1.Material = material.NewMaterial(*color.NewColor(0.8, 0.1, 0.6),
 		material.DefaultAmbient, 0.7, 0.2, material.DefaultShininess)
+
+	// Create a default sphere number 2
 	s2 := sphere.NewUnitSphere("s2")
 	s2.Transform = matrix.NewScalingMatrix(0.5, 0.5, 0.5)
 
 	return &World{
-		objects: []*sphere.Sphere{},
+		objects: []*sphere.Sphere{s1, s2},
 		light:   defaultLight,
 	}
+}
+
+// GetObjects returns the objects in this world.
+func (w *World) GetObjects() []*sphere.Sphere {
+	return w.objects
 }

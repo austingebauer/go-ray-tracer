@@ -40,9 +40,7 @@ func Hit(intersections []*Intersection) *Intersection {
 	}
 
 	// Sort the intersections ascending from index 0 on T.
-	sort.Slice(intersections, func(i, j int) bool {
-		return intersections[i].T < intersections[j].T
-	})
+	SortIntersectionsAsc(intersections)
 
 	// Search the intersections until a non-negative T value is found
 	idx := 0
@@ -58,6 +56,20 @@ func Hit(intersections []*Intersection) *Intersection {
 
 	// idx is sitting at the Intersection with the lowest, non-negative T value
 	return intersections[idx]
+}
+
+// SortIntersectionsAsc sorts the passed intersections into ascending order.
+func SortIntersectionsAsc(intersections []*Intersection) {
+	sort.Slice(intersections, func(i, j int) bool {
+		return intersections[i].T < intersections[j].T
+	})
+}
+
+// SortIntersectionsDesc sorts the passed intersections into descending order.
+func SortIntersectionsDesc(intersections []*Intersection) {
+	sort.Slice(intersections, func(i, j int) bool {
+		return intersections[i].T > intersections[j].T
+	})
 }
 
 // RaySphereIntersect intersects the passed ray with the passed sphere.
@@ -110,25 +122,14 @@ func RaySphereIntersect(r *ray.Ray, s *sphere.Sphere) []*Intersection {
 
 // RayWorldIntersect intersects the passed ray with the passed world.
 func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
-	// TODO: should iterate over all the objects that have been added
-	//       to the world, intersect them with the ray, and return a
-	//       sorted slice of them.
-	return []*Intersection{
-		{
-			T:      4,
-			Object: nil,
-		},
-		{
-			T:      4.5,
-			Object: nil,
-		},
-		{
-			T:      5.5,
-			Object: nil,
-		},
-		{
-			T:      6,
-			Object: nil,
-		},
+	allObjectIntersections := make([]*Intersection, 0)
+	for _, sphereObj := range w.GetObjects() {
+		intersections := RaySphereIntersect(r, sphereObj)
+		allObjectIntersections = append(allObjectIntersections, intersections...)
 	}
+
+	// Sort the entire collection of intersections
+	SortIntersectionsAsc(allObjectIntersections)
+
+	return allObjectIntersections
 }

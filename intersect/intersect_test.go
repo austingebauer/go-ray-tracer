@@ -151,7 +151,7 @@ func TestHit(t *testing.T) {
 	}
 }
 
-func TestIntersect(t *testing.T) {
+func TestRaySphereIntersect(t *testing.T) {
 	type args struct {
 		sphere    *sphere.Sphere
 		ray       *ray.Ray
@@ -338,6 +338,108 @@ func TestRayWorldIntersect(t *testing.T) {
 			for idx, intersection := range actualIntersections {
 				assert.Equal(t, tt.want[idx].T, intersection.T)
 			}
+		})
+	}
+}
+
+func TestSortIntersectionsAsc(t *testing.T) {
+	type args struct {
+		intersections []*Intersection
+	}
+	tests := []struct {
+		name string
+		args args
+		want []*Intersection
+	}{
+		{
+			name: "sort intersections by t values ascending",
+			args: args{
+				intersections: []*Intersection{
+					{
+						T:      10,
+						Object: nil,
+					},
+					{
+						T:      0,
+						Object: nil,
+					},
+					{
+						T:      -10,
+						Object: nil,
+					},
+				},
+			},
+			want: []*Intersection{
+				{
+					T:      -10,
+					Object: nil,
+				},
+				{
+					T:      0,
+					Object: nil,
+				},
+				{
+					T:      10,
+					Object: nil,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			SortIntersectionsAsc(tt.args.intersections)
+			assert.Equal(t, tt.want, tt.args.intersections)
+		})
+	}
+}
+
+func TestSortIntersectionsDesc(t *testing.T) {
+	type args struct {
+		intersections []*Intersection
+	}
+	tests := []struct {
+		name string
+		args args
+		want []*Intersection
+	}{
+		{
+			name: "sort intersections by t values ascending",
+			args: args{
+				intersections: []*Intersection{
+					{
+						T:      10,
+						Object: nil,
+					},
+					{
+						T:      0,
+						Object: nil,
+					},
+					{
+						T:      -10,
+						Object: nil,
+					},
+				},
+			},
+			want: []*Intersection{
+				{
+					T:      10,
+					Object: nil,
+				},
+				{
+					T:      0,
+					Object: nil,
+				},
+				{
+					T:      -10,
+					Object: nil,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			SortIntersectionsDesc(tt.args.intersections)
+			assert.Equal(t, tt.want, tt.args.intersections)
 		})
 	}
 }
