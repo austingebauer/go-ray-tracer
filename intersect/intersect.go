@@ -20,6 +20,21 @@ type Intersection struct {
 	Object *sphere.Sphere
 }
 
+// IntersectionComputations encapsulates some precomputed information
+// related to an intersection.
+//
+// Note:
+//   This could potentially be in the intersection structure itself.
+//   It's directly related to an intersection and carries its T and Object values.
+type IntersectionComputations struct {
+	Intersection
+
+	// TODO: comment on these
+	pt        *point.Point
+	eyeVec    *vector.Vector
+	normalVec *vector.Vector
+}
+
 // NewIntersection returns a new Intersection with the passed t value and object.
 func NewIntersection(t float64, object sphere.Sphere) *Intersection {
 	return &Intersection{
