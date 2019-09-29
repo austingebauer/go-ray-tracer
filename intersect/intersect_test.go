@@ -443,3 +443,47 @@ func TestSortIntersectionsDesc(t *testing.T) {
 		})
 	}
 }
+
+func TestPrepareComputations(t *testing.T) {
+	type args struct {
+		r *ray.Ray
+		i *Intersection
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *IntersectionComputations
+		wantErr bool
+	}{
+		{
+			name: "Computing the state of an intersection",
+			args: args{
+				r: &ray.Ray{
+					Origin:    point.NewPoint(0, 0, -5),
+					Direction: vector.NewVector(0, 0, 1),
+				},
+				i: &Intersection{
+					T:      4,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+			},
+			want: &IntersectionComputations{
+				Intersection: Intersection{
+					T:      4,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				pt:        point.NewPoint(0, 0, -1),
+				eyeVec:    vector.NewVector(0, 0, -1),
+				normalVec: vector.NewVector(0, 0, -1),
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := PrepareComputations(tt.args.i, tt.args.r)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}

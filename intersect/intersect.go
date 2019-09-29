@@ -29,9 +29,13 @@ type Intersection struct {
 type IntersectionComputations struct {
 	Intersection
 
-	// TODO: comment on these
-	pt        *point.Point
-	eyeVec    *vector.Vector
+	//
+	pt *point.Point
+
+	//
+	eyeVec *vector.Vector
+
+	//
 	normalVec *vector.Vector
 }
 
@@ -41,6 +45,31 @@ func NewIntersection(t float64, object sphere.Sphere) *Intersection {
 		T:      t,
 		Object: &object,
 	}
+}
+
+// PrepareComputations computes and returns additional information
+// related to an intersection.
+func PrepareComputations(i *Intersection, r *ray.Ray) (*IntersectionComputations, error) {
+	comps := &IntersectionComputations{
+		Intersection: *i,
+	}
+
+	// Compute the point at which the ray intersected the sphere
+	rayIntersectionPt := ray.Position(r, comps.Intersection.T)
+
+	// Compute the eye vector
+	eyeVec := vector.Scale(r.Direction, -1)
+
+	// Compute the normal vector on the surface of the sphere at the intersection point
+	normalVec, err := sphere.NormalAt(comps.Intersection.Object, rayIntersectionPt)
+	if err != nil {
+		return nil, err
+	}
+
+	comps.pt = rayIntersectionPt
+	comps.eyeVec = eyeVec
+	comps.normalVec = normalVec
+	return comps, nil
 }
 
 // Intersections returns a slice of the passed Intersections.
