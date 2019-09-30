@@ -29,13 +29,13 @@ type Intersection struct {
 type IntersectionComputations struct {
 	Intersection
 
-	//
+	// The point at which the ray intersected the object
 	pt *point.Point
 
-	//
+	// The eye vector points in the opposite direction as the ray
 	eyeVec *vector.Vector
 
-	//
+	// The normal vector on the object surface at the point of intersection
 	normalVec *vector.Vector
 }
 
