@@ -37,6 +37,10 @@ type IntersectionComputations struct {
 
 	// The normal vector on the object surface at the point of intersection
 	normalVec *vector.Vector
+
+	// If inside is true, the intersection occurred from inside of the object.
+	// Otherwise the intersection occurred from the outside of the object.
+	inside bool
 }
 
 // NewIntersection returns a new Intersection with the passed t value and object.
