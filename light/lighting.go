@@ -40,7 +40,7 @@ func Lighting(mat *material.Material, light *PointLight, pt *point.Point, eyeVec
 
 		// reflectDotEye represents the cosine of the angle between the
 		// reflection vector and the eye vector.
-		reflectVec := vector.Reflect(*vector.Scale(lightVec, -1), *normalVec)
+		reflectVec := vector.Reflect(*vector.Scale(*lightVec, -1), *normalVec)
 		reflectDotEye := vector.DotProduct(*reflectVec, *eyeVec)
 
 		// A zero or negative number means the light reflects away from (not into) the eye.

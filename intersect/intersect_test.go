@@ -446,8 +446,8 @@ func TestSortIntersectionsDesc(t *testing.T) {
 
 func TestPrepareComputations(t *testing.T) {
 	type args struct {
-		r *ray.Ray
 		i *Intersection
+		r *ray.Ray
 	}
 	tests := []struct {
 		name    string
@@ -456,15 +456,15 @@ func TestPrepareComputations(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "Computing the state of an intersection",
+			name: "Computing the state of an intersection when it occurs on the outside of the object",
 			args: args{
-				r: &ray.Ray{
-					Origin:    point.NewPoint(0, 0, -5),
-					Direction: vector.NewVector(0, 0, 1),
-				},
 				i: &Intersection{
 					T:      4,
 					Object: sphere.NewUnitSphere("testID"),
+				},
+				r: &ray.Ray{
+					Origin:    point.NewPoint(0, 0, -5),
+					Direction: vector.NewVector(0, 0, 1),
 				},
 			},
 			want: &IntersectionComputations{
@@ -475,6 +475,32 @@ func TestPrepareComputations(t *testing.T) {
 				pt:        point.NewPoint(0, 0, -1),
 				eyeVec:    vector.NewVector(0, 0, -1),
 				normalVec: vector.NewVector(0, 0, -1),
+				inside:    false,
+			},
+			wantErr: false,
+		},
+		{
+			name: "Computing the state of an intersection when it occurs on the inside of the object",
+			args: args{
+				i: &Intersection{
+					T:      1,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				r: &ray.Ray{
+					Origin:    point.NewPoint(0, 0, 0),
+					Direction: vector.NewVector(0, 0, 1),
+				},
+			},
+			want: &IntersectionComputations{
+				Intersection: Intersection{
+					T:      1,
+					Object: sphere.NewUnitSphere("testID"),
+				},
+				pt:     point.NewPoint(0, 0, 1),
+				eyeVec: vector.NewVector(0, 0, -1),
+				// normal would've been <0,0,1>, but inverted since ray is inside the object
+				normalVec: vector.NewVector(0, 0, -1),
+				inside:    true,
 			},
 			wantErr: false,
 		},

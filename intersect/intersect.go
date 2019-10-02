@@ -62,12 +62,21 @@ func PrepareComputations(i *Intersection, r *ray.Ray) (*IntersectionComputations
 	rayIntersectionPt := ray.Position(r, comps.Intersection.T)
 
 	// Compute the eye vector
-	eyeVec := vector.Scale(r.Direction, -1)
+	eyeVec := vector.Scale(*r.Direction, -1)
 
 	// Compute the normal vector on the surface of the sphere at the intersection point
 	normalVec, err := sphere.NormalAt(comps.Intersection.Object, rayIntersectionPt)
 	if err != nil {
 		return nil, err
+	}
+
+	// If the dot product of the normal vector and ray direction vector is negative,
+	// then the intersection occurred from the inside of the object. Otherwise,
+	// the intersection occurred from the outside of the object.
+	dotProduct := vector.DotProduct(*normalVec, *eyeVec)
+	if dotProduct < 0 {
+		comps.inside = true
+		normalVec.Negate()
 	}
 
 	comps.pt = rayIntersectionPt

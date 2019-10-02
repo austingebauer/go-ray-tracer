@@ -59,7 +59,7 @@ func (vec *Vector) Scale(scalar float64) *Vector {
 
 // Scale returns a new Vector that is the result of scaling the passed Vector
 // by the passed scalar value.
-func Scale(vec *Vector, scalar float64) *Vector {
+func Scale(vec Vector, scalar float64) *Vector {
 	return NewVector(vec.X*scalar, vec.Y*scalar, vec.Z*scalar)
 }
 
