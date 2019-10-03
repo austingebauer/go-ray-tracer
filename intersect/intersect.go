@@ -2,6 +2,7 @@
 package intersect
 
 import (
+	"github.com/austingebauer/go-ray-tracer/color"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
@@ -189,4 +190,9 @@ func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
 	SortIntersectionsAsc(allObjectIntersections)
 
 	return allObjectIntersections
+}
+
+// TODO: ShadeHit
+func ShadeHit(w *world.World, cp IntersectionComputations) *color.Color {
+	return color.NewColor(0, 0, 0)
 }
