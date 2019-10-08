@@ -116,6 +116,12 @@ func Hit(intersections []*Intersection) *Intersection {
 	return intersections[idx]
 }
 
+// ShadeHit returns the color at the intersection encapsulated by
+// an intersections computations.
+func ShadeHit(w *world.World, cp *IntersectionComputations) *color.Color {
+	return color.NewColor(0, 0, 0)
+}
+
 // SortIntersectionsAsc sorts the passed intersections into ascending order.
 func SortIntersectionsAsc(intersections []*Intersection) {
 	sort.Slice(intersections, func(i, j int) bool {
@@ -181,7 +187,7 @@ func RaySphereIntersect(r *ray.Ray, s *sphere.Sphere) []*Intersection {
 // RayWorldIntersect intersects the passed ray with the passed world.
 func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
 	allObjectIntersections := make([]*Intersection, 0)
-	for _, sphereObj := range w.GetObjects() {
+	for _, sphereObj := range w.Objects {
 		intersections := RaySphereIntersect(r, sphereObj)
 		allObjectIntersections = append(allObjectIntersections, intersections...)
 	}
@@ -190,9 +196,4 @@ func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
 	SortIntersectionsAsc(allObjectIntersections)
 
 	return allObjectIntersections
-}
-
-// TODO: ShadeHit
-func ShadeHit(w *world.World, cp IntersectionComputations) *color.Color {
-	return color.NewColor(0, 0, 0)
 }

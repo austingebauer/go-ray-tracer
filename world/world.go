@@ -1,4 +1,4 @@
-// Package world represents a collection of all objects that make up a scene.
+// Package world represents a collection of all Objects that make up a scene.
 package world
 
 import (
@@ -10,17 +10,17 @@ import (
 	"github.com/austingebauer/go-ray-tracer/sphere"
 )
 
-// World represents a collection of all objects that make up a scene.
+// World represents a collection of all Objects that make up a scene.
 type World struct {
-	objects []*sphere.Sphere
-	light   *light.PointLight
+	Objects []*sphere.Sphere
+	Light   *light.PointLight
 }
 
 // NewWorld returns a new World.
 func NewWorld() *World {
 	return &World{
-		objects: make([]*sphere.Sphere, 0),
-		light:   nil,
+		Objects: make([]*sphere.Sphere, 0),
+		Light:   nil,
 	}
 }
 
@@ -42,12 +42,7 @@ func NewDefaultWorld() *World {
 	s2.Transform = matrix.NewScalingMatrix(0.5, 0.5, 0.5)
 
 	return &World{
-		objects: []*sphere.Sphere{s1, s2},
-		light:   defaultLight,
+		Objects: []*sphere.Sphere{s1, s2},
+		Light:   defaultLight,
 	}
-}
-
-// GetObjects returns the objects in this world.
-func (w *World) GetObjects() []*sphere.Sphere {
-	return w.objects
 }

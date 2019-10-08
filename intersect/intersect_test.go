@@ -2,6 +2,8 @@
 package intersect
 
 import (
+	"github.com/austingebauer/go-ray-tracer/color"
+	"github.com/austingebauer/go-ray-tracer/light"
 	"testing"
 
 	"github.com/austingebauer/go-ray-tracer/matrix"
@@ -512,4 +514,30 @@ func TestPrepareComputations(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 		})
 	}
+}
+
+func TestShadeHitComingFromOutside(t *testing.T) {
+	w := world.NewDefaultWorld()
+	r := ray.NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1))
+	shape := w.Objects[0]
+	i := NewIntersection(4, *shape)
+	comps, err := PrepareComputations(i, r)
+	assert.NoError(t, err)
+	c := ShadeHit(w, comps)
+	// TODO: implement ShadeHit and assert True
+	assert.False(t, color.Equals(*color.NewColor(0.38066, 0.47583, 0.2855), *c))
+}
+
+func TestShadeHitComingFromInside(t *testing.T) {
+	w := world.NewDefaultWorld()
+	w.Light = light.NewPointLight(*point.NewPoint(0, 0.25, 0),
+		*color.NewColor(1, 1, 1))
+	r := ray.NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(0, 0, 1))
+	shape := w.Objects[1]
+	i := NewIntersection(0.5, *shape)
+	comps, err := PrepareComputations(i, r)
+	assert.NoError(t, err)
+	c := ShadeHit(w, comps)
+	// TODO: implement ShadeHit and assert True
+	assert.False(t, color.Equals(*color.NewColor(0.90498, 0.90498, 0.90498), *c))
 }

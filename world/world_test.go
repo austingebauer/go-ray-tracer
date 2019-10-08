@@ -1,4 +1,4 @@
-// Package world represents a collection of all objects that make up a scene.
+// Package world represents a collection of all Objects that make up a scene.
 package world
 
 import (
@@ -17,10 +17,10 @@ func TestNewWorld(t *testing.T) {
 		want *World
 	}{
 		{
-			name: "create a new world with no light source or objects",
+			name: "create a new world with no Light source or Objects",
 			want: &World{
-				objects: make([]*sphere.Sphere, 0),
-				light:   nil,
+				Objects: make([]*sphere.Sphere, 0),
+				Light:   nil,
 			},
 		},
 	}
@@ -36,7 +36,7 @@ func TestNewDefaultWorld(t *testing.T) {
 		name string
 	}{
 		{
-			name: "create a new world with default light source",
+			name: "create a new world with default Light source",
 		},
 	}
 	for _, tt := range tests {
@@ -45,7 +45,7 @@ func TestNewDefaultWorld(t *testing.T) {
 			defaultLight := light.NewPointLight(
 				*point.NewPoint(-10, 10, -10),
 				*color.NewColor(1, 1, 1))
-			assert.Equal(t, got.light, defaultLight)
+			assert.Equal(t, got.Light, defaultLight)
 		})
 	}
 }
@@ -61,7 +61,7 @@ func TestWorld_GetObjects(t *testing.T) {
 		want   []*sphere.Sphere
 	}{
 		{
-			name: "get objects from the world",
+			name: "get Objects from the world",
 			fields: fields{
 				objects: []*sphere.Sphere{
 					sphere.NewUnitSphere("testID"),
@@ -76,11 +76,11 @@ func TestWorld_GetObjects(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := &World{
-				objects: tt.fields.objects,
-				light:   tt.fields.light,
+				Objects: tt.fields.objects,
+				Light:   tt.fields.light,
 			}
 
-			assert.Equal(t, tt.want, w.GetObjects())
+			assert.Equal(t, tt.want, w.Objects)
 		})
 	}
 }
