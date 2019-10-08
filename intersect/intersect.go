@@ -3,6 +3,7 @@ package intersect
 
 import (
 	"github.com/austingebauer/go-ray-tracer/color"
+	"github.com/austingebauer/go-ray-tracer/light"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
@@ -31,7 +32,7 @@ type IntersectionComputations struct {
 	Intersection
 
 	// The point at which the ray intersected the object
-	pt *point.Point
+	point *point.Point
 
 	// The eye vector points in the opposite direction as the ray
 	eyeVec *vector.Vector
@@ -80,7 +81,7 @@ func PrepareComputations(i *Intersection, r *ray.Ray) (*IntersectionComputations
 		normalVec.Negate()
 	}
 
-	comps.pt = rayIntersectionPt
+	comps.point = rayIntersectionPt
 	comps.eyeVec = eyeVec
 	comps.normalVec = normalVec
 	return comps, nil
@@ -118,8 +119,8 @@ func Hit(intersections []*Intersection) *Intersection {
 
 // ShadeHit returns the color at the intersection encapsulated by
 // an intersections computations.
-func ShadeHit(w *world.World, cp *IntersectionComputations) *color.Color {
-	return color.NewColor(0, 0, 0)
+func ShadeHit(w *world.World, comps *IntersectionComputations) *color.Color {
+	return light.Lighting(comps.Object.Material, w.Light, comps.point, comps.eyeVec, comps.normalVec)
 }
 
 // SortIntersectionsAsc sorts the passed intersections into ascending order.

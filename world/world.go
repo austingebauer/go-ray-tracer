@@ -34,6 +34,7 @@ func NewDefaultWorld() *World {
 
 	// Create a default sphere number 1
 	s1 := sphere.NewUnitSphere("s1")
+	// TODO: investigate these defaults
 	s1.Material = material.NewMaterial(*color.NewColor(0.8, 0.1, 0.6),
 		material.DefaultAmbient, 0.7, 0.2, material.DefaultShininess)
 

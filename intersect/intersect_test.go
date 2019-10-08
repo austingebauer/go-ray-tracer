@@ -474,7 +474,7 @@ func TestPrepareComputations(t *testing.T) {
 					T:      4,
 					Object: sphere.NewUnitSphere("testID"),
 				},
-				pt:        point.NewPoint(0, 0, -1),
+				point:     point.NewPoint(0, 0, -1),
 				eyeVec:    vector.NewVector(0, 0, -1),
 				normalVec: vector.NewVector(0, 0, -1),
 				inside:    false,
@@ -498,7 +498,7 @@ func TestPrepareComputations(t *testing.T) {
 					T:      1,
 					Object: sphere.NewUnitSphere("testID"),
 				},
-				pt:     point.NewPoint(0, 0, 1),
+				point:  point.NewPoint(0, 0, 1),
 				eyeVec: vector.NewVector(0, 0, -1),
 				// normal would've been <0,0,1>, but inverted since ray is inside the object
 				normalVec: vector.NewVector(0, 0, -1),
@@ -524,8 +524,7 @@ func TestShadeHitComingFromOutside(t *testing.T) {
 	comps, err := PrepareComputations(i, r)
 	assert.NoError(t, err)
 	c := ShadeHit(w, comps)
-	// TODO: implement ShadeHit and assert True
-	assert.False(t, color.Equals(*color.NewColor(0.38066, 0.47583, 0.2855), *c))
+	assert.True(t, color.Equals(*color.NewColor(0.38066, 0.47583, 0.2855), *c))
 }
 
 func TestShadeHitComingFromInside(t *testing.T) {
@@ -538,6 +537,5 @@ func TestShadeHitComingFromInside(t *testing.T) {
 	comps, err := PrepareComputations(i, r)
 	assert.NoError(t, err)
 	c := ShadeHit(w, comps)
-	// TODO: implement ShadeHit and assert True
-	assert.False(t, color.Equals(*color.NewColor(0.90498, 0.90498, 0.90498), *c))
+	assert.True(t, color.Equals(*color.NewColor(0.90498, 0.90498, 0.90498), *c))
 }
