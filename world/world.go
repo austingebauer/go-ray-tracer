@@ -3,11 +3,14 @@ package world
 
 import (
 	"github.com/austingebauer/go-ray-tracer/color"
+	"github.com/austingebauer/go-ray-tracer/intersect"
 	"github.com/austingebauer/go-ray-tracer/light"
 	"github.com/austingebauer/go-ray-tracer/material"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
+	"log"
 )
 
 // World represents a collection of all Objects that make up a scene.
@@ -34,7 +37,6 @@ func NewDefaultWorld() *World {
 
 	// Create a default sphere number 1
 	s1 := sphere.NewUnitSphere("s1")
-	// TODO: investigate these defaults
 	s1.Material = material.NewMaterial(*color.NewColor(0.8, 0.1, 0.6),
 		material.DefaultAmbient, 0.7, 0.2, material.DefaultShininess)
 
@@ -46,4 +48,20 @@ func NewDefaultWorld() *World {
 		Objects: []*sphere.Sphere{s1, s2},
 		Light:   defaultLight,
 	}
+}
+
+func ColorAt(w *World, r *ray.Ray) *color.Color {
+	intersections := intersect.RayWorldIntersect(r, w)
+	hit := intersect.Hit(intersections)
+	if hit == nil {
+		return color.NewColor(0,0,0)
+	}
+
+	comps, err := intersect.PrepareComputations(hit, r)
+	if err != nil {
+		// TODO: handle error
+		log.Fatal(err)
+	}
+
+	return intersect.ShadeHit(w, comps)
 }
