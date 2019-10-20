@@ -2,15 +2,10 @@
 package intersect
 
 import (
-	"github.com/austingebauer/go-ray-tracer/color"
-	"github.com/austingebauer/go-ray-tracer/light"
-	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
-	"github.com/austingebauer/go-ray-tracer/world"
-	"math"
 	"sort"
 )
 
@@ -18,6 +13,7 @@ import (
 type Intersection struct {
 	// T represents the units +/- along a Ray where is intersected with Object.
 	T float64
+	// TODO: use interface for "Object" here instead of sphere
 	// Object is the Sphere that was intersected by a Ray at T units.
 	Object *sphere.Sphere
 }
@@ -31,18 +27,18 @@ type Intersection struct {
 type IntersectionComputations struct {
 	Intersection
 
-	// The point at which the ray intersected the object
-	point *point.Point
+	// The Point at which the ray intersected the object
+	Point *point.Point
 
 	// The eye vector points in the opposite direction as the ray
-	eyeVec *vector.Vector
+	EyeVec *vector.Vector
 
-	// The normal vector on the object surface at the point of intersection
-	normalVec *vector.Vector
+	// The normal vector on the object surface at the Point of intersection
+	NormalVec *vector.Vector
 
-	// If inside is true, the intersection occurred from inside of the object.
+	// If Inside is true, the intersection occurred from Inside of the object.
 	// Otherwise the intersection occurred from the outside of the object.
-	inside bool
+	Inside bool
 }
 
 // NewIntersection returns a new Intersection with the passed t value and object.
@@ -60,30 +56,30 @@ func PrepareComputations(i *Intersection, r *ray.Ray) (*IntersectionComputations
 		Intersection: *i,
 	}
 
-	// Compute the point at which the ray intersected the sphere
+	// Compute the Point at which the ray intersected the sphere
 	rayIntersectionPt := ray.Position(r, comps.Intersection.T)
 
 	// Compute the eye vector
 	eyeVec := vector.Scale(*r.Direction, -1)
 
-	// Compute the normal vector on the surface of the sphere at the intersection point
+	// Compute the normal vector on the surface of the sphere at the intersection Point
 	normalVec, err := sphere.NormalAt(comps.Intersection.Object, rayIntersectionPt)
 	if err != nil {
 		return nil, err
 	}
 
 	// If the dot product of the normal vector and ray direction vector is negative,
-	// then the intersection occurred from the inside of the object. Otherwise,
+	// then the intersection occurred from the Inside of the object. Otherwise,
 	// the intersection occurred from the outside of the object.
 	dotProduct := vector.DotProduct(*normalVec, *eyeVec)
 	if dotProduct < 0 {
-		comps.inside = true
+		comps.Inside = true
 		normalVec.Negate()
 	}
 
-	comps.point = rayIntersectionPt
-	comps.eyeVec = eyeVec
-	comps.normalVec = normalVec
+	comps.Point = rayIntersectionPt
+	comps.EyeVec = eyeVec
+	comps.NormalVec = normalVec
 	return comps, nil
 }
 
@@ -117,12 +113,6 @@ func Hit(intersections []*Intersection) *Intersection {
 	return intersections[idx]
 }
 
-// ShadeHit returns the color at the intersection encapsulated by
-// an intersections computations.
-func ShadeHit(w *world.World, comps *IntersectionComputations) *color.Color {
-	return light.Lighting(comps.Object.Material, w.Light, comps.point, comps.eyeVec, comps.normalVec)
-}
-
 // SortIntersectionsAsc sorts the passed intersections into ascending order.
 func SortIntersectionsAsc(intersections []*Intersection) {
 	sort.Slice(intersections, func(i, j int) bool {
@@ -135,66 +125,4 @@ func SortIntersectionsDesc(intersections []*Intersection) {
 	sort.Slice(intersections, func(i, j int) bool {
 		return intersections[i].T > intersections[j].T
 	})
-}
-
-// RaySphereIntersect intersects the passed ray with the passed sphere.
-//
-// It returns the t values (i.e., intersection units +/- away from the origin of the Ray)
-// where the Ray intersects with the sphere.
-//
-// If the ray intersects with the sphere at two points, then two different intersection t values are returned.
-// If the ray intersects with the sphere at a single, tangent point, then two equal t values are returned.
-// If the ray does not intersect with the sphere, then an empty slice is returned.
-func RaySphereIntersect(r *ray.Ray, s *sphere.Sphere) []*Intersection {
-	// Details on calculation: https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
-
-	// Transform the r by the inverse of the transformation associated with the s
-	// in order to use unit s. Moving the r makes for more simple math and
-	// same intersection results.
-	sphereTransformInverse, _ := matrix.Inverse(s.Transform)
-	transformedRay, _ := ray.Transform(r, sphereTransformInverse)
-
-	// The vector from the s origin to the r origin.
-	sphereToRayVec := point.Subtract(*transformedRay.Origin, *s.Origin)
-
-	// Compute the discriminant to tell whether the r intersects with the s at all.
-	a := vector.DotProduct(*transformedRay.Direction, *transformedRay.Direction)
-	b := 2 * vector.DotProduct(*transformedRay.Direction, *sphereToRayVec)
-	c := vector.DotProduct(*sphereToRayVec, *sphereToRayVec) - 1
-	discriminant := math.Pow(b, 2) - 4*a*c
-
-	// If the discriminant is negative, then the r misses the s and no intersections occur.
-	if discriminant < 0 {
-		return []*Intersection{}
-	}
-
-	// Compute the t values.
-	t1 := ((-1 * b) - math.Sqrt(discriminant)) / (2 * a)
-	t2 := ((-1 * b) + math.Sqrt(discriminant)) / (2 * a)
-
-	// Return the intersection t values and object in increasing order
-	return []*Intersection{
-		{
-			T:      t1,
-			Object: s,
-		},
-		{
-			T:      t2,
-			Object: s,
-		},
-	}
-}
-
-// RayWorldIntersect intersects the passed ray with the passed world.
-func RayWorldIntersect(r *ray.Ray, w *world.World) []*Intersection {
-	allObjectIntersections := make([]*Intersection, 0)
-	for _, sphereObj := range w.Objects {
-		intersections := RaySphereIntersect(r, sphereObj)
-		allObjectIntersections = append(allObjectIntersections, intersections...)
-	}
-
-	// Sort the entire collection of intersections
-	SortIntersectionsAsc(allObjectIntersections)
-
-	return allObjectIntersections
 }

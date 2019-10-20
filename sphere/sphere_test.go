@@ -2,7 +2,9 @@
 package sphere
 
 import (
+	"github.com/austingebauer/go-ray-tracer/intersect"
 	"github.com/austingebauer/go-ray-tracer/material"
+	"github.com/austingebauer/go-ray-tracer/ray"
 	"math"
 	"testing"
 
@@ -189,6 +191,148 @@ func TestNormalAt(t *testing.T) {
 			}
 			assert.Equal(t, 1.0, normalVector.Magnitude())
 			assert.True(t, normalVector.Equals(vector.Normalize(*normalVector)))
+		})
+	}
+}
+
+func TestRaySphereIntersect(t *testing.T) {
+	type args struct {
+		sphere    *Sphere
+		ray       *ray.Ray
+		transform *matrix.Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want []*intersect.Intersection
+	}{
+		{
+			name: "ray intersects with a sphere at two positive points. sphere is ahead of ray origin.",
+			args: args{
+				sphere: NewUnitSphere("testID"),
+				ray:    ray.NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
+			},
+			want: []*intersect.Intersection{
+				{
+					T:      4.0,
+					Object: NewUnitSphere("testID"),
+				},
+				{
+					T:      6.0,
+					Object: NewUnitSphere("testID"),
+				},
+			},
+		},
+		{
+			name: "ray is tangent to the sphere at one Point of t",
+			args: args{
+				sphere: NewUnitSphere("testID"),
+				ray:    ray.NewRay(*point.NewPoint(0, 1, -5), *vector.NewVector(0, 0, 1)),
+			},
+			want: []*intersect.Intersection{
+				{
+					T:      5.0,
+					Object: NewUnitSphere("testID"),
+				},
+				{
+					T:      5.0,
+					Object: NewUnitSphere("testID"),
+				},
+			},
+		},
+		{
+			name: "ray misses the sphere",
+			args: args{
+				sphere: NewUnitSphere("testID"),
+				ray:    ray.NewRay(*point.NewPoint(0, 2, -5), *vector.NewVector(0, 0, 1)),
+			},
+			want: []*intersect.Intersection{},
+		},
+		{
+			name: "ray originates Inside the sphere",
+			args: args{
+				sphere: NewUnitSphere("testID"),
+				ray:    ray.NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(0, 0, 1)),
+			},
+			want: []*intersect.Intersection{
+				{
+					T:      -1.0,
+					Object: NewUnitSphere("testID"),
+				},
+				{
+					T:      1.0,
+					Object: NewUnitSphere("testID"),
+				},
+			},
+		},
+		{
+			name: "ray intersects with a sphere at two negative points. sphere is behind ray origin.",
+			args: args{
+				sphere: NewUnitSphere("testID"),
+				ray:    ray.NewRay(*point.NewPoint(0, 0, 5), *vector.NewVector(0, 0, 1)),
+			},
+			want: []*intersect.Intersection{
+				{
+					T:      -6.0,
+					Object: NewUnitSphere("testID"),
+				},
+				{
+					T:      -4.0,
+					Object: NewUnitSphere("testID"),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			intersections := RaySphereIntersect(tt.args.ray, tt.args.sphere)
+
+			assert.Equal(t, len(tt.want), len(intersections))
+			assert.Equal(t, tt.want, intersections)
+		})
+	}
+}
+
+func TestIntersectWithSphereTransform(t *testing.T) {
+	type args struct {
+		sphere    *Sphere
+		ray       *ray.Ray
+		transform *matrix.Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want []*intersect.Intersection
+	}{
+		{
+			name: "intersecting a scaled unit sphere with a ray",
+			args: args{
+				sphere:    NewUnitSphere("testID"),
+				ray:       ray.NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1)),
+				transform: matrix.NewScalingMatrix(2, 2, 2),
+			},
+			want: []*intersect.Intersection{
+				{
+					T:      3.0,
+					Object: NewUnitSphere("testID"),
+				},
+				{
+					T:      7.0,
+					Object: NewUnitSphere("testID"),
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.args.sphere.SetTransform(tt.args.transform)
+			intersections := RaySphereIntersect(tt.args.ray, tt.args.sphere)
+
+			assert.Equal(t, len(tt.want), len(intersections))
+
+			// only check T values of intersections
+			assert.Equal(t, tt.want[0].T, intersections[0].T)
+			assert.Equal(t, tt.want[1].T, intersections[1].T)
 		})
 	}
 }

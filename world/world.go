@@ -15,6 +15,7 @@ import (
 
 // World represents a collection of all Objects that make up a scene.
 type World struct {
+	// TODO: use interface for "Object" here instead of sphere
 	Objects []*sphere.Sphere
 	Light   *light.PointLight
 }
@@ -50,11 +51,25 @@ func NewDefaultWorld() *World {
 	}
 }
 
+// RayWorldIntersect intersects the passed ray with the passed world.
+func RayWorldIntersect(r *ray.Ray, w *World) []*intersect.Intersection {
+	allObjectIntersections := make([]*intersect.Intersection, 0)
+	for _, sphereObj := range w.Objects {
+		intersections := sphere.RaySphereIntersect(r, sphereObj)
+		allObjectIntersections = append(allObjectIntersections, intersections...)
+	}
+
+	// Sort the entire collection of intersections
+	intersect.SortIntersectionsAsc(allObjectIntersections)
+
+	return allObjectIntersections
+}
+
 func ColorAt(w *World, r *ray.Ray) *color.Color {
-	intersections := intersect.RayWorldIntersect(r, w)
+	intersections := RayWorldIntersect(r, w)
 	hit := intersect.Hit(intersections)
 	if hit == nil {
-		return color.NewColor(0,0,0)
+		return color.NewColor(0, 0, 0)
 	}
 
 	comps, err := intersect.PrepareComputations(hit, r)
@@ -63,5 +78,11 @@ func ColorAt(w *World, r *ray.Ray) *color.Color {
 		log.Fatal(err)
 	}
 
-	return intersect.ShadeHit(w, comps)
+	return ShadeHit(w, comps)
+}
+
+// ShadeHit returns the color at the intersection encapsulated by
+// an intersections computations.
+func ShadeHit(w *World, comps *intersect.IntersectionComputations) *color.Color {
+	return light.Lighting(comps.Object.Material, w.Light, comps.Point, comps.EyeVec, comps.NormalVec)
 }
