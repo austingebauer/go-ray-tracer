@@ -127,7 +127,7 @@ func SortIntersectionsDesc(intersections []*Intersection) {
 	})
 }
 
-// Intersect intersects the passed ray with the passed sphere.
+// RaySphereIntersect intersects the passed ray with the passed sphere.
 //
 // It returns the t values (i.e., intersection units +/- away from the origin of the Ray)
 // where the Ray intersects with the sphere.

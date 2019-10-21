@@ -35,7 +35,7 @@ func NewDefaultMaterial() *Material {
 		DefaultAmbient, DefaultDiffuse, DefaultSpecular, DefaultShininess)
 }
 
-// NewDefaultMaterial returns a new Material with default values.
+// NewMaterial returns a new Material having the passed values.
 func NewMaterial(c color.Color, ambient, diffuse, specular, shininess float64) *Material {
 	return &Material{
 		Color:     c,

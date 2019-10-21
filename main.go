@@ -18,13 +18,13 @@ import (
 	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
-type Rendering struct {
+type rendering struct {
 	routine    func() *canvas.Canvas
 	outputFile string
 }
 
 func main() {
-	renderings := []Rendering{
+	renderings := []rendering{
 		{
 			routine:    RenderRayTracedSphere3D,
 			outputFile: "docs/renderings/sphere_3d/sphere_3d.ppm",
@@ -49,11 +49,11 @@ func main() {
 
 	// Start all renderings
 	startTime := time.Now()
-	for _, rendering := range renderings {
-		go (func(r Rendering) {
+	for _, r := range renderings {
+		go (func(r rendering) {
 			defer wg.Done()
 			writeCanvasToFile(r.routine(), r.outputFile)
-		})(rendering)
+		})(r)
 	}
 
 	// Wait for all renderings to complete
