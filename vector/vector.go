@@ -2,15 +2,9 @@
 package vector
 
 import (
-	"errors"
 	"math"
 
 	"github.com/austingebauer/go-ray-tracer/maths"
-	"github.com/austingebauer/go-ray-tracer/matrix"
-)
-
-const (
-	vectorW = 0
 )
 
 // Vector represents a vector in a left-handed 3D coordinate system
@@ -136,7 +130,9 @@ func Subtract(vec1, vec2 Vector) *Vector {
 	return NewVector(vec1.X-vec2.X, vec1.Y-vec2.Y, vec1.Z-vec2.Z)
 }
 
+/*
 // ToMatrix returns a 4x1 Matrix that represents the passed Vector.
+// The returned Matrix is known as a 'column vector' in linear algebra.
 func ToMatrix(vec *Vector) *matrix.Matrix {
 	m := matrix.NewMatrix(4, 1)
 	_ = m.SetValue(0, 0, vec.X)
@@ -163,6 +159,7 @@ func ToVector(m *matrix.Matrix) (*Vector, error) {
 	z, _ := m.GetValue(2, 0)
 	return NewVector(x, y, z), nil
 }
+*/
 
 // Reflect returns a new Vector that is the results of reflecting
 // the passed in Vector around the passed normal Vector.

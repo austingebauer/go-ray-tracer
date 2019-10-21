@@ -2,15 +2,8 @@
 package point
 
 import (
-	"errors"
-
 	"github.com/austingebauer/go-ray-tracer/maths"
-	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/vector"
-)
-
-const (
-	pointW = 1
 )
 
 // Point represents a point in a left-handed 3D coordinate system
@@ -83,7 +76,9 @@ func Subtract(pt1 Point, pt2 Point) *vector.Vector {
 	}
 }
 
+/*
 // ToMatrix returns a 4x1 Matrix that represents the passed Point.
+// The returned Matrix is known as a 'column vector' in linear algebra.
 func ToMatrix(pt *Point) *matrix.Matrix {
 	m := matrix.NewMatrix(4, 1)
 	_ = m.SetValue(0, 0, pt.X)
@@ -110,3 +105,4 @@ func ToPoint(m *matrix.Matrix) (*Point, error) {
 	z, _ := m.GetValue(2, 0)
 	return NewPoint(x, y, z), nil
 }
+*/

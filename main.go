@@ -2,20 +2,20 @@ package main
 
 import (
 	"fmt"
+	"github.com/austingebauer/go-ray-tracer/canvas"
+	"github.com/austingebauer/go-ray-tracer/color"
 	"github.com/austingebauer/go-ray-tracer/light"
 	"github.com/austingebauer/go-ray-tracer/material"
+	"github.com/austingebauer/go-ray-tracer/matrix"
+	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
+	"github.com/austingebauer/go-ray-tracer/vector"
 	"log"
 	"math"
 	"os"
 	"sync"
 	"time"
-
-	"github.com/austingebauer/go-ray-tracer/canvas"
-	"github.com/austingebauer/go-ray-tracer/color"
-	"github.com/austingebauer/go-ray-tracer/point"
-	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
 type rendering struct {
@@ -185,7 +185,7 @@ func RenderClock() *canvas.Canvas {
 	}
 
 	// Set twelve point on the clock
-	twelve, err := point.ToPoint(point.ToMatrix(origin).Translate(0, 1, 0))
+	twelve, err := matrix.MatrixToPoint(matrix.PointToMatrix(origin).Translate(0, 1, 0))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -198,7 +198,7 @@ func RenderClock() *canvas.Canvas {
 	}
 
 	// Set the next point to be rendered by a rotation about the z-axis
-	next, err := point.ToPoint(point.ToMatrix(twelve).RotateZ(math.Pi / 6))
+	next, err := matrix.MatrixToPoint(matrix.PointToMatrix(twelve).RotateZ(math.Pi / 6))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -216,7 +216,7 @@ func RenderClock() *canvas.Canvas {
 		}
 
 		// rotate the next point pi/6
-		next, err = point.ToPoint(point.ToMatrix(next).RotateZ(math.Pi / 6))
+		next, err = matrix.MatrixToPoint(matrix.PointToMatrix(next).RotateZ(math.Pi / 6))
 		if err != nil {
 			log.Fatal(err)
 		}

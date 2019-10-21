@@ -39,12 +39,12 @@ func Transform(ray *Ray, m *matrix.Matrix) (*Ray, error) {
 	}
 
 	// transform the ray origin
-	originMatrix, _ := matrix.Multiply(m, point.ToMatrix(ray.Origin))
-	transformedOriginPoint, _ := point.ToPoint(originMatrix)
+	originMatrix, _ := matrix.Multiply(m, matrix.PointToMatrix(ray.Origin))
+	transformedOriginPoint, _ := matrix.MatrixToPoint(originMatrix)
 
 	// transform the ray direction
-	directionMatrix, _ := matrix.Multiply(m, vector.ToMatrix(ray.Direction))
-	transformedDirectionVector, _ := vector.ToVector(directionMatrix)
+	directionMatrix, _ := matrix.Multiply(m, matrix.VectorToMatrix(ray.Direction))
+	transformedDirectionVector, _ := matrix.MatrixToVector(directionMatrix)
 
 	return NewRay(*transformedOriginPoint, *transformedDirectionVector), nil
 }
