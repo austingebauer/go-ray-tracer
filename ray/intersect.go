@@ -63,7 +63,7 @@ func PrepareComputations(i *Intersection, r *Ray) (*IntersectionComputations, er
 	eyeVec := vector.Scale(*r.Direction, -1)
 
 	// Compute the normal vector on the surface of the sphere at the intersection Point
-	normalVec, err := comps.Intersection.Object.NormalAt(rayIntersectionPt)
+	normalVec, err := sphere.NormalAt(comps.Intersection.Object, rayIntersectionPt)
 	if err != nil {
 		return nil, err
 	}

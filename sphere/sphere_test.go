@@ -180,7 +180,7 @@ func TestNormalAt(t *testing.T) {
 			tt.args.s.SetTransform(transform)
 
 			// Assert that normal vector is what we expect and is normalized
-			normalVector, err := tt.args.s.NormalAt(tt.args.p)
+			normalVector, err := NormalAt(tt.args.s, tt.args.p)
 			assert.NoError(t, err)
 
 			if !assert.True(t, tt.want.Equals(normalVector)) {

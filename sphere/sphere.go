@@ -40,7 +40,7 @@ func (s *Sphere) SetTransform(m *matrix.Matrix) {
 
 // NormalAt returns the normal vector on the passed Sphere, at the passed Point.
 // The function assumes that the passed Point will always be on the surface of the sphere.
-func (s *Sphere) NormalAt(worldSpacePoint *point.Point) (*vector.Vector, error) {
+func NormalAt(s *Sphere, worldSpacePoint *point.Point) (*vector.Vector, error) {
 	// Get the inverse of the transform applied to the sphere
 	inverseTransform, err := matrix.Inverse(s.Transform)
 	if err != nil {
@@ -76,9 +76,4 @@ func (s *Sphere) NormalAt(worldSpacePoint *point.Point) (*vector.Vector, error) 
 	}
 
 	return worldSpaceNormalVector.Normalize(), nil
-}
-
-// GetMaterial returns a copy of the material associated with this sphere.
-func (s *Sphere) GetMaterial() *material.Material {
-	return s.Material
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
-	"log"
 )
 
 // World represents a collection of all Objects that make up a scene.
@@ -63,24 +62,25 @@ func RayWorldIntersect(r *ray.Ray, w *World) []*ray.Intersection {
 	return allObjectIntersections
 }
 
-func ColorAt(w *World, r *ray.Ray) *color.Color {
+// ColorAt intersects the given ray with the given world and
+// returns the color at the resulting intersection.
+func ColorAt(w *World, r *ray.Ray) (*color.Color, error) {
 	intersections := RayWorldIntersect(r, w)
 	hit := ray.Hit(intersections)
 	if hit == nil {
-		return color.NewColor(0, 0, 0)
+		return color.NewColor(0, 0, 0), nil
 	}
 
 	comps, err := ray.PrepareComputations(hit, r)
 	if err != nil {
-		// TODO: handle error
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return ShadeHit(w, comps)
+	return ShadeHit(w, comps), nil
 }
 
 // ShadeHit returns the color at the intersection encapsulated by
 // an intersections computations.
 func ShadeHit(w *World, comps *ray.IntersectionComputations) *color.Color {
-	return light.Lighting(comps.Object.GetMaterial(), w.Light, comps.Point, comps.EyeVec, comps.NormalVec)
+	return light.Lighting(comps.Object.Material, w.Light, comps.Point, comps.EyeVec, comps.NormalVec)
 }

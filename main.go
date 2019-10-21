@@ -136,17 +136,17 @@ func renderSphere(shape *sphere.Sphere, l *light.PointLight, render3D bool) *can
 			// If there was a hit, write a pixel to the canvas
 			hit := ray.Hit(xs)
 			if hit != nil {
-				surfaceColor := hit.Object.GetMaterial().Color
+				surfaceColor := hit.Object.Material.Color
 
 				// Calculate the color at the surface using the shading function
 				if render3D {
 					pt := ray.Position(r, hit.T)
-					normal, err := hit.Object.NormalAt(pt)
+					normal, err := sphere.NormalAt(hit.Object, pt)
 					if err != nil {
 						log.Fatal(err)
 					}
 					eye := vector.Scale(*r.Direction, -1)
-					surfaceColor = *light.Lighting(hit.Object.GetMaterial(), l, pt, eye, normal)
+					surfaceColor = *light.Lighting(hit.Object.Material, l, pt, eye, normal)
 				}
 
 				err := c.WritePixel(x, y, surfaceColor)
