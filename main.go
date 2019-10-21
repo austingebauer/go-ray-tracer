@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/austingebauer/go-ray-tracer/intersect"
 	"github.com/austingebauer/go-ray-tracer/light"
 	"github.com/austingebauer/go-ray-tracer/material"
 	"github.com/austingebauer/go-ray-tracer/ray"
@@ -132,22 +131,22 @@ func renderSphere(shape *sphere.Sphere, l *light.PointLight, render3D bool) *can
 			r := ray.NewRay(*rayOrigin, *vector.Normalize(*point.Subtract(*position, *rayOrigin)))
 
 			// RaySphereIntersect the ray with the sphere
-			xs := intersect.RaySphereIntersect(r, shape)
+			xs := ray.RaySphereIntersect(r, shape)
 
 			// If there was a hit, write a pixel to the canvas
-			hit := intersect.Hit(xs)
+			hit := ray.Hit(xs)
 			if hit != nil {
-				surfaceColor := hit.Object.Material.Color
+				surfaceColor := hit.Object.GetMaterial().Color
 
 				// Calculate the color at the surface using the shading function
 				if render3D {
 					pt := ray.Position(r, hit.T)
-					normal, err := sphere.NormalAt(hit.Object, pt)
+					normal, err := hit.Object.NormalAt(pt)
 					if err != nil {
 						log.Fatal(err)
 					}
 					eye := vector.Scale(*r.Direction, -1)
-					surfaceColor = *light.Lighting(hit.Object.Material, l, pt, eye, normal)
+					surfaceColor = *light.Lighting(hit.Object.GetMaterial(), l, pt, eye, normal)
 				}
 
 				err := c.WritePixel(x, y, surfaceColor)

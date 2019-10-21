@@ -3,7 +3,6 @@ package world
 
 import (
 	"github.com/austingebauer/go-ray-tracer/color"
-	"github.com/austingebauer/go-ray-tracer/intersect"
 	"github.com/austingebauer/go-ray-tracer/light"
 	"github.com/austingebauer/go-ray-tracer/material"
 	"github.com/austingebauer/go-ray-tracer/matrix"
@@ -15,7 +14,6 @@ import (
 
 // World represents a collection of all Objects that make up a scene.
 type World struct {
-	// TODO: use interface for "Object" here instead of sphere
 	Objects []*sphere.Sphere
 	Light   *light.PointLight
 }
@@ -52,27 +50,27 @@ func NewDefaultWorld() *World {
 }
 
 // RayWorldIntersect intersects the passed ray with the passed world.
-func RayWorldIntersect(r *ray.Ray, w *World) []*intersect.Intersection {
-	allObjectIntersections := make([]*intersect.Intersection, 0)
+func RayWorldIntersect(r *ray.Ray, w *World) []*ray.Intersection {
+	allObjectIntersections := make([]*ray.Intersection, 0)
 	for _, sphereObj := range w.Objects {
-		intersections := sphere.RaySphereIntersect(r, sphereObj)
+		intersections := ray.RaySphereIntersect(r, sphereObj)
 		allObjectIntersections = append(allObjectIntersections, intersections...)
 	}
 
 	// Sort the entire collection of intersections
-	intersect.SortIntersectionsAsc(allObjectIntersections)
+	ray.SortIntersectionsAsc(allObjectIntersections)
 
 	return allObjectIntersections
 }
 
 func ColorAt(w *World, r *ray.Ray) *color.Color {
 	intersections := RayWorldIntersect(r, w)
-	hit := intersect.Hit(intersections)
+	hit := ray.Hit(intersections)
 	if hit == nil {
 		return color.NewColor(0, 0, 0)
 	}
 
-	comps, err := intersect.PrepareComputations(hit, r)
+	comps, err := ray.PrepareComputations(hit, r)
 	if err != nil {
 		// TODO: handle error
 		log.Fatal(err)
@@ -83,6 +81,6 @@ func ColorAt(w *World, r *ray.Ray) *color.Color {
 
 // ShadeHit returns the color at the intersection encapsulated by
 // an intersections computations.
-func ShadeHit(w *World, comps *intersect.IntersectionComputations) *color.Color {
-	return light.Lighting(comps.Object.Material, w.Light, comps.Point, comps.EyeVec, comps.NormalVec)
+func ShadeHit(w *World, comps *ray.IntersectionComputations) *color.Color {
+	return light.Lighting(comps.Object.GetMaterial(), w.Light, comps.Point, comps.EyeVec, comps.NormalVec)
 }
