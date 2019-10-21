@@ -4,9 +4,13 @@ package material
 import "github.com/austingebauer/go-ray-tracer/color"
 
 const (
-	DefaultAmbient   = 0.1
-	DefaultDiffuse   = 0.9
-	DefaultSpecular  = 0.9
+	// DefaultAmbient is the ambient reflection factor of a default material.
+	DefaultAmbient = 0.1
+	// DefaultDiffuse is the diffuse reflection factor of a default material.
+	DefaultDiffuse = 0.9
+	// DefaultSpecular is the specular reflection factor of a default material.
+	DefaultSpecular = 0.9
+	// DefaultShininess is the shininess factor of a default material.
 	DefaultShininess = 200.0
 )
 
