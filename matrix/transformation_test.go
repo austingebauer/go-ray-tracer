@@ -495,34 +495,6 @@ func TestMatrix_Shear(t *testing.T) {
 	}
 }
 
-func TestViewTransform(t *testing.T) {
-	type args struct {
-		from point.Point
-		to   point.Point
-		up   vector.Vector
-	}
-	tests := []struct {
-		name string
-		args args
-		want *Matrix
-	}{
-		{
-			name: "transformation matrix for the default orientation",
-			args: args{
-				from: *point.NewPoint(0, 0, 0),
-				to:   *point.NewPoint(0, 0, -1),
-				up:   *vector.NewVector(0, 1, 0),
-			},
-			want: NewIdentityMatrix(4),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, ViewTransform(tt.args.from, tt.args.to, tt.args.up))
-		})
-	}
-}
-
 func TestTransformPoint(t *testing.T) {
 	transform := NewTranslationMatrix(5, -3, 2)
 	p := point.NewPoint(-3, 4, 5)
@@ -994,4 +966,42 @@ func TestScalingInverseVector(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.Equal(t, vector.NewVector(-2, 2, 2), vecMult)
+}
+
+func TestViewTransform(t *testing.T) {
+	type args struct {
+		from point.Point
+		to   point.Point
+		up   vector.Vector
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		{
+			name: "default orientation view transformation matrix looking from the " +
+				"origin in negative z direction",
+			args: args{
+				from: *point.NewPoint(0, 0, 0),
+				to:   *point.NewPoint(0, 0, -1),
+				up:   *vector.NewVector(0, 1, 0),
+			},
+			want: NewIdentityMatrix(4),
+		},
+		//{
+		//	name: "view transformation matrix looking from the origin in positive z direction",
+		//	args: args{
+		//		from: *point.NewPoint(0, 0, 0),
+		//		to:   *point.NewPoint(0, 0, 1),
+		//		up:   *vector.NewVector(0, 1, 0),
+		//	},
+		//	want: NewScalingMatrix(-1, 1, -1),
+		//},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, ViewTransform(tt.args.from, tt.args.to, tt.args.up))
+		})
+	}
 }

@@ -5,8 +5,6 @@ package matrix
 import (
 	"errors"
 	"github.com/austingebauer/go-ray-tracer/maths"
-	"github.com/austingebauer/go-ray-tracer/point"
-	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
 // Matrix represents an n-dimensional grid of floating point numbers.
@@ -295,62 +293,4 @@ func CheckInBounds(m *Matrix, row, col uint) error {
 	}
 
 	return nil
-}
-
-// PointToMatrix returns a 4x1 Matrix that represents the passed Point.
-// The returned Matrix is known as a 'column vector' in linear algebra.
-func PointToMatrix(pt *point.Point) *Matrix {
-	m := NewMatrix(4, 1)
-	_ = m.SetValue(0, 0, pt.X)
-	_ = m.SetValue(1, 0, pt.Y)
-	_ = m.SetValue(2, 0, pt.Z)
-	_ = m.SetValue(3, 0, 1)
-
-	return m
-}
-
-// MatrixToPoint returns a Point representation of the passed Matrix.
-// An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
-func MatrixToPoint(m *Matrix) (*point.Point, error) {
-	if m.GetRows() != 3 && m.GetRows() != 4 {
-		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a point")
-	}
-
-	if m.GetCols() != 1 {
-		return nil, errors.New("matrix m must have 1 column to be converted to a point")
-	}
-
-	x, _ := m.GetValue(0, 0)
-	y, _ := m.GetValue(1, 0)
-	z, _ := m.GetValue(2, 0)
-	return point.NewPoint(x, y, z), nil
-}
-
-// VectorToMatrix returns a 4x1 Matrix that represents the passed Vector.
-// The returned Matrix is known as a 'column vector' in linear algebra.
-func VectorToMatrix(vec *vector.Vector) *Matrix {
-	m := NewMatrix(4, 1)
-	_ = m.SetValue(0, 0, vec.X)
-	_ = m.SetValue(1, 0, vec.Y)
-	_ = m.SetValue(2, 0, vec.Z)
-	_ = m.SetValue(3, 0, 0)
-
-	return m
-}
-
-// MatrixToVector returns a Point representation of the passed Matrix.
-// An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
-func MatrixToVector(m *Matrix) (*vector.Vector, error) {
-	if m.GetRows() != 3 && m.GetRows() != 4 {
-		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a vector")
-	}
-
-	if m.GetCols() != 1 {
-		return nil, errors.New("matrix m must have 1 column to be converted to a vector")
-	}
-
-	x, _ := m.GetValue(0, 0)
-	y, _ := m.GetValue(1, 0)
-	z, _ := m.GetValue(2, 0)
-	return vector.NewVector(x, y, z), nil
 }

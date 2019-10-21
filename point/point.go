@@ -75,34 +75,3 @@ func Subtract(pt1 Point, pt2 Point) *vector.Vector {
 		Z: pt1.Z - pt2.Z,
 	}
 }
-
-/*
-// ToMatrix returns a 4x1 Matrix that represents the passed Point.
-// The returned Matrix is known as a 'column vector' in linear algebra.
-func ToMatrix(pt *Point) *matrix.Matrix {
-	m := matrix.NewMatrix(4, 1)
-	_ = m.SetValue(0, 0, pt.X)
-	_ = m.SetValue(1, 0, pt.Y)
-	_ = m.SetValue(2, 0, pt.Z)
-	_ = m.SetValue(3, 0, pointW)
-
-	return m
-}
-
-// ToPoint returns a Point representation of the passed Matrix.
-// An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
-func ToPoint(m *matrix.Matrix) (*Point, error) {
-	if m.GetRows() != 3 && m.GetRows() != 4 {
-		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a point")
-	}
-
-	if m.GetCols() != 1 {
-		return nil, errors.New("matrix m must have 1 column to be converted to a point")
-	}
-
-	x, _ := m.GetValue(0, 0)
-	y, _ := m.GetValue(1, 0)
-	z, _ := m.GetValue(2, 0)
-	return NewPoint(x, y, z), nil
-}
-*/

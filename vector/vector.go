@@ -130,37 +130,6 @@ func Subtract(vec1, vec2 Vector) *Vector {
 	return NewVector(vec1.X-vec2.X, vec1.Y-vec2.Y, vec1.Z-vec2.Z)
 }
 
-/*
-// ToMatrix returns a 4x1 Matrix that represents the passed Vector.
-// The returned Matrix is known as a 'column vector' in linear algebra.
-func ToMatrix(vec *Vector) *matrix.Matrix {
-	m := matrix.NewMatrix(4, 1)
-	_ = m.SetValue(0, 0, vec.X)
-	_ = m.SetValue(1, 0, vec.Y)
-	_ = m.SetValue(2, 0, vec.Z)
-	_ = m.SetValue(3, 0, vectorW)
-
-	return m
-}
-
-// ToVector returns a Point representation of the passed Matrix.
-// An error is returned if the passed Matrix is not of a 3x1 or 4x1 dimension.
-func ToVector(m *matrix.Matrix) (*Vector, error) {
-	if m.GetRows() != 3 && m.GetRows() != 4 {
-		return nil, errors.New("matrix m must have 3 or 4 rows to be converted to a vector")
-	}
-
-	if m.GetCols() != 1 {
-		return nil, errors.New("matrix m must have 1 column to be converted to a vector")
-	}
-
-	x, _ := m.GetValue(0, 0)
-	y, _ := m.GetValue(1, 0)
-	z, _ := m.GetValue(2, 0)
-	return NewVector(x, y, z), nil
-}
-*/
-
 // Reflect returns a new Vector that is the results of reflecting
 // the passed in Vector around the passed normal Vector.
 func Reflect(in, normal Vector) *Vector {
