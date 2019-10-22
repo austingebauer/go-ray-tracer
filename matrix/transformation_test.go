@@ -989,19 +989,49 @@ func TestViewTransform(t *testing.T) {
 			},
 			want: NewIdentityMatrix(4),
 		},
-		//{
-		//	name: "view transformation matrix looking from the origin in positive z direction",
-		//	args: args{
-		//		from: *point.NewPoint(0, 0, 0),
-		//		to:   *point.NewPoint(0, 0, 1),
-		//		up:   *vector.NewVector(0, 1, 0),
-		//	},
-		//	want: NewScalingMatrix(-1, 1, -1),
-		//},
+		{
+			name: "view transformation matrix looking from the origin in positive z direction",
+			args: args{
+				from: *point.NewPoint(0, 0, 0),
+				to:   *point.NewPoint(0, 0, 1),
+				up:   *vector.NewVector(0, 1, 0),
+			},
+			want: NewScalingMatrix(-1, 1, -1),
+		},
+		{
+			name: "view transformation actually moves the world backward 8 units along the z axis",
+			args: args{
+				from: *point.NewPoint(0, 0, 8),
+				to:   *point.NewPoint(0, 0, 0),
+				up:   *vector.NewVector(0, 1, 0),
+			},
+			want: NewTranslationMatrix(0, 0, -8),
+		},
+		{
+			name: "an arbitrary view transformation",
+			args: args{
+				from: *point.NewPoint(1, 3, 2),
+				to:   *point.NewPoint(4, -2, 8),
+				up:   *vector.NewVector(1, 1, 0),
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: []float64{
+					-0.50709, 0.50709, 0.67612, -2.36643,
+					0.76772, 0.60609, 0.12122, -2.82843,
+					-0.35857, 0.59761, -0.71714, 0.00000,
+					0.00000, 0.00000, 0.00000, 1.00000,
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, ViewTransform(tt.args.from, tt.args.to, tt.args.up))
+			vtM := ViewTransform(tt.args.from, tt.args.to, tt.args.up)
+			if !assert.True(t, tt.want.Equals(vtM)) {
+				assert.Equal(t, tt.want, vtM)
+			}
 		})
 	}
 }

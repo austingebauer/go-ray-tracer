@@ -178,7 +178,37 @@ func (m *Matrix) Shear(xy, xz, yx, yz, zx, zy float64) *Matrix {
 // The to parameter specifies the point in the scene at which to look at.
 // The up parameter specifies which direction is up.
 func ViewTransform(from, to point.Point, up vector.Vector) *Matrix {
-	return NewIdentityMatrix(4)
+	// Compute the forward vector by subtracting from from to
+	forwardVec := point.Subtract(to, from).Normalize()
+
+	// Compute the left vector by taking the cross product of forward and normalized up
+	leftVec := vector.CrossProduct(*forwardVec, *vector.Normalize(up))
+
+	// Compute the true up vector by taking the cross product of left and forward vectors.
+	// This allows the original up vector to be only approximately up.
+	trueUpVec := vector.CrossProduct(leftVec, *forwardVec)
+
+	// Construct a matrix that represents the orientation transformation
+	//   | leftX     leftY     leftZ      0 |
+	//   | trueupX   trueupY   trueupZ    0 |
+	//   | -forwardX -forwardY -forwardZ  0 |
+	//   | 0         0         0          1 |
+	orientationM := NewIdentityMatrix(4)
+	orientationM.setValue(0, 0, leftVec.X)
+	orientationM.setValue(0, 1, leftVec.Y)
+	orientationM.setValue(0, 2, leftVec.Z)
+	orientationM.setValue(1, 0, trueUpVec.X)
+	orientationM.setValue(1, 1, trueUpVec.Y)
+	orientationM.setValue(1, 2, trueUpVec.Z)
+	orientationM.setValue(2, 0, -1*forwardVec.X)
+	orientationM.setValue(2, 1, -1*forwardVec.Y)
+	orientationM.setValue(2, 2, -1*forwardVec.Z)
+
+	// Multiply the orientation transformation by a translation transformation
+	// in order to move the scene into place before orienting it.
+	translationM := NewTranslationMatrix(-1*from.X, -1*from.Y, -1*from.Z)
+	viewTransformM, _ := Multiply(orientationM, translationM)
+	return viewTransformM
 }
 
 // PointToMatrix returns a 4x1 Matrix that represents the passed Point.
