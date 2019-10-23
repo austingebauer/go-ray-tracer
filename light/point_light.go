@@ -1,4 +1,4 @@
-// Package light provides difference types of light sources and behavior using light.
+// Package light provides different types of light sources and behavior using light.
 package light
 
 import (
