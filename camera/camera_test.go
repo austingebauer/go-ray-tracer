@@ -16,7 +16,7 @@ func TestNewCamera1(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *Camera
+		want *camera
 	}{
 		{
 			name: "constructing a new camera",
@@ -25,7 +25,7 @@ func TestNewCamera1(t *testing.T) {
 				verticalSize:   120,
 				fieldOfView:    math.Pi / 2,
 			},
-			want: &Camera{
+			want: &camera{
 				horizontalSize: 160,
 				verticalSize:   120,
 				fieldOfView:    math.Pi / 2,

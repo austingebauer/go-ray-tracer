@@ -3,9 +3,9 @@ package camera
 
 import "github.com/austingebauer/go-ray-tracer/matrix"
 
-// Camera is a virtual camera that can be moved around,
+// camera is a virtual camera that can be moved around,
 // zoomed in and out, and transformed around a scene.
-type Camera struct {
+type camera struct {
 	// The horizontal size in pixels
 	horizontalSize int
 	// The vertical size in pixels
@@ -16,10 +16,10 @@ type Camera struct {
 	transform matrix.Matrix
 }
 
-// NewCamera returns a new Camera having the passed horizontal
+// NewCamera returns a new camera having the passed horizontal
 // and vertical size in pixels, and field of view angle.
-func NewCamera(horizontalSize int, verticalSize int, fieldOfView float64) *Camera {
-	return &Camera{
+func NewCamera(horizontalSize int, verticalSize int, fieldOfView float64) *camera {
+	return &camera{
 		horizontalSize: horizontalSize,
 		verticalSize:   verticalSize,
 		fieldOfView:    fieldOfView,
