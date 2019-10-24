@@ -26,16 +26,17 @@ func TestNewCamera1(t *testing.T) {
 				fieldOfView:    math.Pi / 2,
 			},
 			want: &camera{
-				horizontalSize: 160,
-				verticalSize:   120,
-				fieldOfView:    math.Pi / 2,
-				transform:      *matrix.NewIdentityMatrix(4),
+				horizontalSizeInPixels: 160,
+				verticalSizeInPixels:   120,
+				fieldOfView:            math.Pi / 2,
+				transform:              *matrix.NewIdentityMatrix(4),
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want,
+				// TODO: use float64equals for floating point comparison
 				NewCamera(tt.args.horizontalSize, tt.args.verticalSize, tt.args.fieldOfView))
 		})
 	}
