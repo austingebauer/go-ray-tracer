@@ -174,7 +174,7 @@ func TestNormalAt(t *testing.T) {
 			// Set up the transforms to apply to the sphere
 			transform := tt.args.s.Transform
 			for _, sphereTransform := range tt.args.transforms {
-				transform, _ = matrix.Multiply(*transform, *sphereTransform)
+				transform, _ = matrix.Multiply(transform, sphereTransform)
 				assert.NoError(t, err)
 			}
 			tt.args.s.SetTransform(transform)

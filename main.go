@@ -82,22 +82,22 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 	// but is also rotated and translated into place.
 	leftWall := sphere.NewUnitSphere("leftWall")
 	leftWall.Transform = matrix.Multiply4x4(
-		*matrix.Multiply4x4(*matrix.Multiply4x4(
-			*matrix.NewTranslationMatrix(0, 0, 5),
-			*matrix.NewYRotationMatrix(-1 * (math.Pi / 4))),
-			*matrix.NewXRotationMatrix(math.Pi / 2)),
-		*matrix.NewScalingMatrix(10, 0.01, 10))
+		matrix.Multiply4x4(matrix.Multiply4x4(
+			matrix.NewTranslationMatrix(0, 0, 5),
+			matrix.NewYRotationMatrix(-1*(math.Pi/4))),
+			matrix.NewXRotationMatrix(math.Pi/2)),
+		matrix.NewScalingMatrix(10, 0.01, 10))
 	leftWall.Material = floor.Material
 
 	// The wall to the right is identical to the left wall,
 	// but is rotated the opposite direction in y.
 	rightWall := sphere.NewUnitSphere("rightWall")
 	rightWall.Transform = matrix.Multiply4x4(
-		*matrix.Multiply4x4(*matrix.Multiply4x4(
-			*matrix.NewTranslationMatrix(0, 0, 5),
-			*matrix.NewYRotationMatrix(math.Pi / 4)),
-			*matrix.NewXRotationMatrix(math.Pi / 2)),
-		*matrix.NewScalingMatrix(10, 0.01, 10))
+		matrix.Multiply4x4(matrix.Multiply4x4(
+			matrix.NewTranslationMatrix(0, 0, 5),
+			matrix.NewYRotationMatrix(math.Pi/4)),
+			matrix.NewXRotationMatrix(math.Pi/2)),
+		matrix.NewScalingMatrix(10, 0.01, 10))
 	rightWall.Material = floor.Material
 
 	// The large sphere in the middle is a unit sphere that's
@@ -112,8 +112,8 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 	// The green sphere on the right is scaled in half.
 	right := sphere.NewUnitSphere("right")
 	right.Transform = matrix.Multiply4x4(
-		*matrix.NewTranslationMatrix(1.5, 0.5, -0.5),
-		*matrix.NewScalingMatrix(0.5, 0.5, 0.5))
+		matrix.NewTranslationMatrix(1.5, 0.5, -0.5),
+		matrix.NewScalingMatrix(0.5, 0.5, 0.5))
 	right.Material = material.NewDefaultMaterial()
 	right.Material.Color = *color.NewColor(0.5, 1, 0.1)
 	right.Material.Diffuse = 0.7
@@ -122,8 +122,8 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 	// The olive sphere on the left is scaled in 1/3.
 	left := sphere.NewUnitSphere("left")
 	left.Transform = matrix.Multiply4x4(
-		*matrix.NewTranslationMatrix(-1.5, 0.33, -0.75),
-		*matrix.NewScalingMatrix(0.33, 0.33, 0.33))
+		matrix.NewTranslationMatrix(-1.5, 0.33, -0.75),
+		matrix.NewScalingMatrix(0.33, 0.33, 0.33))
 	left.Material = material.NewDefaultMaterial()
 	left.Material.Color = *color.NewColor(1, 0.8, 0.1)
 	left.Material.Diffuse = 0.7

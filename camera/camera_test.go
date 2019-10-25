@@ -35,8 +35,8 @@ func TestNewCamera1(t *testing.T) {
 				horizontalSizeInPixels: 160,
 				verticalSizeInPixels:   120,
 				fieldOfView:            math.Pi / 2,
-				transform:              *matrix.NewIdentityMatrix(4),
-				inverseTransform:       *matrix.NewIdentityMatrix(4),
+				transform:              matrix.NewIdentityMatrix(4),
+				inverseTransform:       matrix.NewIdentityMatrix(4),
 				aspectRatio:            1.3333333333333333,
 				halfWidth:              1,
 				halfHeight:             0.75,
@@ -127,8 +127,8 @@ func TestRayForPixel(t *testing.T) {
 			name: "constructing a ray when the camera is transformed",
 			args: args{
 				c: NewCameraWithTransform(201, 101, math.Pi/2, matrix.Multiply4x4(
-					*matrix.NewYRotationMatrix(math.Pi / 4),
-					*matrix.NewTranslationMatrix(0, -2, 5)),
+					matrix.NewYRotationMatrix(math.Pi/4),
+					matrix.NewTranslationMatrix(0, -2, 5)),
 				),
 				x: 100,
 				y: 50,

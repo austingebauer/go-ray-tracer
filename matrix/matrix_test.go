@@ -171,8 +171,8 @@ func TestMatrix_Equals(t *testing.T) {
 
 func TestMultiply(t *testing.T) {
 	type args struct {
-		m1 Matrix
-		m2 Matrix
+		m1 *Matrix
+		m2 *Matrix
 	}
 	tests := []struct {
 		name      string
@@ -183,7 +183,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply two 4x4 matrices",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -193,7 +193,7 @@ func TestMultiply(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: Matrix{
+				m2: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -219,14 +219,14 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 1x3 and 3x2 matrices",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 1,
 					cols: 3,
 					data: []float64{
 						1, 2, 3,
 					},
 				},
-				m2: Matrix{
+				m2: &Matrix{
 					rows: 3,
 					cols: 2,
 					data: []float64{
@@ -248,7 +248,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 2x3 and 3x2 matrices",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 2,
 					cols: 3,
 					data: []float64{
@@ -256,7 +256,7 @@ func TestMultiply(t *testing.T) {
 						3, 2, 1,
 					},
 				},
-				m2: Matrix{
+				m2: &Matrix{
 					rows: 3,
 					cols: 2,
 					data: []float64{
@@ -278,14 +278,14 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply two 1x1 matrices",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 1,
 					cols: 1,
 					data: []float64{
 						1,
 					},
 				},
-				m2: Matrix{
+				m2: &Matrix{
 					rows: 1,
 					cols: 1,
 					data: []float64{
@@ -305,7 +305,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply two 2x2 and 4x2 matrices for error",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 2,
 					cols: 2,
 					data: []float64{
@@ -313,7 +313,7 @@ func TestMultiply(t *testing.T) {
 						1, 1,
 					},
 				},
-				m2: Matrix{
+				m2: &Matrix{
 					rows: 4,
 					cols: 2,
 					data: []float64{
@@ -330,7 +330,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 4x4 matrix by 4x4 identity matrix",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -340,7 +340,7 @@ func TestMultiply(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: *NewIdentityMatrix(4),
+				m2: NewIdentityMatrix(4),
 			},
 			want: &Matrix{
 				rows: 4,
@@ -357,8 +357,8 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 4x4 identity matrix by 4x1 tuple",
 			args: args{
-				m1: *NewIdentityMatrix(4),
-				m2: Matrix{
+				m1: NewIdentityMatrix(4),
+				m2: &Matrix{
 					rows: 4,
 					cols: 1,
 					data: []float64{
@@ -491,7 +491,7 @@ func TestTranspose(t *testing.T) {
 
 func TestSubmatrix(t *testing.T) {
 	type args struct {
-		m   Matrix
+		m   *Matrix
 		row uint
 		col uint
 	}
@@ -504,7 +504,7 @@ func TestSubmatrix(t *testing.T) {
 		{
 			name: "submatrix of a 3x3 matrix is a 2x2 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -529,7 +529,7 @@ func TestSubmatrix(t *testing.T) {
 		{
 			name: "submatrix of a 4x4 matrix is a 3x3 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -556,7 +556,7 @@ func TestSubmatrix(t *testing.T) {
 		{
 			name: "submatrix of a 4x4 matrix with row out of bounds",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -583,7 +583,7 @@ func TestSubmatrix(t *testing.T) {
 		{
 			name: "submatrix of a 4x4 matrix with col out of bounds",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -622,7 +622,7 @@ func TestSubmatrix(t *testing.T) {
 
 func TestMinor(t *testing.T) {
 	type args struct {
-		m   Matrix
+		m   *Matrix
 		row uint
 		col uint
 	}
@@ -635,7 +635,7 @@ func TestMinor(t *testing.T) {
 		{
 			name: "minor of a 3x3 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -653,7 +653,7 @@ func TestMinor(t *testing.T) {
 		{
 			name: "minor of a 2x2 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 2,
 					cols: 2,
 					data: []float64{
@@ -670,7 +670,7 @@ func TestMinor(t *testing.T) {
 		{
 			name: "minor of a non-square matrix for an error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 2,
 					cols: 3,
 					data: []float64{
@@ -687,7 +687,7 @@ func TestMinor(t *testing.T) {
 		{
 			name: "minor of a 3x3 matrix with submatrix row out of bounds for an error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -705,7 +705,7 @@ func TestMinor(t *testing.T) {
 		{
 			name: "minor of a 3x3 matrix with submatrix col out of bounds for an error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -736,7 +736,7 @@ func TestMinor(t *testing.T) {
 
 func TestCofactor(t *testing.T) {
 	type args struct {
-		m   Matrix
+		m   *Matrix
 		row uint
 		col uint
 	}
@@ -749,7 +749,7 @@ func TestCofactor(t *testing.T) {
 		{
 			name: "cofactor of a 3x3 matrix 1",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -767,7 +767,7 @@ func TestCofactor(t *testing.T) {
 		{
 			name: "cofactor of a 3x3 matrix 2",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -785,7 +785,7 @@ func TestCofactor(t *testing.T) {
 		{
 			name: "cofactor of a 4x4 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -804,7 +804,7 @@ func TestCofactor(t *testing.T) {
 		{
 			name: "cofactor of a 3x3 matrix with submatrix row out of bounds for an error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -822,7 +822,7 @@ func TestCofactor(t *testing.T) {
 		{
 			name: "cofactor of a 3x3 matrix with submatrix col out of bounds for an error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -853,7 +853,7 @@ func TestCofactor(t *testing.T) {
 
 func TestDeterminant(t *testing.T) {
 	type args struct {
-		m Matrix
+		m *Matrix
 	}
 	tests := []struct {
 		name    string
@@ -864,7 +864,7 @@ func TestDeterminant(t *testing.T) {
 		{
 			name: "determinant of 1x1 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 1,
 					cols: 1,
 					data: []float64{
@@ -878,7 +878,7 @@ func TestDeterminant(t *testing.T) {
 		{
 			name: "determinant of 2x2 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 2,
 					cols: 2,
 					data: []float64{
@@ -893,7 +893,7 @@ func TestDeterminant(t *testing.T) {
 		{
 			name: "determinant of 3x3 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 3,
 					data: []float64{
@@ -909,7 +909,7 @@ func TestDeterminant(t *testing.T) {
 		{
 			name: "determinant of 4x4 matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -926,7 +926,7 @@ func TestDeterminant(t *testing.T) {
 		{
 			name: "determinant of 3x4 non-square matrix returns error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 4,
 					data: []float64{
@@ -942,7 +942,7 @@ func TestDeterminant(t *testing.T) {
 		{
 			name: "determinant of 4x3 non-square matrix returns error",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 4,
 					data: []float64{
@@ -971,7 +971,7 @@ func TestDeterminant(t *testing.T) {
 
 func TestIsInvertible(t *testing.T) {
 	type args struct {
-		m Matrix
+		m *Matrix
 	}
 	tests := []struct {
 		name string
@@ -981,7 +981,7 @@ func TestIsInvertible(t *testing.T) {
 		{
 			name: "4x4 matrix is invertible",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -997,7 +997,7 @@ func TestIsInvertible(t *testing.T) {
 		{
 			name: "4x4 matrix is not invertible",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1013,7 +1013,7 @@ func TestIsInvertible(t *testing.T) {
 		{
 			name: "3x4 matrix is not invertible bc not a square matrix",
 			args: args{
-				m: Matrix{
+				m: &Matrix{
 					rows: 3,
 					cols: 4,
 					data: []float64{
@@ -1035,7 +1035,7 @@ func TestIsInvertible(t *testing.T) {
 
 func TestInverseDetailed(t *testing.T) {
 	type args struct {
-		a Matrix
+		a *Matrix
 	}
 	tests := []struct {
 		name    string
@@ -1046,7 +1046,7 @@ func TestInverseDetailed(t *testing.T) {
 		{
 			name: "inverse of 4x4 matrix",
 			args: args{
-				a: Matrix{
+				a: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1106,7 +1106,7 @@ func TestInverseDetailed(t *testing.T) {
 
 func TestInverse(t *testing.T) {
 	type args struct {
-		a Matrix
+		a *Matrix
 	}
 	tests := []struct {
 		name    string
@@ -1117,7 +1117,7 @@ func TestInverse(t *testing.T) {
 		{
 			name: "inverse of 4x4 matrix that's not invertible",
 			args: args{
-				a: Matrix{
+				a: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1143,7 +1143,7 @@ func TestInverse(t *testing.T) {
 		{
 			name: "inverse of 1x1 matrix",
 			args: args{
-				a: Matrix{
+				a: &Matrix{
 					rows: 1,
 					cols: 1,
 					data: []float64{
@@ -1163,7 +1163,7 @@ func TestInverse(t *testing.T) {
 		{
 			name: "inverse of 4x4 matrix 1",
 			args: args{
-				a: Matrix{
+				a: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1189,7 +1189,7 @@ func TestInverse(t *testing.T) {
 		{
 			name: "inverse of 4x4 matrix 2",
 			args: args{
-				a: Matrix{
+				a: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1215,7 +1215,7 @@ func TestInverse(t *testing.T) {
 		{
 			name: "inverse of 4x4 identity matrix",
 			args: args{
-				a: *NewIdentityMatrix(4),
+				a: NewIdentityMatrix(4),
 			},
 			want:    NewIdentityMatrix(4),
 			wantErr: false,
@@ -1238,8 +1238,8 @@ func TestInverse(t *testing.T) {
 
 func TestMultiplyProductByInverse(t *testing.T) {
 	type args struct {
-		a Matrix
-		b Matrix
+		a *Matrix
+		b *Matrix
 	}
 
 	tests := []struct {
@@ -1249,7 +1249,7 @@ func TestMultiplyProductByInverse(t *testing.T) {
 		{
 			name: "matrix product (c = a * b) multiplied by its inverse (c * inverse(b) = a)",
 			args: args{
-				a: Matrix{
+				a: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1259,7 +1259,7 @@ func TestMultiplyProductByInverse(t *testing.T) {
 						-6, 5, -1, 1,
 					},
 				},
-				b: Matrix{
+				b: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1289,7 +1289,7 @@ func TestMultiplyProductByInverse(t *testing.T) {
 			inverseB, err := Inverse(tt.args.b)
 			assert.NoError(t, err)
 			assert.NotNil(t, inverseB)
-			shouldBeA, err := Multiply(*cA, *inverseB)
+			shouldBeA, err := Multiply(cA, inverseB)
 			assert.NoError(t, err)
 			assert.NotNil(t, shouldBeA)
 			assert.True(t, tt.args.a.Equals(shouldBeA))
@@ -1298,7 +1298,7 @@ func TestMultiplyProductByInverse(t *testing.T) {
 			inverseA, err := Inverse(tt.args.a)
 			assert.NoError(t, err)
 			assert.NotNil(t, inverseA)
-			shouldBeB, err := Multiply(*cB, *inverseA)
+			shouldBeB, err := Multiply(cB, inverseA)
 			assert.NoError(t, err)
 			assert.NotNil(t, shouldBeB)
 			assert.True(t, tt.args.b.Equals(shouldBeB))
@@ -1583,7 +1583,7 @@ func TestNewIdentityMatrix(t *testing.T) {
 
 func TestCheckInBounds(t *testing.T) {
 	type args struct {
-		m   Matrix
+		m   *Matrix
 		row uint
 		col uint
 	}
@@ -1595,7 +1595,7 @@ func TestCheckInBounds(t *testing.T) {
 		{
 			name: "check that row and column are in bounds of the matrix",
 			args: args{
-				m:   *NewMatrix(4, 4),
+				m:   NewMatrix(4, 4),
 				row: 3,
 				col: 0,
 			},
@@ -1604,7 +1604,7 @@ func TestCheckInBounds(t *testing.T) {
 		{
 			name: "check that row and column are in bounds of the matrix",
 			args: args{
-				m:   *NewMatrix(4, 4),
+				m:   NewMatrix(4, 4),
 				row: 0,
 				col: 3,
 			},
@@ -1613,7 +1613,7 @@ func TestCheckInBounds(t *testing.T) {
 		{
 			name: "check that row and column are out of bounds of the matrix",
 			args: args{
-				m:   *NewMatrix(4, 4),
+				m:   NewMatrix(4, 4),
 				row: 3,
 				col: 4,
 			},
@@ -1622,7 +1622,7 @@ func TestCheckInBounds(t *testing.T) {
 		{
 			name: "check that row and column are out of bounds of the matrix",
 			args: args{
-				m:   *NewMatrix(4, 4),
+				m:   NewMatrix(4, 4),
 				row: 4,
 				col: 0,
 			},
@@ -1643,8 +1643,8 @@ func TestCheckInBounds(t *testing.T) {
 
 func TestMultiply4x4(t *testing.T) {
 	type args struct {
-		m1 Matrix
-		m2 Matrix
+		m1 *Matrix
+		m2 *Matrix
 	}
 	tests := []struct {
 		name string
@@ -1654,7 +1654,7 @@ func TestMultiply4x4(t *testing.T) {
 		{
 			name: "multiply two 4x4 matrices",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1664,7 +1664,7 @@ func TestMultiply4x4(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: Matrix{
+				m2: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1689,7 +1689,7 @@ func TestMultiply4x4(t *testing.T) {
 		{
 			name: "multiply 4x4 matrix by 4x4 identity matrix",
 			args: args{
-				m1: Matrix{
+				m1: &Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1699,7 +1699,7 @@ func TestMultiply4x4(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: *NewIdentityMatrix(4),
+				m2: NewIdentityMatrix(4),
 			},
 			want: &Matrix{
 				rows: 4,

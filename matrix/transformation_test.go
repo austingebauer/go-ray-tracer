@@ -498,7 +498,7 @@ func TestMatrix_Shear(t *testing.T) {
 func TestTransformPoint(t *testing.T) {
 	transform := NewTranslationMatrix(5, -3, 2)
 	p := point.NewPoint(-3, 4, 5)
-	m, err := Multiply(*transform, *PointToMatrix(p))
+	m, err := Multiply(transform, PointToMatrix(p))
 	assert.NoError(t, err)
 	assert.NotNil(t, m)
 
@@ -511,11 +511,11 @@ func TestInverseTransformPoint(t *testing.T) {
 	p := point.NewPoint(-3, 4, 5)
 	transform := NewTranslationMatrix(5, -3, 2)
 
-	inverseT, err := Inverse(*transform)
+	inverseT, err := Inverse(transform)
 	assert.NoError(t, err)
 	assert.NotNil(t, inverseT)
 
-	m, err := Multiply(*inverseT, *PointToMatrix(p))
+	m, err := Multiply(inverseT, PointToMatrix(p))
 	assert.NoError(t, err)
 	assert.NotNil(t, m)
 
@@ -619,7 +619,7 @@ func TestScalingPoint(t *testing.T) {
 	transform := NewScalingMatrix(2, 3, 4)
 	pt := point.NewPoint(-4, 6, 8)
 
-	mult, err := Multiply(*transform, *PointToMatrix(pt))
+	mult, err := Multiply(transform, PointToMatrix(pt))
 	assert.NoError(t, err)
 
 	ptMult, err := MatrixToPoint(mult)
@@ -632,7 +632,7 @@ func TestPointReflectionOverAxis(t *testing.T) {
 	transform := NewScalingMatrix(-1, 1, 1)
 	pt := point.NewPoint(2, 3, 4)
 
-	mult, err := Multiply(*transform, *PointToMatrix(pt))
+	mult, err := Multiply(transform, PointToMatrix(pt))
 	assert.NoError(t, err)
 
 	ptReflectedOnX, err := MatrixToPoint(mult)
@@ -646,14 +646,14 @@ func TestPointRotateXAxis(t *testing.T) {
 	fullQuarter := NewXRotationMatrix(math.Pi / 2)
 
 	// rotate the point around the x axis Pi/4 radians
-	rotM, err := Multiply(*halfQuarter, *ptM)
+	rotM, err := Multiply(halfQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := MatrixToPoint(rotM)
 	assert.NoError(t, err)
 	assert.True(t, point.NewPoint(0, math.Sqrt(2)/2, math.Sqrt(2)/2).Equals(rotMPoint))
 
 	// rotate the point around the x axis Pi/2 radians
-	rotM, err = Multiply(*fullQuarter, *ptM)
+	rotM, err = Multiply(fullQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err = MatrixToPoint(rotM)
 	assert.NoError(t, err)
@@ -666,14 +666,14 @@ func TestPointRotateYAxis(t *testing.T) {
 	fullQuarter := NewYRotationMatrix(math.Pi / 2)
 
 	// rotate the point around the y axis Pi/4 radians
-	rotM, err := Multiply(*halfQuarter, *ptM)
+	rotM, err := Multiply(halfQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := MatrixToPoint(rotM)
 	assert.NoError(t, err)
 	assert.True(t, point.NewPoint(math.Sqrt(2)/2, 0, math.Sqrt(2)/2).Equals(rotMPoint))
 
 	// rotate the point around the y axis Pi/2 radians
-	rotM, err = Multiply(*fullQuarter, *ptM)
+	rotM, err = Multiply(fullQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err = MatrixToPoint(rotM)
 	assert.NoError(t, err)
@@ -686,14 +686,14 @@ func TestPointRotateZAxis(t *testing.T) {
 	fullQuarter := NewZRotationMatrix(math.Pi / 2)
 
 	// rotate the point around the z axis Pi/4 radians
-	rotM, err := Multiply(*halfQuarter, *ptM)
+	rotM, err := Multiply(halfQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err := MatrixToPoint(rotM)
 	assert.NoError(t, err)
 	assert.True(t, point.NewPoint(-1*math.Sqrt(2)/2, math.Sqrt(2)/2, 0).Equals(rotMPoint))
 
 	// rotate the point around the z axis Pi/2 radians
-	rotM, err = Multiply(*fullQuarter, *ptM)
+	rotM, err = Multiply(fullQuarter, ptM)
 	assert.NoError(t, err)
 	rotMPoint, err = MatrixToPoint(rotM)
 	assert.NoError(t, err)
@@ -762,7 +762,7 @@ func TestPointShearing(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mPt := PointToMatrix(tt.args.pt)
-			shearM, err := Multiply(*tt.args.transform, *mPt)
+			shearM, err := Multiply(tt.args.transform, mPt)
 			assert.NoError(t, err)
 
 			shearPt, err := MatrixToPoint(shearM)
@@ -780,21 +780,21 @@ func TestPointTransformationSequence(t *testing.T) {
 	c := NewTranslationMatrix(10, 5, 7)
 
 	// Apply rotation first
-	p2M, err := Multiply(*a, *PointToMatrix(pt))
+	p2M, err := Multiply(a, PointToMatrix(pt))
 	assert.NoError(t, err)
 	p2, err := MatrixToPoint(p2M)
 	assert.NoError(t, err)
 	assert.True(t, point.NewPoint(1, -1, 0).Equals(p2))
 
 	// Then Apply scaling
-	p3M, err := Multiply(*b, *p2M)
+	p3M, err := Multiply(b, p2M)
 	assert.NoError(t, err)
 	p3, err := MatrixToPoint(p3M)
 	assert.NoError(t, err)
 	assert.True(t, point.NewPoint(5, -5, 0).Equals(p3))
 
 	// Then apply translation
-	p4M, err := Multiply(*c, *p3M)
+	p4M, err := Multiply(c, p3M)
 	assert.NoError(t, err)
 	p4, err := MatrixToPoint(p4M)
 	assert.NoError(t, err)
@@ -807,13 +807,13 @@ func TestPointTransformationChain(t *testing.T) {
 	b := NewScalingMatrix(5, 5, 5)
 	c := NewTranslationMatrix(10, 5, 7)
 
-	m, err := Multiply(*c, *b)
+	m, err := Multiply(c, b)
 	assert.NoError(t, err)
 
-	tSeq, err := Multiply(*m, *a)
+	tSeq, err := Multiply(m, a)
 	assert.NoError(t, err)
 
-	resM, err := Multiply(*tSeq, *PointToMatrix(pt))
+	resM, err := Multiply(tSeq, PointToMatrix(pt))
 	assert.NoError(t, err)
 	resP, err := MatrixToPoint(resM)
 	assert.NoError(t, err)
@@ -827,7 +827,7 @@ func TestPointTransformationFluent(t *testing.T) {
 		Scale(5, 5, 5).
 		Translate(10, 5, 7)
 
-	resM, err := Multiply(*transform, *PointToMatrix(point.NewPoint(1, 0, 1)))
+	resM, err := Multiply(transform, PointToMatrix(point.NewPoint(1, 0, 1)))
 	assert.NoError(t, err)
 	resP, err := MatrixToPoint(resM)
 	assert.NoError(t, err)
@@ -838,7 +838,7 @@ func TestPointTransformationFluent(t *testing.T) {
 func TestTranslateVector(t *testing.T) {
 	transform := NewTranslationMatrix(5, -3, 2)
 	vec := vector.NewVector(-3, 4, 5)
-	prod, err := Multiply(*transform, *VectorToMatrix(vec))
+	prod, err := Multiply(transform, VectorToMatrix(vec))
 	assert.NoError(t, err)
 	assert.NotNil(t, prod)
 
@@ -944,7 +944,7 @@ func TestScalingVector(t *testing.T) {
 	transform := NewScalingMatrix(2, 3, 4)
 	vec := vector.NewVector(-4, 6, 8)
 
-	mult, err := Multiply(*transform, *VectorToMatrix(vec))
+	mult, err := Multiply(transform, VectorToMatrix(vec))
 	assert.NoError(t, err)
 
 	vecMult, err := MatrixToVector(mult)
@@ -955,11 +955,11 @@ func TestScalingVector(t *testing.T) {
 
 func TestScalingInverseVector(t *testing.T) {
 	transform := NewScalingMatrix(2, 3, 4)
-	invM, err := Inverse(*transform)
+	invM, err := Inverse(transform)
 	assert.NoError(t, err)
 
 	vec := vector.NewVector(-4, 6, 8)
-	mult, err := Multiply(*invM, *VectorToMatrix(vec))
+	mult, err := Multiply(invM, VectorToMatrix(vec))
 	assert.NoError(t, err)
 
 	vecMult, err := MatrixToVector(mult)
