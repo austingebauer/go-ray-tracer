@@ -138,7 +138,7 @@ func SortIntersectionsDesc(intersections []*Intersection) {
 func RaySphereIntersect(r *Ray, s *sphere.Sphere) []*Intersection {
 	// Details on calculation: https://en.wikipedia.org/wiki/Line%E2%80%93sphere_intersection
 
-	// Transform the r by the inverse of the transformation associated with the s
+	// transform the r by the inverse of the transformation associated with the s
 	// in order to use unit s. Moving the r makes for more simple math and
 	// same intersection results.
 	sphereTransformInverse, _ := matrix.Inverse(*s.Transform)

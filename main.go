@@ -145,11 +145,11 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 		*color.NewColor(1, 1, 1))
 
 	// Create a camera and add a transform to the world relative to it.
-	c := camera.NewCamera(700, 450, math.Pi/3)
-	c.Transform = *matrix.ViewTransform(
-		*point.NewPoint(0, 1.5, -5),
-		*point.NewPoint(0, 1, 0),
-		*vector.NewVector(0, 1, 0))
+	c := camera.NewCameraWithTransform(600, 400, math.Pi/3,
+		matrix.ViewTransform(
+			*point.NewPoint(0, 1.5, -5),
+			*point.NewPoint(0, 1, 0),
+			*vector.NewVector(0, 1, 0)))
 
 	// Finally, render the world using the camera to produce an image.
 	can, err := camera.Render(c, w)

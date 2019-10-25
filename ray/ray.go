@@ -31,7 +31,7 @@ func Position(ray *Ray, t float64) *point.Point {
 	return point.Add(ray.Origin, scaledDirectionVec)
 }
 
-// Transform applies the passed 4x4 transformation Matrix to the passed Ray.
+// transform applies the passed 4x4 transformation Matrix to the passed Ray.
 // Returns a new Ray with the transformed origin and direction.
 func Transform(ray *Ray, m *matrix.Matrix) (*Ray, error) {
 	if m.GetRows() != 4 || m.GetCols() != 4 {

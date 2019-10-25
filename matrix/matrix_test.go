@@ -1212,6 +1212,14 @@ func TestInverse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "inverse of 4x4 identity matrix",
+			args: args{
+				a: *NewIdentityMatrix(4),
+			},
+			want:    NewIdentityMatrix(4),
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -21,7 +21,9 @@ type Camera struct {
 	// An angle that describes how much the camera can see
 	fieldOfView float64
 	// A matrix describing how the world should be moved/oriented relative to the camera
-	Transform matrix.Matrix
+	transform matrix.Matrix
+	// The inverse of the transform matrix for this camera
+	inverseTransform matrix.Matrix
 	// The ratio of the horizontal size of the canvas to its vertical size
 	aspectRatio float64
 	// Half of the width of the canvas
@@ -35,19 +37,26 @@ type Camera struct {
 // NewCamera returns a new camera having the passed horizontal
 // and vertical size in pixels, and field of view angle.
 func NewCamera(horizontalSize int, verticalSize int, fieldOfView float64) *Camera {
-	return newCamera(horizontalSize, verticalSize, fieldOfView, matrix.NewIdentityMatrix(4))
+	return NewCameraWithTransform(horizontalSize, verticalSize, fieldOfView, matrix.NewIdentityMatrix(4))
 }
 
-func newCamera(horizontalSize int, verticalSize int, fieldOfView float64,
+// NewCameraWithTransform returns a new camera having the passed horizontal
+// and vertical size in pixels, and field of view angle, and transform.
+func NewCameraWithTransform(horizontalSize int, verticalSize int, fieldOfView float64,
 	transform *matrix.Matrix) *Camera {
 
 	c := &Camera{
 		horizontalSizeInPixels: horizontalSize,
 		verticalSizeInPixels:   verticalSize,
 		fieldOfView:            fieldOfView,
-		Transform:              *transform,
+		transform:              *transform,
 	}
 	c.prepareWorldSpaceUnits()
+
+	// Cache the inverse of the transform, which never
+	// changes and is used in rendering routines often.
+	inverseTransform, _ := matrix.Inverse(*transform)
+	c.inverseTransform = *inverseTransform
 
 	return c
 }
@@ -96,14 +105,14 @@ func RayForPixel(c *Camera, px int, py int) (*ray.Ray, error) {
 	// Using the camera matrix, transform the canvas point and
 	// the origin, and then compute the ray's direction vector.
 	// Note that the canvas is at z=-1
-	inverseTransform, err := matrix.Inverse(c.Transform)
-	if err != nil {
-		return nil, err
-	}
+	//inverseTransform, err := matrix.Inverse(c.transform)
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	pixelM := matrix.Multiply4x4(*inverseTransform,
+	pixelM := matrix.Multiply4x4(c.inverseTransform,
 		*matrix.PointToMatrix(point.NewPoint(worldX, worldY, -1)))
-	originM := matrix.Multiply4x4(*inverseTransform,
+	originM := matrix.Multiply4x4(c.inverseTransform,
 		*matrix.PointToMatrix(point.NewPoint(0, 0, 0)))
 
 	pixelPt, err := matrix.MatrixToPoint(pixelM)
