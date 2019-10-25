@@ -98,13 +98,13 @@ func (m *Matrix) Equals(m1 *Matrix) bool {
 
 // Multiply returns a new Matrix that is the result of multiplying the passed matrices.
 // If the column length in m1 is not equal to the row length in m2, an error is returned.
-func Multiply(m1, m2 *Matrix) (*Matrix, error) {
-	// To multiply an m×n matrix by an n×p matrix, the n's must be the same.
+func Multiply(m1, m2 Matrix) (*Matrix, error) {
+	// To multiply an m×n matrix by an n×p matrix, the n's must be the same
 	if m1.cols != m2.rows {
 		return nil, errors.New("column length of m1 must be equal to the row length of m2")
 	}
 
-	// The result is an m×p matrix.
+	// The result is an m×p matrix
 	multM := NewMatrix(m1.rows, m2.cols)
 
 	// Multiply the two matrices
@@ -126,7 +126,7 @@ func Multiply(m1, m2 *Matrix) (*Matrix, error) {
 
 // Multiply4x4 returns a new Matrix that is the result of multiplying the passed 4x4 matrices.
 // The passed matrices are assumed to be of 4x4 order.
-func Multiply4x4(m1, m2 *Matrix) *Matrix {
+func Multiply4x4(m1, m2 Matrix) *Matrix {
 	multM, _ := Multiply(m1, m2)
 	return multM
 }

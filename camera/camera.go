@@ -99,10 +99,10 @@ func RayForPixel(c camera, px int, py int) (*ray.Ray, error) {
 		return nil, err
 	}
 
-	pixelM := matrix.Multiply4x4(inverseTransform,
-		matrix.PointToMatrix(point.NewPoint(worldX, worldY, -1)))
-	originM := matrix.Multiply4x4(inverseTransform,
-		matrix.PointToMatrix(point.NewPoint(0, 0, 0)))
+	pixelM := matrix.Multiply4x4(*inverseTransform,
+		*matrix.PointToMatrix(point.NewPoint(worldX, worldY, -1)))
+	originM := matrix.Multiply4x4(*inverseTransform,
+		*matrix.PointToMatrix(point.NewPoint(0, 0, 0)))
 
 	pixelPt, err := matrix.MatrixToPoint(pixelM)
 	if err != nil {

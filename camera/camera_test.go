@@ -123,8 +123,8 @@ func TestRayForPixel(t *testing.T) {
 			name: "constructing a ray when the camera is transformed",
 			args: args{
 				c: *newCamera(201, 101, math.Pi/2, matrix.Multiply4x4(
-					matrix.NewYRotationMatrix(math.Pi/4),
-					matrix.NewTranslationMatrix(0, -2, 5)),
+					*matrix.NewYRotationMatrix(math.Pi / 4),
+					*matrix.NewTranslationMatrix(0, -2, 5)),
 				),
 				x: 100,
 				y: 50,

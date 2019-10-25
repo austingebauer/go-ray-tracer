@@ -171,8 +171,8 @@ func TestMatrix_Equals(t *testing.T) {
 
 func TestMultiply(t *testing.T) {
 	type args struct {
-		m1 *Matrix
-		m2 *Matrix
+		m1 Matrix
+		m2 Matrix
 	}
 	tests := []struct {
 		name      string
@@ -183,7 +183,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply two 4x4 matrices",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -193,7 +193,7 @@ func TestMultiply(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: &Matrix{
+				m2: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -219,14 +219,14 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 1x3 and 3x2 matrices",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 1,
 					cols: 3,
 					data: []float64{
 						1, 2, 3,
 					},
 				},
-				m2: &Matrix{
+				m2: Matrix{
 					rows: 3,
 					cols: 2,
 					data: []float64{
@@ -248,7 +248,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 2x3 and 3x2 matrices",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 2,
 					cols: 3,
 					data: []float64{
@@ -256,7 +256,7 @@ func TestMultiply(t *testing.T) {
 						3, 2, 1,
 					},
 				},
-				m2: &Matrix{
+				m2: Matrix{
 					rows: 3,
 					cols: 2,
 					data: []float64{
@@ -278,14 +278,14 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply two 1x1 matrices",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 1,
 					cols: 1,
 					data: []float64{
 						1,
 					},
 				},
-				m2: &Matrix{
+				m2: Matrix{
 					rows: 1,
 					cols: 1,
 					data: []float64{
@@ -305,7 +305,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply two 2x2 and 4x2 matrices for error",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 2,
 					cols: 2,
 					data: []float64{
@@ -313,7 +313,7 @@ func TestMultiply(t *testing.T) {
 						1, 1,
 					},
 				},
-				m2: &Matrix{
+				m2: Matrix{
 					rows: 4,
 					cols: 2,
 					data: []float64{
@@ -330,7 +330,7 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 4x4 matrix by 4x4 identity matrix",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -340,7 +340,7 @@ func TestMultiply(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: NewIdentityMatrix(4),
+				m2: *NewIdentityMatrix(4),
 			},
 			want: &Matrix{
 				rows: 4,
@@ -357,8 +357,8 @@ func TestMultiply(t *testing.T) {
 		{
 			name: "multiply 4x4 identity matrix by 4x1 tuple",
 			args: args{
-				m1: NewIdentityMatrix(4),
-				m2: &Matrix{
+				m1: *NewIdentityMatrix(4),
+				m2: Matrix{
 					rows: 4,
 					cols: 1,
 					data: []float64{
@@ -1230,8 +1230,8 @@ func TestInverse(t *testing.T) {
 
 func TestMultiplyProductByInverse(t *testing.T) {
 	type args struct {
-		a *Matrix
-		b *Matrix
+		a Matrix
+		b Matrix
 	}
 
 	tests := []struct {
@@ -1241,7 +1241,7 @@ func TestMultiplyProductByInverse(t *testing.T) {
 		{
 			name: "matrix product (c = a * b) multiplied by its inverse (c * inverse(b) = a)",
 			args: args{
-				a: &Matrix{
+				a: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1251,7 +1251,7 @@ func TestMultiplyProductByInverse(t *testing.T) {
 						-6, 5, -1, 1,
 					},
 				},
-				b: &Matrix{
+				b: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1278,19 +1278,19 @@ func TestMultiplyProductByInverse(t *testing.T) {
 			assert.NotNil(t, cB)
 
 			// a = cA * inverse(b)
-			inverseB, err := Inverse(*tt.args.b)
+			inverseB, err := Inverse(tt.args.b)
 			assert.NoError(t, err)
 			assert.NotNil(t, inverseB)
-			shouldBeA, err := Multiply(cA, inverseB)
+			shouldBeA, err := Multiply(*cA, *inverseB)
 			assert.NoError(t, err)
 			assert.NotNil(t, shouldBeA)
 			assert.True(t, tt.args.a.Equals(shouldBeA))
 
 			// b = cB * inverse(a)
-			inverseA, err := Inverse(*tt.args.a)
+			inverseA, err := Inverse(tt.args.a)
 			assert.NoError(t, err)
 			assert.NotNil(t, inverseA)
-			shouldBeB, err := Multiply(cB, inverseA)
+			shouldBeB, err := Multiply(*cB, *inverseA)
 			assert.NoError(t, err)
 			assert.NotNil(t, shouldBeB)
 			assert.True(t, tt.args.b.Equals(shouldBeB))
@@ -1635,8 +1635,8 @@ func TestCheckInBounds(t *testing.T) {
 
 func TestMultiply4x4(t *testing.T) {
 	type args struct {
-		m1 *Matrix
-		m2 *Matrix
+		m1 Matrix
+		m2 Matrix
 	}
 	tests := []struct {
 		name string
@@ -1646,7 +1646,7 @@ func TestMultiply4x4(t *testing.T) {
 		{
 			name: "multiply two 4x4 matrices",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1656,7 +1656,7 @@ func TestMultiply4x4(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: &Matrix{
+				m2: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1681,7 +1681,7 @@ func TestMultiply4x4(t *testing.T) {
 		{
 			name: "multiply 4x4 matrix by 4x4 identity matrix",
 			args: args{
-				m1: &Matrix{
+				m1: Matrix{
 					rows: 4,
 					cols: 4,
 					data: []float64{
@@ -1691,7 +1691,7 @@ func TestMultiply4x4(t *testing.T) {
 						5, 4, 3, 2,
 					},
 				},
-				m2: NewIdentityMatrix(4),
+				m2: *NewIdentityMatrix(4),
 			},
 			want: &Matrix{
 				rows: 4,

@@ -48,7 +48,8 @@ func NormalAt(s *Sphere, worldSpacePoint *point.Point) (*vector.Vector, error) {
 	}
 
 	// Convert the passed point in world space into a point in object space
-	objectSpacePointM, err := matrix.Multiply(inverseTransform, matrix.PointToMatrix(worldSpacePoint))
+	objectSpacePointM, err := matrix.Multiply(*inverseTransform,
+		*matrix.PointToMatrix(worldSpacePoint))
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,8 @@ func NormalAt(s *Sphere, worldSpacePoint *point.Point) (*vector.Vector, error) {
 	// Convert the object space normal vector back to world space by multiplying
 	// by the transposed, inverse of the transform applied to the sphere.
 	transposedInverseTransform := matrix.Transpose(*inverseTransform)
-	worldSpaceNormalM, err := matrix.Multiply(transposedInverseTransform, matrix.VectorToMatrix(objectSpaceNormal))
+	worldSpaceNormalM, err := matrix.Multiply(*transposedInverseTransform,
+		*matrix.VectorToMatrix(objectSpaceNormal))
 	if err != nil {
 		return nil, err
 	}

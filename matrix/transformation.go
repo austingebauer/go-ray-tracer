@@ -109,8 +109,7 @@ func NewShearingMatrix(xy, xz, yx, yz, zx, zy float64) *Matrix {
 
 // Translate translates this Matrix by the passed x, y, and z values.
 func (m *Matrix) Translate(x, y, z float64) *Matrix {
-	transform := NewTranslationMatrix(x, y, z)
-	mRes, _ := Multiply(transform, m)
+	mRes, _ := Multiply(*NewTranslationMatrix(x, y, z), *m)
 	m.data = mRes.data
 	m.rows = mRes.rows
 	m.cols = mRes.cols
@@ -119,8 +118,7 @@ func (m *Matrix) Translate(x, y, z float64) *Matrix {
 
 // Scale scales this Matrix by the passed x, y, and z values.
 func (m *Matrix) Scale(x, y, z float64) *Matrix {
-	transform := NewScalingMatrix(x, y, z)
-	mRes, _ := Multiply(transform, m)
+	mRes, _ := Multiply(*NewScalingMatrix(x, y, z), *m)
 	m.data = mRes.data
 	m.rows = mRes.rows
 	m.cols = mRes.cols
@@ -130,8 +128,7 @@ func (m *Matrix) Scale(x, y, z float64) *Matrix {
 // RotateX rotates this Matrix around the x-axis by the passed number of radians.
 // Rotation happens clockwise when looking down the positive x-axis towards the negative x-axis.
 func (m *Matrix) RotateX(radians float64) *Matrix {
-	transform := NewXRotationMatrix(radians)
-	mRes, _ := Multiply(transform, m)
+	mRes, _ := Multiply(*NewXRotationMatrix(radians), *m)
 	m.data = mRes.data
 	m.rows = mRes.rows
 	m.cols = mRes.cols
@@ -141,8 +138,7 @@ func (m *Matrix) RotateX(radians float64) *Matrix {
 // RotateY rotates this Matrix around the y-axis by the passed number of radians.
 // Rotation happens clockwise when looking down the positive y-axis towards the negative y-axis.
 func (m *Matrix) RotateY(radians float64) *Matrix {
-	transform := NewYRotationMatrix(radians)
-	mRes, _ := Multiply(transform, m)
+	mRes, _ := Multiply(*NewYRotationMatrix(radians), *m)
 	m.data = mRes.data
 	m.rows = mRes.rows
 	m.cols = mRes.cols
@@ -152,8 +148,7 @@ func (m *Matrix) RotateY(radians float64) *Matrix {
 // RotateZ rotates this Matrix around the z-axis by the passed number of radians.
 // Rotation happens clockwise when looking down the positive z-axis towards the negative z-axis.
 func (m *Matrix) RotateZ(radians float64) *Matrix {
-	transform := NewZRotationMatrix(radians)
-	mRes, _ := Multiply(transform, m)
+	mRes, _ := Multiply(*NewZRotationMatrix(radians), *m)
 	m.data = mRes.data
 	m.rows = mRes.rows
 	m.cols = mRes.cols
@@ -163,8 +158,7 @@ func (m *Matrix) RotateZ(radians float64) *Matrix {
 // Shear shears or skews this Matrix in on coordinate relative to another coordinate.
 // For example, the parameter xy represents how much to shear x relative to y.
 func (m *Matrix) Shear(xy, xz, yx, yz, zx, zy float64) *Matrix {
-	transform := NewShearingMatrix(xy, xz, yx, yz, zx, zy)
-	mRes, _ := Multiply(transform, m)
+	mRes, _ := Multiply(*NewShearingMatrix(xy, xz, yx, yz, zx, zy), *m)
 	m.data = mRes.data
 	m.rows = mRes.rows
 	m.cols = mRes.cols
@@ -207,7 +201,7 @@ func ViewTransform(from, to point.Point, up vector.Vector) *Matrix {
 	// Multiply the orientation transformation by a translation transformation
 	// in order to move the scene into place before orienting it.
 	translationM := NewTranslationMatrix(-1*from.X, -1*from.Y, -1*from.Z)
-	viewTransformM, _ := Multiply(orientationM, translationM)
+	viewTransformM, _ := Multiply(*orientationM, *translationM)
 	return viewTransformM
 }
 

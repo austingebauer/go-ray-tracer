@@ -174,7 +174,7 @@ func TestNormalAt(t *testing.T) {
 			// Set up the transforms to apply to the sphere
 			transform := tt.args.s.Transform
 			for _, sphereTransform := range tt.args.transforms {
-				transform, _ = matrix.Multiply(transform, sphereTransform)
+				transform, _ = matrix.Multiply(*transform, *sphereTransform)
 				assert.NoError(t, err)
 			}
 			tt.args.s.SetTransform(transform)
@@ -182,9 +182,7 @@ func TestNormalAt(t *testing.T) {
 			// Assert that normal vector is what we expect and is normalized
 			normalVector, err := NormalAt(tt.args.s, tt.args.p)
 			assert.NoError(t, err)
-
 			if !assert.True(t, tt.want.Equals(normalVector)) {
-				// Log difference if vectors are not equal
 				assert.Equal(t, tt.want, normalVector)
 			}
 			assert.Equal(t, 1.0, normalVector.Magnitude())
