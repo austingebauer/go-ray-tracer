@@ -42,7 +42,7 @@ func (s *Sphere) SetTransform(m *matrix.Matrix) {
 // The function assumes that the passed Point will always be on the surface of the sphere.
 func NormalAt(s *Sphere, worldSpacePoint *point.Point) (*vector.Vector, error) {
 	// Get the inverse of the transform applied to the sphere
-	inverseTransform, err := matrix.Inverse(s.Transform)
+	inverseTransform, err := matrix.Inverse(*s.Transform)
 	if err != nil {
 		return nil, err
 	}

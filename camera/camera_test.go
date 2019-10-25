@@ -2,6 +2,9 @@ package camera
 
 import (
 	"github.com/austingebauer/go-ray-tracer/matrix"
+	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/ray"
+	"github.com/austingebauer/go-ray-tracer/vector"
 	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
@@ -30,14 +33,113 @@ func TestNewCamera1(t *testing.T) {
 				verticalSizeInPixels:   120,
 				fieldOfView:            math.Pi / 2,
 				transform:              *matrix.NewIdentityMatrix(4),
+				aspectRatio:            1.3333333333333333,
+				halfWidth:              1,
+				halfHeight:             0.75,
+				pixelSize:              0.0125,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equal(t, tt.want,
-				// TODO: use float64equals for floating point comparison
 				NewCamera(tt.args.horizontalSize, tt.args.verticalSize, tt.args.fieldOfView))
+		})
+	}
+}
+
+func TestPixelSize(t *testing.T) {
+	type args struct {
+		horizontalSize int
+		verticalSize   int
+		fieldOfView    float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want float64
+	}{
+		{
+			name: "pixel size for camera with a horizontal aspect (horizontalSize > verticalSize)",
+			args: args{
+				horizontalSize: 200,
+				verticalSize:   125,
+				fieldOfView:    math.Pi / 2,
+			},
+			want: 0.01,
+		},
+		{
+			name: "pixel size for camera with a vertical aspect (verticalSize > horizontalSize)",
+			args: args{
+				horizontalSize: 125,
+				verticalSize:   200,
+				fieldOfView:    math.Pi / 2,
+			},
+			want: 0.01,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewCamera(tt.args.horizontalSize, tt.args.verticalSize, tt.args.fieldOfView)
+			assert.Equal(t, tt.want, c.pixelSize)
+		})
+	}
+}
+
+func TestRayForPixel(t *testing.T) {
+	type args struct {
+		c camera
+		x int
+		y int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *ray.Ray
+	}{
+		{
+			name: "constructing a ray through the center of the canvas",
+			args: args{
+				c: *NewCamera(201, 101, math.Pi/2),
+				x: 100,
+				y: 50,
+			},
+			want: ray.NewRay(
+				*point.NewPoint(0, 0, 0),
+				*vector.NewVector(0, 0, -1)),
+		},
+		{
+			name: "constructing a ray through a corner of the canvas",
+			args: args{
+				c: *NewCamera(201, 101, math.Pi/2),
+				x: 0,
+				y: 0,
+			},
+			want: ray.NewRay(
+				*point.NewPoint(0, 0, 0),
+				*vector.NewVector(0.66519, 0.33259, -0.66851)),
+		},
+		{
+			name: "constructing a ray when the camera is transformed",
+			args: args{
+				c: *newCamera(201, 101, math.Pi/2, matrix.Multiply4x4(
+					matrix.NewYRotationMatrix(math.Pi/4),
+					matrix.NewTranslationMatrix(0, -2, 5)),
+				),
+				x: 100,
+				y: 50,
+			},
+			want: ray.NewRay(
+				*point.NewPoint(0, 2, -5),
+				*vector.NewVector(math.Sqrt(2)/2, 0, -1*math.Sqrt(2)/2)),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r, err := RayForPixel(tt.args.c, tt.args.x, tt.args.y)
+			assert.NoError(t, err)
+			// TODO: Use float64 equals for equality comparison here
+			assert.Equal(t, tt.want, r)
 		})
 	}
 }

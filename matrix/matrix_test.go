@@ -1632,3 +1632,84 @@ func TestCheckInBounds(t *testing.T) {
 		})
 	}
 }
+
+func TestMultiply4x4(t *testing.T) {
+	type args struct {
+		m1 *Matrix
+		m2 *Matrix
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Matrix
+	}{
+		{
+			name: "multiply two 4x4 matrices",
+			args: args{
+				m1: &Matrix{
+					rows: 4,
+					cols: 4,
+					data: []float64{
+						1, 2, 3, 4,
+						5, 6, 7, 8,
+						9, 8, 7, 6,
+						5, 4, 3, 2,
+					},
+				},
+				m2: &Matrix{
+					rows: 4,
+					cols: 4,
+					data: []float64{
+						-2, 1, 2, 3,
+						3, 2, 1, -1,
+						4, 3, 6, 5,
+						1, 2, 7, 8,
+					},
+				},
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: []float64{
+					20, 22, 50, 48,
+					44, 54, 114, 108,
+					40, 58, 110, 102,
+					16, 26, 46, 42,
+				},
+			},
+		},
+		{
+			name: "multiply 4x4 matrix by 4x4 identity matrix",
+			args: args{
+				m1: &Matrix{
+					rows: 4,
+					cols: 4,
+					data: []float64{
+						1, 2, 3, 4,
+						5, 6, 7, 8,
+						9, 8, 7, 6,
+						5, 4, 3, 2,
+					},
+				},
+				m2: NewIdentityMatrix(4),
+			},
+			want: &Matrix{
+				rows: 4,
+				cols: 4,
+				data: []float64{
+					1, 2, 3, 4,
+					5, 6, 7, 8,
+					9, 8, 7, 6,
+					5, 4, 3, 2,
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			m := Multiply4x4(tt.args.m1, tt.args.m2)
+			assert.Equal(t, tt.want, m)
+			assert.Equal(t, true, m.Equals(tt.want))
+		})
+	}
+}

@@ -3,6 +3,9 @@ package camera
 
 import (
 	"github.com/austingebauer/go-ray-tracer/matrix"
+	"github.com/austingebauer/go-ray-tracer/point"
+	"github.com/austingebauer/go-ray-tracer/ray"
+	"github.com/austingebauer/go-ray-tracer/vector"
 	"math"
 )
 
@@ -15,7 +18,7 @@ type camera struct {
 	verticalSizeInPixels int
 	// An angle that describes how much the camera can see
 	fieldOfView float64
-	// A matrix describing how the world should be oriented relative to the camera
+	// A matrix describing how the world should be moved/oriented relative to the camera
 	transform matrix.Matrix
 	// The ratio of the horizontal size of the canvas to its vertical size
 	aspectRatio float64
@@ -30,14 +33,18 @@ type camera struct {
 // NewCamera returns a new camera having the passed horizontal
 // and vertical size in pixels, and field of view angle.
 func NewCamera(horizontalSize int, verticalSize int, fieldOfView float64) *camera {
+	return newCamera(horizontalSize, verticalSize, fieldOfView, matrix.NewIdentityMatrix(4))
+}
+
+func newCamera(horizontalSize int, verticalSize int, fieldOfView float64,
+	transform *matrix.Matrix) *camera {
+
 	c := &camera{
 		horizontalSizeInPixels: horizontalSize,
 		verticalSizeInPixels:   verticalSize,
 		fieldOfView:            fieldOfView,
-		transform:              *matrix.NewIdentityMatrix(4),
+		transform:              *transform,
 	}
-
-	// Prepare the camera with important world space units
 	c.prepareWorldSpaceUnits()
 
 	return c
@@ -70,4 +77,42 @@ func (c *camera) prepareWorldSpaceUnits() {
 	// the pixel size. Note that the assumption here is that the pixels are
 	// square, so there is no need to compute the vertical size of the pixel.
 	c.pixelSize = (c.halfWidth * 2) / float64(c.horizontalSizeInPixels)
+}
+
+// RayForPixel returns a new ray that starts at the passed camera
+// and passes through the indicated (x, y) pixel on the canvas.
+func RayForPixel(c camera, px int, py int) (*ray.Ray, error) {
+	// Compute the offset from the left edge of the canvas to the pixel's center
+	xOffset := c.pixelSize * (float64(px) + 0.5)
+	YOffset := c.pixelSize * (float64(py) + 0.5)
+
+	// The untransformed coordinates of the pixel in world space.
+	// Note that the camera looks toward -z, so +x is to the left.
+	worldX := c.halfWidth - xOffset
+	worldY := c.halfHeight - YOffset
+
+	// Using the camera matrix, transform the canvas point and
+	// the origin, and then compute the ray's direction vector.
+	// Note that the canvas is at z=-1
+	inverseTransform, err := matrix.Inverse(c.transform)
+	if err != nil {
+		return nil, err
+	}
+
+	pixelM := matrix.Multiply4x4(inverseTransform,
+		matrix.PointToMatrix(point.NewPoint(worldX, worldY, -1)))
+	originM := matrix.Multiply4x4(inverseTransform,
+		matrix.PointToMatrix(point.NewPoint(0, 0, 0)))
+
+	pixelPt, err := matrix.MatrixToPoint(pixelM)
+	if err != nil {
+		return nil, err
+	}
+	originPt, err := matrix.MatrixToPoint(originM)
+	if err != nil {
+		return nil, err
+	}
+
+	directionVec := vector.Normalize(*point.Subtract(*pixelPt, *originPt))
+	return ray.NewRay(*originPt, *directionVec), nil
 }

@@ -47,7 +47,7 @@ func (m *Matrix) GetCols() uint {
 
 // SetValue sets the passed value at the passed row and column in the Matrix.
 func (m *Matrix) SetValue(row, col uint, val float64) error {
-	err := CheckInBounds(m, row, col)
+	err := CheckInBounds(*m, row, col)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func (m *Matrix) setValue(row, col uint, val float64) {
 
 // GetValue sets the passed value at the passed row and column in the Matrix.
 func (m *Matrix) GetValue(row, col uint) (float64, error) {
-	err := CheckInBounds(m, row, col)
+	err := CheckInBounds(*m, row, col)
 	if err != nil {
 		return 0, err
 	}
@@ -124,6 +124,13 @@ func Multiply(m1, m2 *Matrix) (*Matrix, error) {
 	return multM, nil
 }
 
+// Multiply4x4 returns a new Matrix that is the result of multiplying the passed 4x4 matrices.
+// The passed matrices are assumed to be of 4x4 order.
+func Multiply4x4(m1, m2 *Matrix) *Matrix {
+	multM, _ := Multiply(m1, m2)
+	return multM
+}
+
 // Transpose returns a new Matrix that is the result of transposing the passed Matrix.
 // Transposing a Matrix turns the nth row into the nth column in the resulting Matrix.
 func Transpose(m Matrix) *Matrix {
@@ -140,7 +147,7 @@ func Transpose(m Matrix) *Matrix {
 
 // Determinant calculate and returns the determinant of the passed Matrix.
 // If the passed Matrix is not a square matrix, then an error is returned.
-func Determinant(m *Matrix) (float64, error) {
+func Determinant(m Matrix) (float64, error) {
 	if m.rows != m.cols {
 		return 0, errors.New("m must be a square matrix with equal row and column lengths")
 	}
@@ -173,7 +180,7 @@ func Determinant(m *Matrix) (float64, error) {
 // the passed row and column index from the passed Matrix.
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
-func Submatrix(m *Matrix, row, col uint) (*Matrix, error) {
+func Submatrix(m Matrix, row, col uint) (*Matrix, error) {
 	err := CheckInBounds(m, row, col)
 	if err != nil {
 		return nil, err
@@ -211,13 +218,13 @@ func Submatrix(m *Matrix, row, col uint) (*Matrix, error) {
 // Minor returns the determinant of the submatrix.
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
-func Minor(m *Matrix, row, col uint) (float64, error) {
+func Minor(m Matrix, row, col uint) (float64, error) {
 	subM, err := Submatrix(m, row, col)
 	if err != nil {
 		return 0, err
 	}
 
-	det, err := Determinant(subM)
+	det, err := Determinant(*subM)
 	if err != nil {
 		return 0, err
 	}
@@ -228,7 +235,7 @@ func Minor(m *Matrix, row, col uint) (float64, error) {
 // Cofactor returns the cofactor of the submatrix.
 // If the passed row or col are not in bounds of the passed Matrix,
 // then an error is returned.
-func Cofactor(m *Matrix, row, col uint) (float64, error) {
+func Cofactor(m Matrix, row, col uint) (float64, error) {
 	minor, err := Minor(m, row, col)
 	if err != nil {
 		return 0, err
@@ -246,7 +253,7 @@ func Cofactor(m *Matrix, row, col uint) (float64, error) {
 
 // IsInvertible returns true if the passed Matrix is invertible.
 // The passed Matrix is invertible if it's determinant is equal to 0.
-func IsInvertible(m *Matrix) bool {
+func IsInvertible(m Matrix) bool {
 	det, err := Determinant(m)
 	if err != nil {
 		return false
@@ -255,7 +262,7 @@ func IsInvertible(m *Matrix) bool {
 }
 
 // Inverse returns the inverse of the passed Matrix.
-func Inverse(m *Matrix) (*Matrix, error) {
+func Inverse(m Matrix) (*Matrix, error) {
 	if !IsInvertible(m) {
 		return nil, errors.New("the passed matrix is not invertible")
 	}
@@ -268,7 +275,7 @@ func Inverse(m *Matrix) (*Matrix, error) {
 	// Place the cofactor of each element divided by the determinant into a transposition of m.
 	for row := uint(0); row < m.rows; row++ {
 		for col := uint(0); col < m.cols; col++ {
-			c, err := Cofactor(m, uint(row), uint(col))
+			c, err := Cofactor(m, row, col)
 			if err != nil {
 				return nil, err
 			}
@@ -283,7 +290,7 @@ func Inverse(m *Matrix) (*Matrix, error) {
 
 // CheckInBounds returns an error if either the row or column values
 // are out of bounds of the passed Matrix.
-func CheckInBounds(m *Matrix, row, col uint) error {
+func CheckInBounds(m Matrix, row, col uint) error {
 	if row < 0 || row >= m.rows {
 		return errors.New("row is out of bounds of the passed matrix")
 	}

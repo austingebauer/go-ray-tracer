@@ -138,3 +138,45 @@ func TestTransform(t *testing.T) {
 		})
 	}
 }
+
+func TestEquals(t *testing.T) {
+	type args struct {
+		r1 *Ray
+		r2 *Ray
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "rays have equal origin and direction",
+			args: args{
+				r1: NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(1, 0, 0)),
+				r2: NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(1, 0, 0)),
+			},
+			want: true,
+		},
+		{
+			name: "rays do not have equal origin",
+			args: args{
+				r1: NewRay(*point.NewPoint(1, 0, 0), *vector.NewVector(1, 0, 0)),
+				r2: NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(1, 0, 0)),
+			},
+			want: false,
+		},
+		{
+			name: "rays do not have equal direction",
+			args: args{
+				r1: NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(-1, 0, 0)),
+				r2: NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(1, 0, 0)),
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, Equals(tt.args.r1, tt.args.r2))
+		})
+	}
+}

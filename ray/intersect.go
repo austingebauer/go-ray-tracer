@@ -141,7 +141,7 @@ func RaySphereIntersect(r *Ray, s *sphere.Sphere) []*Intersection {
 	// Transform the r by the inverse of the transformation associated with the s
 	// in order to use unit s. Moving the r makes for more simple math and
 	// same intersection results.
-	sphereTransformInverse, _ := matrix.Inverse(s.Transform)
+	sphereTransformInverse, _ := matrix.Inverse(*s.Transform)
 	transformedRay, _ := Transform(r, sphereTransformInverse)
 
 	// The vector from the s origin to the r origin.

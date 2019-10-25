@@ -48,3 +48,9 @@ func Transform(ray *Ray, m *matrix.Matrix) (*Ray, error) {
 
 	return NewRay(*transformedOriginPoint, *transformedDirectionVector), nil
 }
+
+// Equals returns true if both of the given rays have the same
+// origin point and direction vector. Otherwise, returns false.
+func Equals(r1, r2 *Ray) bool {
+	return r1.Origin.Equals(r2.Origin) && r1.Direction.Equals(r2.Direction)
+}
