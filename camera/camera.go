@@ -21,7 +21,7 @@ type Camera struct {
 	// An angle that describes how much the camera can see
 	fieldOfView float64
 	// A matrix describing how the world should be moved/oriented relative to the camera
-	transform matrix.Matrix
+	Transform matrix.Matrix
 	// The ratio of the horizontal size of the canvas to its vertical size
 	aspectRatio float64
 	// Half of the width of the canvas
@@ -45,7 +45,7 @@ func newCamera(horizontalSize int, verticalSize int, fieldOfView float64,
 		horizontalSizeInPixels: horizontalSize,
 		verticalSizeInPixels:   verticalSize,
 		fieldOfView:            fieldOfView,
-		transform:              *transform,
+		Transform:              *transform,
 	}
 	c.prepareWorldSpaceUnits()
 
@@ -96,7 +96,7 @@ func RayForPixel(c *Camera, px int, py int) (*ray.Ray, error) {
 	// Using the camera matrix, transform the canvas point and
 	// the origin, and then compute the ray's direction vector.
 	// Note that the canvas is at z=-1
-	inverseTransform, err := matrix.Inverse(c.transform)
+	inverseTransform, err := matrix.Inverse(c.Transform)
 	if err != nil {
 		return nil, err
 	}

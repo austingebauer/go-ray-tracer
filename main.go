@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/austingebauer/go-ray-tracer/camera"
 	"github.com/austingebauer/go-ray-tracer/canvas"
 	"github.com/austingebauer/go-ray-tracer/color"
 	"github.com/austingebauer/go-ray-tracer/light"
@@ -11,6 +12,7 @@ import (
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
 	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/austingebauer/go-ray-tracer/world"
 	"log"
 	"math"
 	"os"
@@ -25,6 +27,10 @@ type rendering struct {
 
 func main() {
 	renderings := []rendering{
+		{
+			routine:    RenderRayTracedWorld3D,
+			outputFile: "docs/renderings/world_3d/world_3d.ppm",
+		},
 		{
 			routine:    RenderRayTracedSphere3D,
 			outputFile: "docs/renderings/sphere_3d/sphere_3d.ppm",
@@ -61,6 +67,97 @@ func main() {
 
 	// Log the elapsed time
 	fmt.Printf("Render time: %v seconds\n\n", time.Now().Sub(startTime).Seconds())
+}
+
+// RenderRayTracedWorld3D renders a 3D world.
+func RenderRayTracedWorld3D() *canvas.Canvas {
+	// The floor is an flattened sphere with a matte texture.
+	floor := sphere.NewUnitSphere("floor")
+	floor.Transform = matrix.NewScalingMatrix(10, 0.01, 10)
+	floor.Material = material.NewDefaultMaterial()
+	floor.Material.Color = *color.NewColor(1, 0.9, 0.9)
+	floor.Material.Specular = 0
+
+	// The wall to the left has the same scale and color as the floor,
+	// but is also rotated and translated into place.
+	leftWall := sphere.NewUnitSphere("leftWall")
+	leftWall.Transform = matrix.Multiply4x4(
+		*matrix.Multiply4x4(*matrix.Multiply4x4(
+			*matrix.NewTranslationMatrix(0, 0, 5),
+			*matrix.NewYRotationMatrix(-1 * (math.Pi / 4))),
+			*matrix.NewXRotationMatrix(math.Pi / 2)),
+		*matrix.NewScalingMatrix(10, 0.01, 10))
+	leftWall.Material = floor.Material
+
+	// The wall to the right is identical to the left wall,
+	// but is rotated the opposite direction in y.
+	rightWall := sphere.NewUnitSphere("rightWall")
+	rightWall.Transform = matrix.Multiply4x4(
+		*matrix.Multiply4x4(*matrix.Multiply4x4(
+			*matrix.NewTranslationMatrix(0, 0, 5),
+			*matrix.NewYRotationMatrix(math.Pi / 4)),
+			*matrix.NewXRotationMatrix(math.Pi / 2)),
+		*matrix.NewScalingMatrix(10, 0.01, 10))
+	rightWall.Material = floor.Material
+
+	// The large sphere in the middle is a unit sphere that's
+	// translated upward slightly and colored green.
+	middle := sphere.NewUnitSphere("middle")
+	middle.Transform = matrix.NewTranslationMatrix(-0.5, 1, 0.5)
+	middle.Material = material.NewDefaultMaterial()
+	middle.Material.Color = *color.NewColor(0.1, 1, 0.5)
+	middle.Material.Diffuse = 0.7
+	middle.Material.Specular = 0.3
+
+	// The green sphere on the right is scaled in half.
+	right := sphere.NewUnitSphere("right")
+	right.Transform = matrix.Multiply4x4(
+		*matrix.NewTranslationMatrix(1.5, 0.5, -0.5),
+		*matrix.NewScalingMatrix(0.5, 0.5, 0.5))
+	right.Material = material.NewDefaultMaterial()
+	right.Material.Color = *color.NewColor(0.5, 1, 0.1)
+	right.Material.Diffuse = 0.7
+	right.Material.Specular = 0.3
+
+	// The olive sphere on the left is scaled in 1/3.
+	left := sphere.NewUnitSphere("left")
+	left.Transform = matrix.Multiply4x4(
+		*matrix.NewTranslationMatrix(-1.5, 0.33, -0.75),
+		*matrix.NewScalingMatrix(0.33, 0.33, 0.33))
+	left.Material = material.NewDefaultMaterial()
+	left.Material.Color = *color.NewColor(1, 0.8, 0.1)
+	left.Material.Diffuse = 0.7
+	left.Material.Specular = 0.3
+
+	// Add all of the spheres to an empty world.
+	w := world.NewWorld()
+	w.Objects = []*sphere.Sphere{
+		floor,
+		leftWall,
+		rightWall,
+		middle,
+		right,
+		left,
+	}
+	// The light source is white, shining from above and to the left.
+	w.Light = light.NewPointLight(
+		*point.NewPoint(-10, 10, -10),
+		*color.NewColor(1, 1, 1))
+
+	// Create a camera and add a transform to the world relative to it.
+	c := camera.NewCamera(700, 450, math.Pi/3)
+	c.Transform = *matrix.ViewTransform(
+		*point.NewPoint(0, 1.5, -5),
+		*point.NewPoint(0, 1, 0),
+		*vector.NewVector(0, 1, 0))
+
+	// Finally, render the world using the camera to produce an image.
+	can, err := camera.Render(c, w)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return can
 }
 
 // RenderRayTracedSphere3D renders a 3D ray traced sphere.

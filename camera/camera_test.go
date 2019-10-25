@@ -35,7 +35,7 @@ func TestNewCamera1(t *testing.T) {
 				horizontalSizeInPixels: 160,
 				verticalSizeInPixels:   120,
 				fieldOfView:            math.Pi / 2,
-				transform:              *matrix.NewIdentityMatrix(4),
+				Transform:              *matrix.NewIdentityMatrix(4),
 				aspectRatio:            1.3333333333333333,
 				halfWidth:              1,
 				halfHeight:             0.75,
