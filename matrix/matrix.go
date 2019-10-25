@@ -169,7 +169,7 @@ func Determinant(m Matrix) (float64, error) {
 	var det float64
 	row := uint(0)
 	for col := uint(0); col < m.cols; col++ {
-		cofactor, _ := Cofactor(m, uint(row), uint(col))
+		cofactor, _ := Cofactor(m, row, col)
 		det = det + (m.getValue(row, col) * cofactor)
 	}
 

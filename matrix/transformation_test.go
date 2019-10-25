@@ -511,7 +511,7 @@ func TestInverseTransformPoint(t *testing.T) {
 	p := point.NewPoint(-3, 4, 5)
 	transform := NewTranslationMatrix(5, -3, 2)
 
-	inverseT, err := Inverse(transform)
+	inverseT, err := Inverse(*transform)
 	assert.NoError(t, err)
 	assert.NotNil(t, inverseT)
 
@@ -955,7 +955,7 @@ func TestScalingVector(t *testing.T) {
 
 func TestScalingInverseVector(t *testing.T) {
 	transform := NewScalingMatrix(2, 3, 4)
-	invM, err := Inverse(transform)
+	invM, err := Inverse(*transform)
 	assert.NoError(t, err)
 
 	vec := vector.NewVector(-4, 6, 8)

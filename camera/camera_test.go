@@ -138,8 +138,10 @@ func TestRayForPixel(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			r, err := RayForPixel(tt.args.c, tt.args.x, tt.args.y)
 			assert.NoError(t, err)
-			// TODO: Use float64 equals for equality comparison here
-			assert.Equal(t, tt.want, r)
+
+			if !assert.True(t, ray.Equals(tt.want, r)) {
+				assert.Equal(t, tt.want, r)
+			}
 		})
 	}
 }
