@@ -2,16 +2,18 @@
 package camera
 
 import (
+	"github.com/austingebauer/go-ray-tracer/canvas"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/austingebauer/go-ray-tracer/world"
 	"math"
 )
 
-// camera is a virtual camera that can be moved around,
+// Camera is a virtual Camera that can be moved around,
 // zoomed in and out, and transformed around a scene.
-type camera struct {
+type Camera struct {
 	// The horizontal size in pixels
 	horizontalSizeInPixels int
 	// The vertical size in pixels
@@ -32,14 +34,14 @@ type camera struct {
 
 // NewCamera returns a new camera having the passed horizontal
 // and vertical size in pixels, and field of view angle.
-func NewCamera(horizontalSize int, verticalSize int, fieldOfView float64) *camera {
+func NewCamera(horizontalSize int, verticalSize int, fieldOfView float64) *Camera {
 	return newCamera(horizontalSize, verticalSize, fieldOfView, matrix.NewIdentityMatrix(4))
 }
 
 func newCamera(horizontalSize int, verticalSize int, fieldOfView float64,
-	transform *matrix.Matrix) *camera {
+	transform *matrix.Matrix) *Camera {
 
-	c := &camera{
+	c := &Camera{
 		horizontalSizeInPixels: horizontalSize,
 		verticalSizeInPixels:   verticalSize,
 		fieldOfView:            fieldOfView,
@@ -52,7 +54,7 @@ func newCamera(horizontalSize int, verticalSize int, fieldOfView float64,
 
 // prepareWorldSpaceUnits sets attributes on this camera related to world space units.
 // It sets the cameras pixel size, half its width and height, and the aspect ratio.
-func (c *camera) prepareWorldSpaceUnits() {
+func (c *Camera) prepareWorldSpaceUnits() {
 	// Compute the width of half of the canvas by taking the tangent of half of the field of view.
 	// Cutting the field of view in half creates a right triangle on the canvas, which is 1 unit
 	// away from the camera. The adjacent is 1 and the opposite is half of the canvas.
@@ -81,7 +83,7 @@ func (c *camera) prepareWorldSpaceUnits() {
 
 // RayForPixel returns a new ray that starts at the passed camera
 // and passes through the indicated (x, y) pixel on the canvas.
-func RayForPixel(c camera, px int, py int) (*ray.Ray, error) {
+func RayForPixel(c *Camera, px int, py int) (*ray.Ray, error) {
 	// Compute the offset from the left edge of the canvas to the pixel's center
 	xOffset := c.pixelSize * (float64(px) + 0.5)
 	YOffset := c.pixelSize * (float64(py) + 0.5)
@@ -115,4 +117,34 @@ func RayForPixel(c camera, px int, py int) (*ray.Ray, error) {
 
 	directionVec := vector.Normalize(*point.Subtract(*pixelPt, *originPt))
 	return ray.NewRay(*originPt, *directionVec), nil
+}
+
+// Render uses the passed camera to render the passed world into a canvas.
+func Render(c *Camera, w *world.World) (*canvas.Canvas, error) {
+	image := canvas.NewCanvas(c.horizontalSizeInPixels, c.verticalSizeInPixels)
+
+	// For each pixel of the camera
+	for y := 0; y < c.verticalSizeInPixels; y++ {
+		for x := 0; x < c.horizontalSizeInPixels; x++ {
+			// Compute the ray for the current pixel
+			r, err := RayForPixel(c, x, y)
+			if err != nil {
+				return nil, err
+			}
+
+			// Intersect the ray with the world to get the color at the intersection
+			c, err := world.ColorAt(w, r)
+			if err != nil {
+				return nil, err
+			}
+
+			// Write the color to the canvas at the current pixel
+			err = image.WritePixel(x, y, *c)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return image, nil
 }

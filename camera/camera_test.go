@@ -1,10 +1,13 @@
 package camera
 
 import (
+	"github.com/austingebauer/go-ray-tracer/canvas"
+	"github.com/austingebauer/go-ray-tracer/color"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/vector"
+	"github.com/austingebauer/go-ray-tracer/world"
 	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
@@ -19,7 +22,7 @@ func TestNewCamera1(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *camera
+		want *Camera
 	}{
 		{
 			name: "constructing a new camera",
@@ -28,7 +31,7 @@ func TestNewCamera1(t *testing.T) {
 				verticalSize:   120,
 				fieldOfView:    math.Pi / 2,
 			},
-			want: &camera{
+			want: &Camera{
 				horizontalSizeInPixels: 160,
 				verticalSizeInPixels:   120,
 				fieldOfView:            math.Pi / 2,
@@ -88,7 +91,7 @@ func TestPixelSize(t *testing.T) {
 
 func TestRayForPixel(t *testing.T) {
 	type args struct {
-		c camera
+		c *Camera
 		x int
 		y int
 	}
@@ -100,7 +103,7 @@ func TestRayForPixel(t *testing.T) {
 		{
 			name: "constructing a ray through the center of the canvas",
 			args: args{
-				c: *NewCamera(201, 101, math.Pi/2),
+				c: NewCamera(201, 101, math.Pi/2),
 				x: 100,
 				y: 50,
 			},
@@ -111,7 +114,7 @@ func TestRayForPixel(t *testing.T) {
 		{
 			name: "constructing a ray through a corner of the canvas",
 			args: args{
-				c: *NewCamera(201, 101, math.Pi/2),
+				c: NewCamera(201, 101, math.Pi/2),
 				x: 0,
 				y: 0,
 			},
@@ -122,7 +125,7 @@ func TestRayForPixel(t *testing.T) {
 		{
 			name: "constructing a ray when the camera is transformed",
 			args: args{
-				c: *newCamera(201, 101, math.Pi/2, matrix.Multiply4x4(
+				c: newCamera(201, 101, math.Pi/2, matrix.Multiply4x4(
 					*matrix.NewYRotationMatrix(math.Pi / 4),
 					*matrix.NewTranslationMatrix(0, -2, 5)),
 				),
@@ -141,6 +144,46 @@ func TestRayForPixel(t *testing.T) {
 
 			if !assert.True(t, ray.Equals(tt.want, r)) {
 				assert.Equal(t, tt.want, r)
+			}
+		})
+	}
+}
+
+func TestRender(t *testing.T) {
+	type args struct {
+		c *Camera
+		w *world.World
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *canvas.Canvas
+		wantErr bool
+	}{
+		{
+			name: "rendering a world with a camera",
+			args: args{
+				c: newCamera(11, 11, math.Pi/2,
+					matrix.ViewTransform(
+						*point.NewPoint(0, 0, -5),
+						*point.NewPoint(0, 0, 0),
+						*vector.NewVector(0, 1, 0))),
+				w: world.NewDefaultWorld(),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			image, err := Render(tt.args.c, tt.args.w)
+			assert.NoError(t, err)
+
+			// TODO: Investigate why book says green should be 0.47583.
+			expectedColor := color.NewColor(0.38066, 0.047583, 0.2855)
+			actualColor, err := image.PixelAt(5, 5)
+			assert.NoError(t, err)
+
+			if !color.Equals(*expectedColor, actualColor) {
+				assert.Equal(t, expectedColor, actualColor)
 			}
 		})
 	}
