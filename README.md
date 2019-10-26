@@ -16,9 +16,13 @@ The rendering demonstrates the implementation of a camera with a
 The view transformation matrix orients the camera by specifying where to look *from* and *to*, and
 which way is *up*.
 
+I found the following to be good reads for more on view transformation matrices:
+- [World, View and Projection Transformation Matrices](http://www.codinglabs.net/article_world_view_projection_matrix.aspx)
+- [Understanding the View Matrix](https://www.3dgep.com/understanding-the-view-matrix/)
+
 To produce the rendering:, run:
 ```bash
-git checkout TODO
+git checkout 2c4b679d
 go run main.go
 ```
 
