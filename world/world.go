@@ -82,5 +82,11 @@ func ColorAt(w *World, r *ray.Ray) (*color.Color, error) {
 // ShadeHit returns the color at the intersection encapsulated by
 // an intersections computations.
 func ShadeHit(w *World, comps *ray.IntersectionComputations) *color.Color {
-	return light.Lighting(comps.Object.Material, w.Light, comps.Point, comps.EyeVec, comps.NormalVec)
+	return light.Lighting(
+		comps.Object.Material,
+		w.Light,
+		comps.Point,
+		comps.EyeVec,
+		comps.NormalVec,
+		false)
 }

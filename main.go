@@ -242,7 +242,13 @@ func renderSphere(shape *sphere.Sphere, l *light.PointLight, render3D bool) *can
 						log.Fatal(err)
 					}
 					eye := vector.Scale(*r.Direction, -1)
-					surfaceColor = *light.Lighting(hit.Object.Material, l, pt, eye, normal)
+					surfaceColor = *light.Lighting(
+						hit.Object.Material,
+						l,
+						pt,
+						eye,
+						normal,
+						false)
 				}
 
 				err := c.WritePixel(x, y, surfaceColor)

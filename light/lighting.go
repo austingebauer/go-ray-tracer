@@ -10,9 +10,9 @@ import (
 )
 
 // Lighting computes the shading for a material given the light source, point being illuminated,
-// and the eye and normal vectors using the Phong reflection model.
+// eye and normal vectors, and shadow flag using the Phong reflection model.
 func Lighting(mat *material.Material, light *PointLight, pt *point.Point, eyeVec,
-	normalVec *vector.Vector) *color.Color {
+	normalVec *vector.Vector, inShadow bool) *color.Color {
 	// The three reflection contributions to get the final shading
 	var ambient, diffuse, specular *color.Color
 

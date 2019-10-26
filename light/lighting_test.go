@@ -19,6 +19,7 @@ func TestLighting(t *testing.T) {
 		l         *PointLight
 		m         *material.Material
 		pt        *point.Point
+		inShadow  bool
 	}
 	tests := []struct {
 		name string
@@ -36,8 +37,9 @@ func TestLighting(t *testing.T) {
 				),
 
 				// material and point illuminated constant for this test table
-				m:  material.NewDefaultMaterial(),
-				pt: point.NewPoint(0, 0, 0),
+				m:        material.NewDefaultMaterial(),
+				pt:       point.NewPoint(0, 0, 0),
+				inShadow: false,
 			},
 			want: color.NewColor(1.9, 1.9, 1.9),
 		},
@@ -54,6 +56,7 @@ func TestLighting(t *testing.T) {
 				normalVec: vector.NewVector(0, 0, -1),
 				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
+				inShadow:  false,
 			},
 			want: color.NewColor(1.0, 1.0, 1.0),
 		},
@@ -70,6 +73,7 @@ func TestLighting(t *testing.T) {
 				normalVec: vector.NewVector(0, 0, -1),
 				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
+				inShadow:  false,
 			},
 			want: color.NewColor(0.7364, 0.7364, 0.7364),
 		},
@@ -86,6 +90,7 @@ func TestLighting(t *testing.T) {
 				normalVec: vector.NewVector(0, 0, -1),
 				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
+				inShadow:  false,
 			},
 			want: color.NewColor(0.73639, 0.73639, 0.73639),
 		},
@@ -102,6 +107,7 @@ func TestLighting(t *testing.T) {
 				normalVec: vector.NewVector(0, 0, -1),
 				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
+				inShadow:  false,
 			},
 			want: color.NewColor(1.6364, 1.6364, 1.6364),
 		},
@@ -118,13 +124,20 @@ func TestLighting(t *testing.T) {
 				normalVec: vector.NewVector(0, 0, -1),
 				m:         material.NewDefaultMaterial(),
 				pt:        point.NewPoint(0, 0, 0),
+				inShadow:  false,
 			},
 			want: color.NewColor(0.1, 0.1, 0.1),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			lc := Lighting(tt.args.m, tt.args.l, tt.args.pt, tt.args.eyeVec, tt.args.normalVec)
+			lc := Lighting(
+				tt.args.m,
+				tt.args.l,
+				tt.args.pt,
+				tt.args.eyeVec,
+				tt.args.normalVec,
+				tt.args.inShadow)
 
 			if !color.Equals(*lc, *tt.want) {
 				assert.Equal(t, tt.want, lc)
