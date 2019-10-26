@@ -100,12 +100,11 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 		matrix.NewScalingMatrix(10, 0.01, 10))
 	rightWall.Material = floor.Material
 
-	// The large sphere in the middle is a unit sphere that's
-	// translated upward slightly and colored green.
+	// The large sphere in the middle is a unit sphere that's translated upward slightly.
 	middle := sphere.NewUnitSphere("middle")
 	middle.Transform = matrix.NewTranslationMatrix(-0.5, 1, 0.5)
 	middle.Material = material.NewDefaultMaterial()
-	middle.Material.Color = *color.NewColor(0.1, 1, 0.5)
+	middle.Material.Color = *color.NewColor(0, 1, 0.8)
 	middle.Material.Diffuse = 0.7
 	middle.Material.Specular = 0.3
 
@@ -115,7 +114,7 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 		matrix.NewTranslationMatrix(1.5, 0.5, -0.5),
 		matrix.NewScalingMatrix(0.5, 0.5, 0.5))
 	right.Material = material.NewDefaultMaterial()
-	right.Material.Color = *color.NewColor(0.5, 1, 0.1)
+	right.Material.Color = *color.NewColor(0.2, 0.8, 1)
 	right.Material.Diffuse = 0.7
 	right.Material.Specular = 0.3
 
@@ -125,7 +124,7 @@ func RenderRayTracedWorld3D() *canvas.Canvas {
 		matrix.NewTranslationMatrix(-1.5, 0.33, -0.75),
 		matrix.NewScalingMatrix(0.33, 0.33, 0.33))
 	left.Material = material.NewDefaultMaterial()
-	left.Material.Color = *color.NewColor(1, 0.8, 0.1)
+	left.Material.Color = *color.NewColor(0.8, 0.8, 1)
 	left.Material.Diffuse = 0.7
 	left.Material.Specular = 0.3
 

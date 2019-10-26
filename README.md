@@ -7,6 +7,23 @@ A Go implementation of a 3D renderer using a
 
 I'll be adding images of renderings that I create on my journey to write a 3D renderer below.
 
+### 5. Ray Traced World
+
+My fifth rendering is a ray traced world which includes 3 spheres sitting in a room with walls.
+
+The rendering demonstrates the implementation of a camera with a 
+[field of view](https://en.wikipedia.org/wiki/Angle_of_view) and view transformation matrix. 
+The view transformation matrix orients the camera by specifying where to look *from* and *to*, and
+which way is *up*.
+
+To produce the rendering:, run:
+```bash
+git checkout TODO
+go run main.go
+```
+
+![World Rendering](docs/renderings/world_3d/world_3d.png)
+
 ### 4. Ray Traced Spheres in 3D
 
 My fourth rendering is my first ever 3D rendering! Producing a 3D rendering was one of those moments that
