@@ -19,7 +19,7 @@ func Lighting(mat *material.Material, light *PointLight, pt *point.Point, eyeVec
 	// Combine the surface color with the light's color/intensity
 	effectiveColor := color.Multiply(mat.Color, light.Intensity)
 
-	// Get the direction vector to the light source
+	// Get the vector from the point to the light source
 	lightVec := vector.Normalize(*point.Subtract(light.Position, *pt))
 
 	// Compute the ambient contribution
