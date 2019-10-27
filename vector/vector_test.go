@@ -759,12 +759,28 @@ func TestReflect(t *testing.T) {
 		want *Vector
 	}{
 		{
-			name: "reflecting a vector approaching at 45 degrees",
+			name: "reflecting a vector approaching at 45 degrees from +x, -y",
 			args: args{
 				in:     *NewVector(1, -1, 0),
 				normal: *NewVector(0, 1, 0),
 			},
 			want: NewVector(1, 1, 0),
+		},
+		{
+			name: "reflecting a vector approaching at 45 degrees from +x, +y with +y normal",
+			args: args{
+				in:     *NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0),
+				normal: *NewVector(0, 1, 0),
+			},
+			want: NewVector(math.Sqrt(2)/2, -1*math.Sqrt(2)/2, 0),
+		},
+		{
+			name: "reflecting a vector approaching at 45 degrees from +x, +y with -y normal",
+			args: args{
+				in:     *NewVector(math.Sqrt(2)/2, math.Sqrt(2)/2, 0),
+				normal: *NewVector(0, -1, 0),
+			},
+			want: NewVector(math.Sqrt(2)/2, -1*math.Sqrt(2)/2, 0),
 		},
 		{
 			name: "reflecting a vector off of a slanted surface",
