@@ -94,7 +94,7 @@ func TestAdd(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want Color
+		want *Color
 	}{
 		{
 			name: "add color to color function",
@@ -110,7 +110,7 @@ func TestAdd(t *testing.T) {
 					Blue:  4,
 				},
 			},
-			want: Color{
+			want: &Color{
 				Red:   3,
 				Green: 3,
 				Blue:  3,
@@ -180,7 +180,7 @@ func TestSubtract(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want Color
+		want *Color
 	}{
 		{
 			name: "subtract color from color function",
@@ -196,7 +196,7 @@ func TestSubtract(t *testing.T) {
 					Blue:  4,
 				},
 			},
-			want: Color{
+			want: &Color{
 				Red:   -1,
 				Green: -3,
 				Blue:  -5,

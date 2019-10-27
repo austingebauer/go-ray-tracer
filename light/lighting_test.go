@@ -128,6 +128,23 @@ func TestLighting(t *testing.T) {
 			},
 			want: color.NewColor(0.1, 0.1, 0.1),
 		},
+		{
+			name: "lighting with the surface in shadow",
+			args: args{
+				eyeVec:    vector.NewVector(0, 0, -1),
+				normalVec: vector.NewVector(0, 0, -1),
+				l: NewPointLight(
+					*point.NewPoint(0, 0, -10),
+					*color.NewColor(1, 1, 1),
+				),
+
+				// material and point illuminated constant for this test table
+				m:        material.NewDefaultMaterial(),
+				pt:       point.NewPoint(0, 0, 0),
+				inShadow: true,
+			},
+			want: color.NewColor(0.1, 0.1, 0.1),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

@@ -30,8 +30,8 @@ func (c *Color) Add(c2 Color) *Color {
 }
 
 // Add returns a new Color with rgb values set to the sum of the passed Color rgb values.
-func Add(c1, c2 Color) Color {
-	return Color{
+func Add(c1, c2 Color) *Color {
+	return &Color{
 		Red:   c1.Red + c2.Red,
 		Green: c1.Green + c2.Green,
 		Blue:  c1.Blue + c2.Blue,
@@ -48,8 +48,8 @@ func (c *Color) Subtract(c2 Color) *Color {
 }
 
 // Subtract returns a new Color with rgb values set to the difference of the passed Color rgb values.
-func Subtract(c1, c2 Color) Color {
-	return Color{
+func Subtract(c1, c2 Color) *Color {
+	return &Color{
 		Red:   c1.Red - c2.Red,
 		Green: c1.Green - c2.Green,
 		Blue:  c1.Blue - c2.Blue,
