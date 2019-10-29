@@ -90,3 +90,9 @@ func ShadeHit(w *World, comps *ray.IntersectionComputations) *color.Color {
 		comps.NormalVec,
 		false)
 }
+
+// IsShadowed returns true if the passed point lies in
+// the shadow of an object in the passed world.
+func IsShadowed(world *World, pt *point.Point) bool {
+	return false
+}

@@ -233,3 +233,29 @@ func TestColorAtIntersectionBehindAndFrontOfRay(t *testing.T) {
 		assert.Equal(t, inner.Material.Color, *c)
 	}
 }
+
+func TestIsShadowed(t *testing.T) {
+	type args struct {
+		world *World
+		pt    *point.Point
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "no shadow when nothing is collinear with point and light",
+			args: args{
+				world: NewDefaultWorld(),
+				pt:    point.NewPoint(0, 10, 0),
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, IsShadowed(tt.args.world, tt.args.pt))
+		})
+	}
+}
