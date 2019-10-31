@@ -29,24 +29,24 @@ func main() {
 	renderings := []rendering{
 		{
 			routine:    RenderRayTracedWorld3D,
-			outputFile: "docs/renderings/world_3d/world_3d.ppm",
+			outputFile: "docs/renderings/world_shadow_3d/world_shadow_3d.ppm",
 		},
-		{
-			routine:    RenderRayTracedSphere3D,
-			outputFile: "docs/renderings/sphere_3d/sphere_3d.ppm",
-		},
-		{
-			routine:    RenderRayTracedSphere2D,
-			outputFile: "docs/renderings/sphere_2d/sphere_2d.ppm",
-		},
-		{
-			routine:    RenderClock,
-			outputFile: "docs/renderings/clock/clock.ppm",
-		},
-		{
-			routine:    RenderProjectile,
-			outputFile: "docs/renderings/projectile/projectile.ppm",
-		},
+		//{
+		//	routine:    RenderRayTracedSphere3D,
+		//	outputFile: "docs/renderings/sphere_3d/sphere_3d.ppm",
+		//},
+		//{
+		//	routine:    RenderRayTracedSphere2D,
+		//	outputFile: "docs/renderings/sphere_2d/sphere_2d.ppm",
+		//},
+		//{
+		//	routine:    RenderClock,
+		//	outputFile: "docs/renderings/clock/clock.ppm",
+		//},
+		//{
+		//	routine:    RenderProjectile,
+		//	outputFile: "docs/renderings/projectile/projectile.ppm",
+		//},
 	}
 
 	// Add all renderings to the wait group

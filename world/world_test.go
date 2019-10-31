@@ -2,6 +2,7 @@
 package world
 
 import (
+	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/vector"
 	"testing"
@@ -154,7 +155,8 @@ func TestShadeHitComingFromOutside(t *testing.T) {
 
 func TestShadeHitComingFromInside(t *testing.T) {
 	w := NewDefaultWorld()
-	w.Light = light.NewPointLight(*point.NewPoint(0, 0.25, 0),
+	w.Light = light.NewPointLight(
+		*point.NewPoint(0, 0.25, 0),
 		*color.NewColor(1, 1, 1))
 	r := ray.NewRay(*point.NewPoint(0, 0, 0), *vector.NewVector(0, 0, 1))
 	shape := w.Objects[1]
@@ -165,6 +167,31 @@ func TestShadeHitComingFromInside(t *testing.T) {
 
 	cExpected := color.NewColor(0.90498, 0.90498, 0.90498)
 	if !assert.True(t, color.Equals(*cExpected, *cActual)) {
+		assert.Equal(t, cExpected, cActual)
+	}
+}
+
+func TestShadeHitInShadow(t *testing.T) {
+	w := NewWorld()
+	w.Light = light.NewPointLight(
+		*point.NewPoint(0, 0, -10),
+		*color.NewColor(1, 1, 1))
+	s1 := sphere.NewUnitSphere("s1")
+	w.Objects = append(w.Objects, s1)
+	s2 := sphere.NewUnitSphere("s2")
+	s2.SetTransform(matrix.NewTranslationMatrix(0, 0, 10))
+	w.Objects = append(w.Objects, s2)
+
+	r := ray.NewRay(
+		*point.NewPoint(0, 0, 5),
+		*vector.NewVector(0, 0, 1))
+	i := ray.NewIntersection(4, s2)
+	comps, err := ray.PrepareComputations(i, r)
+	assert.NoError(t, err)
+
+	cExpected := color.NewColor(0.1, 0.1, 0.1)
+	cActual := ShadeHit(w, comps)
+	if !assert.True(t, color.Equals(*cActual, *cExpected)) {
 		assert.Equal(t, cExpected, cActual)
 	}
 }

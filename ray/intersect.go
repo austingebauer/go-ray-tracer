@@ -1,6 +1,7 @@
 package ray
 
 import (
+	"github.com/austingebauer/go-ray-tracer/maths"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/sphere"
@@ -30,6 +31,11 @@ type IntersectionComputations struct {
 	// The Point at which the ray intersected the object
 	Point *point.Point
 
+	// The OverPoint is the Point that has been slightly adjusted in
+	// the direction of the NormalVec in order to avoid shadow acne
+	// when determining if an intersectino point is in shadow.
+	OverPoint *point.Point
+
 	// The eye vector points in the opposite direction as the ray
 	EyeVec *vector.Vector
 
@@ -49,8 +55,7 @@ func NewIntersection(t float64, object *sphere.Sphere) *Intersection {
 	}
 }
 
-// PrepareComputations computes and returns additional information
-// related to an intersection.
+// PrepareComputations computes and returns additional information related to an intersection.
 func PrepareComputations(i *Intersection, r *Ray) (*IntersectionComputations, error) {
 	comps := &IntersectionComputations{
 		Intersection: *i,
@@ -80,6 +85,11 @@ func PrepareComputations(i *Intersection, r *Ray) (*IntersectionComputations, er
 	comps.Point = rayIntersectionPt
 	comps.EyeVec = eyeVec
 	comps.NormalVec = normalVec
+
+	// Compute the over point in order to avoid rendering shadown acne
+	// caused by the shadow ray intersecting with the object itself.
+	comps.OverPoint = point.Add(comps.Point, vector.Scale(*comps.NormalVec, maths.Epsilon))
+
 	return comps, nil
 }
 

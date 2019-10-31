@@ -1,6 +1,7 @@
 package ray
 
 import (
+	"github.com/austingebauer/go-ray-tracer/maths"
 	"github.com/austingebauer/go-ray-tracer/matrix"
 	"testing"
 
@@ -279,6 +280,7 @@ func TestPrepareComputations(t *testing.T) {
 					Object: sphere.NewUnitSphere("testID"),
 				},
 				Point:     point.NewPoint(0, 0, -1),
+				OverPoint: point.NewPoint(0, 0, -1.00001),
 				EyeVec:    vector.NewVector(0, 0, -1),
 				NormalVec: vector.NewVector(0, 0, -1),
 				Inside:    false,
@@ -286,7 +288,7 @@ func TestPrepareComputations(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Computing the state of an intersection when it occurs on the Inside of the object",
+			name: "Computing the state of an intersection when it occurs on the inside of the object",
 			args: args{
 				i: &Intersection{
 					T:      1,
@@ -302,8 +304,9 @@ func TestPrepareComputations(t *testing.T) {
 					T:      1,
 					Object: sphere.NewUnitSphere("testID"),
 				},
-				Point:  point.NewPoint(0, 0, 1),
-				EyeVec: vector.NewVector(0, 0, -1),
+				Point:     point.NewPoint(0, 0, 1),
+				OverPoint: point.NewPoint(0, 0, 0.99999),
+				EyeVec:    vector.NewVector(0, 0, -1),
 				// normal would've been <0,0,1>, but inverted since ray is Inside the object
 				NormalVec: vector.NewVector(0, 0, -1),
 				Inside:    true,
@@ -318,6 +321,22 @@ func TestPrepareComputations(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 		})
 	}
+}
+
+func TestOverPoint(t *testing.T) {
+	// Assert that the hit offsets the over point field to avoid shadow acne
+	r := NewRay(*point.NewPoint(0, 0, -5), *vector.NewVector(0, 0, 1))
+	shape := sphere.NewUnitSphere("shape")
+	shape.SetTransform(matrix.NewTranslationMatrix(0, 0, 1))
+	i := NewIntersection(5, shape)
+	comps, err := PrepareComputations(i, r)
+	assert.NoError(t, err)
+
+	// The over point should be less (further along negative z-axis) than -1 * Epsilon / 2
+	assert.Less(t, comps.OverPoint.Z, -1*maths.Epsilon/2)
+
+	// The original point of intersection should be greater than the over point
+	assert.Greater(t, comps.Point.Z, comps.OverPoint.Z)
 }
 
 func TestRaySphereIntersect(t *testing.T) {
