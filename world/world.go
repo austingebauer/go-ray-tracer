@@ -9,6 +9,7 @@ import (
 	"github.com/austingebauer/go-ray-tracer/point"
 	"github.com/austingebauer/go-ray-tracer/ray"
 	"github.com/austingebauer/go-ray-tracer/sphere"
+	"github.com/austingebauer/go-ray-tracer/vector"
 )
 
 // World represents a collection of all Objects that make up a scene.
@@ -94,5 +95,20 @@ func ShadeHit(w *World, comps *ray.IntersectionComputations) *color.Color {
 // IsShadowed returns true if the passed point lies in
 // the shadow of an object in the passed world.
 func IsShadowed(world *World, pt *point.Point) bool {
-	return false
+	// Create a ray from the point in question to the light source
+	vec := point.Subtract(world.Light.Position, *pt)
+	vecNormal := vector.Normalize(*vec)
+	shadowRay := ray.NewRay(*pt, *vecNormal)
+
+	// Compute the distance from the point in question to the light source
+	distanceToLight := vec.Magnitude()
+
+	// Intersect the shadow ray with the world
+	intersections := RayWorldIntersect(shadowRay, world)
+
+	// Check to see if there way a hit
+	h := ray.Hit(intersections)
+
+	// Return true if there was a hit that's t value is less than the distance to the light
+	return h != nil && h.T < distanceToLight
 }

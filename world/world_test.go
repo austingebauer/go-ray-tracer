@@ -245,10 +245,34 @@ func TestIsShadowed(t *testing.T) {
 		want bool
 	}{
 		{
-			name: "no shadow when nothing is collinear with point and light",
+			name: "no shadow when nothing is collinear with the point and the light",
 			args: args{
 				world: NewDefaultWorld(),
 				pt:    point.NewPoint(0, 10, 0),
+			},
+			want: false,
+		},
+		{
+			name: "the shadow when an object is between the point and the light",
+			args: args{
+				world: NewDefaultWorld(),
+				pt:    point.NewPoint(10, -10, 10),
+			},
+			want: true,
+		},
+		{
+			name: "no shadow when an object is behind the light",
+			args: args{
+				world: NewDefaultWorld(),
+				pt:    point.NewPoint(-20, 20, -20),
+			},
+			want: false,
+		},
+		{
+			name: "no shadow when an object is behind the point",
+			args: args{
+				world: NewDefaultWorld(),
+				pt:    point.NewPoint(-2, 2, -2),
 			},
 			want: false,
 		},
