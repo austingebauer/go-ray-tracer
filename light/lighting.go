@@ -13,17 +13,16 @@ import (
 // eye and normal vectors, and shadow flag using the Phong reflection model.
 func Lighting(mat *material.Material, light *PointLight, pt *point.Point, eyeVec,
 	normalVec *vector.Vector, inShadow bool) *color.Color {
+	// The three reflection contributions to get the
+	// final shading are ambient, diffuse, and specular.
 
 	// Combine the surface color with the light's color/intensity
 	effectiveColor := color.Multiply(mat.Color, light.Intensity)
 
-	// The three reflection contributions to get the final shading
+	// Compute the ambient contribution
 	ambient := color.Scale(*effectiveColor, mat.Ambient)
-	diffuse := color.NewColor(0, 0, 0)
-	specular := color.NewColor(0, 0, 0)
 
 	// If the point is in a shadow, use only the ambient contribution.
-	// The diffuse and specular contribution
 	if inShadow {
 		return ambient
 	}
@@ -42,17 +41,19 @@ func Lighting(mat *material.Material, light *PointLight, pt *point.Point, eyeVec
 	}
 
 	// Compute the diffuse contribution
-	diffuse = color.Scale(*color.Scale(*effectiveColor, mat.Diffuse), lightDotNormal)
+	diffuse := color.Scale(*color.Scale(*effectiveColor, mat.Diffuse), lightDotNormal)
 
 	// reflectDotEye represents the cosine of the angle between the
 	// reflection vector and the eye vector.
 	reflectVec := vector.Reflect(*vector.Scale(*lightVec, -1), *normalVec)
 	reflectDotEye := vector.DotProduct(*reflectVec, *eyeVec)
 
+	// Compute the specular contribution
+	specular := color.NewColor(0, 0, 0)
+
 	// A positive number means that the light reflects into the eye.
 	// A zero or negative number means the light reflects away from (not into) the eye.
 	if reflectDotEye > 0 {
-		// Compute the specular contribution
 		factor := math.Pow(reflectDotEye, mat.Shininess)
 		specular = color.Scale(*color.Scale(light.Intensity, mat.Specular), factor)
 	}
