@@ -7,6 +7,27 @@ A Go implementation of a 3D renderer using a
 
 I'll be adding images of renderings that I create on my journey to write a 3D renderer below.
 
+### 6. Shadows
+
+My sixth rendering is the same ray traced world as the last rendering but with shadows!
+
+The rendering demonstrates using 
+[shadow rays](https://graphics.stanford.edu/~cek/rayshade/doc/guide/section2_6_2.html) to determine 
+if a point is in a shadow or not. If a point is in shadow, the ray tracer will omit the diffuse
+and specular contribution and only use the ambient contribution to shade the pixel.
+
+I also learned about 
+[shadow acne](https://www.scratchapixel.com/lessons/3d-basic-rendering/introduction-to-shading/ligth-and-shadows), 
+which happens because computers cannot represent floating point numbers very precisely.
+
+To produce the rendering, run:
+```bash
+git checkout 678a29ae
+go run main.go
+```
+
+![Shadow Rendering](docs/renderings/world_shadow_3d/world_shadow_3d.png)
+
 ### 5. Ray Traced World
 
 My fifth rendering is a ray traced world which includes 3 spheres sitting in a room with walls.
