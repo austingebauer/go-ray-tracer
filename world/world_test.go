@@ -146,7 +146,6 @@ func TestShadeHitComingFromOutside(t *testing.T) {
 	assert.NoError(t, err)
 	cActual := ShadeHit(w, comps)
 
-	// TODO: Investigate why book says green should be 0.47583.
 	cExpected := color.NewColor(0.38066, 0.047583, 0.2855)
 	if !assert.True(t, color.Equals(*cExpected, *cActual)) {
 		assert.Equal(t, cExpected, cActual)
@@ -224,7 +223,6 @@ func TestColorAt(t *testing.T) {
 					*point.NewPoint(0, 0, -5),
 					*vector.NewVector(0, 0, 1)),
 			},
-			// TODO: Investigate why book says green should be 0.47583.
 			want: color.NewColor(0.38066, 0.047583, 0.2855),
 		},
 	}

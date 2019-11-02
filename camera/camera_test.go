@@ -178,7 +178,6 @@ func TestRender(t *testing.T) {
 			image, err := Render(tt.args.c, tt.args.w)
 			assert.NoError(t, err)
 
-			// TODO: Investigate why book says green should be 0.47583.
 			expectedColor := color.NewColor(0.38066, 0.047583, 0.2855)
 			actualColor, err := image.PixelAt(5, 5)
 			assert.NoError(t, err)
